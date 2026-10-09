@@ -4,74 +4,280 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Een interactieve puzzelvertelling waarin elk antwoord je verder brengt.">
-  <title>Het Puzzelverhaal</title>
+  <meta name="theme-color" content="#f2eadb">
+  <title>Spring aan boord — Ga mee spoorzoeken</title>
+
   <style>
-    body {
-      margin: 0;
-      font-family: Georgia, serif;
-      background: #171b24;
-      color: #f4efe5;
-      min-height: 100vh;
-      display: grid;
-      place-items: center;
-      padding: 24px;
+    * {
       box-sizing: border-box;
     }
 
-    main {
-      max-width: 650px;
-      text-align: center;
-      padding: 40px 24px;
+    body {
+      margin: 0;
+      background: #f2eadb;
+      color: #28291f;
+      font-family: Georgia, "Times New Roman", serif;
     }
 
-    .label {
-      color: #c7a66a;
-      text-transform: uppercase;
+    .page {
+      width: min(1100px, 100%);
+      margin: 0 auto;
+      padding: 28px 24px 56px;
+    }
+
+    .eyebrow {
+      margin: 0 0 18px;
+      color: #766447;
+      font-family: Arial, sans-serif;
+      font-size: 12px;
       letter-spacing: 3px;
-      font: 12px Arial, sans-serif;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    .hero {
+      position: relative;
+      min-height: 390px;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+      background: #26332d;
+      color: #fff8e9;
+    }
+
+    .hero img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        90deg,
+        rgba(16, 25, 22, 0.88) 0%,
+        rgba(16, 25, 22, 0.65) 48%,
+        rgba(16, 25, 22, 0.08) 100%
+      );
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      width: min(590px, 100%);
+      padding: 48px;
     }
 
     h1 {
-      font-size: clamp(36px, 7vw, 58px);
+      margin: 0 0 12px;
+      font-size: clamp(42px, 7vw, 70px);
       font-weight: normal;
-      margin: 24px 0;
+      line-height: 1.03;
     }
 
-    p {
-      color: #d1d2d7;
-      font: 17px/1.8 Arial, sans-serif;
+    .subtitle {
+      margin: 0;
+      color: #e7c88e;
+      font-size: clamp(21px, 3vw, 29px);
+      font-style: italic;
+    }
+
+    .story {
+      max-width: 690px;
+      margin: 42px auto 0;
+      font-size: 18px;
+      line-height: 1.8;
+    }
+
+    .story p {
+      margin: 0 0 20px;
+    }
+
+    .invitation {
+      margin-top: 34px !important;
+      color: #526047;
+      font-style: italic;
+    }
+
+    .action {
+      margin-top: 32px;
+      text-align: center;
     }
 
     button {
-      margin-top: 24px;
-      padding: 15px 28px;
       border: 0;
-      background: #c7a66a;
-      color: #171b24;
-      font-size: 16px;
+      padding: 15px 27px;
+      background: #31483b;
+      color: #fff8e9;
+      font-family: Arial, sans-serif;
+      font-size: 15px;
       cursor: pointer;
-      border-radius: 3px;
+      transition: background 0.2s ease;
     }
 
     button:hover {
-      background: #e0c58f;
+      background: #49654f;
+    }
+
+    button:focus-visible {
+      outline: 3px solid #b38b4b;
+      outline-offset: 4px;
+    }
+
+    .next-scene {
+      display: none;
+      max-width: 690px;
+      margin: 42px auto 0;
+      padding: 28px;
+      border-top: 1px solid #c9bda8;
+      text-align: center;
+    }
+
+    .next-scene h2 {
+      font-size: 32px;
+      font-weight: normal;
+    }
+
+    .next-scene p {
+      font-size: 18px;
+      line-height: 1.7;
+    }
+
+    footer {
+      margin-top: 54px;
+      color: #766f61;
+      font-family: Arial, sans-serif;
+      font-size: 12px;
+      text-align: center;
+    }
+
+    @media (max-width: 600px) {
+      .page {
+        padding: 16px 14px 36px;
+      }
+
+      .hero {
+        min-height: 430px;
+      }
+
+      .hero img {
+        object-position: 58% center;
+      }
+
+      .hero::after {
+        background: linear-gradient(
+          0deg,
+          rgba(16, 25, 22, 0.92) 0%,
+          rgba(16, 25, 22, 0.48) 75%,
+          rgba(16, 25, 22, 0.16) 100%
+        );
+      }
+
+      .hero-content {
+        align-self: flex-end;
+        padding: 26px 22px;
+      }
+
+      .story {
+        margin-top: 30px;
+        font-size: 17px;
+        line-height: 1.75;
+      }
     }
   </style>
 </head>
+
 <body>
-  <main>
-    <div class="label">Een interactief mysterie</div>
-    <h1>Elk antwoord brengt je verder.</h1>
-    <p>
-      Er is een verhaal dat verteld wil worden.
-      Maar niet alles wordt zomaar prijsgegeven.
-      Kijk goed, denk na en ontdek wat er achter
-      de volgende deur verborgen ligt.
-    </p>
-    <button onclick="alert('Het avontuur begint binnenkort.')">
-      Begin het avontuur
-    </button>
+  <main class="page">
+    <p class="eyebrow">Een verhaal om te ontdekken</p>
+
+    <section class="hero" aria-labelledby="page-title">
+      <img
+        src="station_home.png"
+        alt="Een oude trein wacht op een sfeervol Europees station"
+      >
+
+      <div class="hero-content">
+        <h1 id="page-title">Spring aan boord.</h1>
+        <p class="subtitle">Ga mee spoorzoeken.</p>
+      </div>
+    </section>
+
+    <section class="story">
+      <p>
+        Ergens in Europa staat een trein klaar om te vertrekken.
+        De oude locomotief ademt stoom, op het perron weerklinken
+        voetstappen en achter beslagen coupéramen brandt gedempt licht.
+      </p>
+
+      <p>
+        Waar de reis je brengt, weet je nog niet. Misschien wacht er
+        een vergeten brief in een restauratiewagen. Misschien draagt
+        een medereiziger een geheim met zich mee. En misschien is
+        niets aan boord wat het lijkt.
+      </p>
+
+      <p>
+        Kijk goed om je heen. Luister naar wat niet wordt gezegd.
+        Ontcijfer de aanwijzingen en volg het spoor, van station
+        naar station, van raadsel naar raadsel.
+      </p>
+
+      <p>
+        De reis kent een vaste route. Maar wat je onderweg ontdekt,
+        moet je zelf zien te ontrafelen.
+      </p>
+
+      <p class="invitation">
+        De deuren staan open. De trein wacht.
+      </p>
+
+      <div class="action">
+        <button id="board-button" type="button">
+          Stap aan boord →
+        </button>
+      </div>
+    </section>
+
+    <section class="next-scene" id="next-scene" aria-live="polite">
+      <h2>De reis begint</h2>
+      <p>
+        Je stapt in en zoekt een plek bij het raam.
+        De trein komt langzaam in beweging. Op de stoel tegenover
+        je ligt iets wat er daarnet nog niet lag.
+      </p>
+      <p><em>Wat het is, ontdekken we in het volgende hoofdstuk.</em></p>
+      <button id="back-button" type="button">Terug naar het begin</button>
+    </section>
+
+    <footer>
+      Een reis langs verhalen, geheimen en raadsels.
+    </footer>
   </main>
+
+  <script>
+    const boardButton = document.getElementById("board-button");
+    const nextScene = document.getElementById("next-scene");
+    const backButton = document.getElementById("back-button");
+
+    boardButton.addEventListener("click", function () {
+      nextScene.style.display = "block";
+      nextScene.scrollIntoView({ behavior: "smooth", block: "start" });
+      boardButton.textContent = "Je bent aan boord";
+      boardButton.disabled = true;
+    });
+
+    backButton.addEventListener("click", function () {
+      nextScene.style.display = "none";
+      boardButton.textContent = "Stap aan boord →";
+      boardButton.disabled = false;
+      boardButton.scrollIntoView({ behavior: "smooth", block: "center" });
+    });
+  </script>
 </body>
 </html>
