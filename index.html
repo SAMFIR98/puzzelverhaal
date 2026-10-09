@@ -512,20 +512,6 @@
           Maar je vraagt je af of deze naam je iets verder brengt.
         </p>
 
-        <p>
-          Gelukkig herinner je je ook een kleine aantekening die
-          onder de naam stond:
-          <em>
-            Waar de rivier naar de oceaan reist, rijpt de naam
-            in donkere flessen.
-          </em>
-        </p>
-
-        <p>
-          De stad ligt aan een rivier die richting de Atlantische
-          Oceaan stroomt en is beroemd om haar wijn.
-        </p>
-
         <p class="question">
           Naar welke stad was de eigenaar van deze koffer op weg?
         </p>
@@ -612,7 +598,7 @@
   </section>
 
 
-  <!-- AFBEELDINGENWEERGAVE: WISSEL TUSSEN HOOFDAFBEELDING EN CLOSE-UP -->
+  <!-- AFBEELDINGENWEERGAVE: HOOFDAFBEELDING EN CLOSE-UP -->
 
   <div
     id="lightbox"
@@ -735,7 +721,7 @@
     }
 
 
-    // Toon de foutmelding als het antwoord niet klopt.
+    // Pop-up bij een fout antwoord.
 
     function showErrorPopup() {
       document.getElementById("error-popup").classList.add("visible");
@@ -744,9 +730,7 @@
 
     function closeErrorPopup() {
       document.getElementById("error-popup").classList.remove("visible");
-
-      const answerInput = document.getElementById("answer");
-      answerInput.focus();
+      document.getElementById("answer").focus();
     }
 
 
@@ -757,7 +741,6 @@
     }
 
 
-    // Controleer het antwoord.
     // Hoofdletters worden genegeerd; de spelling moet exact kloppen.
 
     function checkAnswer(event) {
@@ -772,7 +755,7 @@
       if (answer === "bordeaux") {
         document.getElementById("error-popup").classList.remove("visible");
 
-        // Meteen naar de volgende verhaalpagina, zonder tussenscherm.
+        // Direct door naar de volgende verhaalpagina.
         showScreen("story2");
       } else {
         showErrorPopup();
