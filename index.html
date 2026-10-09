@@ -60,9 +60,9 @@
       inset: 0;
       background: linear-gradient(
         90deg,
-        rgba(16, 25, 22, 0.88) 0%,
+        rgba(16, 25, 22, 0.88),
         rgba(16, 25, 22, 0.65) 48%,
-        rgba(16, 25, 22, 0.08) 100%
+        rgba(16, 25, 22, 0.08)
       );
     }
 
@@ -117,7 +117,6 @@
       font-family: Arial, sans-serif;
       font-size: 15px;
       cursor: pointer;
-      transition: background 0.2s ease;
     }
 
     button:hover {
@@ -129,23 +128,45 @@
       outline-offset: 4px;
     }
 
-    .next-scene {
+    /* De tweede pagina */
+    #story-screen {
       display: none;
-      max-width: 690px;
-      margin: 42px auto 0;
-      padding: 28px;
+      min-height: 75vh;
+    }
+
+    .chapter {
+      max-width: 760px;
+      margin: 55px auto;
+    }
+
+    .chapter-image {
+      width: 100%;
+      max-height: 340px;
+      object-fit: cover;
+      display: block;
+      margin-bottom: 36px;
+    }
+
+    .chapter h1 {
+      color: #31483b;
+      font-size: clamp(38px, 6vw, 58px);
+    }
+
+    .chapter .chapter-intro {
+      color: #766447;
+      font-size: 21px;
+      font-style: italic;
+    }
+
+    .chapter p {
+      font-size: 19px;
+      line-height: 1.8;
+    }
+
+    .chapter-footer {
+      margin-top: 40px;
+      padding-top: 20px;
       border-top: 1px solid #c9bda8;
-      text-align: center;
-    }
-
-    .next-scene h2 {
-      font-size: 32px;
-      font-weight: normal;
-    }
-
-    .next-scene p {
-      font-size: 18px;
-      line-height: 1.7;
     }
 
     footer {
@@ -172,9 +193,9 @@
       .hero::after {
         background: linear-gradient(
           0deg,
-          rgba(16, 25, 22, 0.92) 0%,
+          rgba(16, 25, 22, 0.92),
           rgba(16, 25, 22, 0.48) 75%,
-          rgba(16, 25, 22, 0.16) 100%
+          rgba(16, 25, 22, 0.16)
         );
       }
 
@@ -186,7 +207,10 @@
       .story {
         margin-top: 30px;
         font-size: 17px;
-        line-height: 1.75;
+      }
+
+      .chapter {
+        margin: 30px auto;
       }
     }
   </style>
@@ -194,65 +218,108 @@
 
 <body>
   <main class="page">
-    <p class="eyebrow">Een verhaal om te ontdekken</p>
 
-    <section class="hero" aria-labelledby="page-title">
-      <img
-        src="station_home.png"
-        alt="Een oude trein wacht op een sfeervol Europees station"
-      >
+    <!-- PAGINA 1: INTRODUCTIE -->
+    <section id="intro-screen">
+      <p class="eyebrow">Een verhaal om te ontdekken</p>
 
-      <div class="hero-content">
-        <h1 id="page-title">Spring aan boord.</h1>
-        <p class="subtitle">Ga mee spoorzoeken.</p>
+      <div class="hero">
+        <img
+          src="station_home.png"
+          alt="Een oude trein op een sfeervol Europees station"
+        >
+        <div class="hero-content">
+          <h1>Spring aan boord.</h1>
+          <p class="subtitle">Ga mee spoorzoeken.</p>
+        </div>
+      </div>
+
+      <div class="story">
+        <p>
+          Ergens in Europa staat een trein klaar om te vertrekken.
+          De oude locomotief ademt stoom, op het perron weerklinken
+          voetstappen en achter beslagen coupéramen brandt gedempt licht.
+        </p>
+
+        <p>
+          Waar de reis je brengt, weet je nog niet. Misschien wacht er
+          een vergeten brief in een restauratiewagen. Misschien draagt
+          een medereiziger een geheim met zich mee. En misschien is
+          niets aan boord wat het lijkt.
+        </p>
+
+        <p>
+          Kijk goed om je heen. Luister naar wat niet wordt gezegd.
+          Ontcijfer de aanwijzingen en volg het spoor, van station
+          naar station, van raadsel naar raadsel.
+        </p>
+
+        <p>
+          De reis kent een vaste route. Maar wat je onderweg ontdekt,
+          moet je zelf zien te ontrafelen.
+        </p>
+
+        <p class="invitation">
+          De deuren staan open. De trein wacht.
+        </p>
+
+        <div class="action">
+          <button id="board-button" type="button">
+            Stap aan boord →
+          </button>
+        </div>
       </div>
     </section>
 
-    <section class="story">
-      <p>
-        Ergens in Europa staat een trein klaar om te vertrekken.
-        De oude locomotief ademt stoom, op het perron weerklinken
-        voetstappen en achter beslagen coupéramen brandt gedempt licht.
-      </p>
+    <!-- PAGINA 2: BEGIN VAN HET VERHAAL -->
+    <section id="story-screen">
+      <div class="chapter">
+        <p class="eyebrow">Hoofdstuk 1 · Vertrek</p>
 
-      <p>
-        Waar de reis je brengt, weet je nog niet. Misschien wacht er
-        een vergeten brief in een restauratiewagen. Misschien draagt
-        een medereiziger een geheim met zich mee. En misschien is
-        niets aan boord wat het lijkt.
-      </p>
+        <img
+          class="chapter-image"
+          src="station_home.png"
+          alt="De trein staat klaar voor vertrek"
+        >
 
-      <p>
-        Kijk goed om je heen. Luister naar wat niet wordt gezegd.
-        Ontcijfer de aanwijzingen en volg het spoor, van station
-        naar station, van raadsel naar raadsel.
-      </p>
+        <h1>De reis begint</h1>
 
-      <p>
-        De reis kent een vaste route. Maar wat je onderweg ontdekt,
-        moet je zelf zien te ontrafelen.
-      </p>
+        <p class="chapter-intro">
+          De deuren sluiten. De trein komt langzaam in beweging.
+        </p>
 
-      <p class="invitation">
-        De deuren staan open. De trein wacht.
-      </p>
+        <p>
+          Je zoekt een plek bij het raam. Het station glijdt langzaam
+          achter je weg. Lantaarns, lege bankjes en donkere perrons
+          verdwijnen in de avond.
+        </p>
 
-      <div class="action">
-        <button id="board-button" type="button">
-          Stap aan boord →
-        </button>
+        <p>
+          Wanneer je je omdraait, zie je op de stoel tegenover je iets
+          liggen wat er daarnet nog niet lag.
+        </p>
+
+        <p>
+          Een envelop. Vergeeld papier, geen postzegel en geen naam
+          op de voorkant. Alleen één zin, met de hand geschreven:
+        </p>
+
+        <p class="chapter-intro">
+          'Voor wie weet waar het spoor begint.'
+        </p>
+
+        <p>
+          Je pakt de envelop op. Er zit iets in. Maar voordat je hem
+          opent, klinkt er buiten je coupé een stem.
+        </p>
+
+        <div class="chapter-footer">
+          <p><em>Hier begint het eerste raadsel.</em></p>
+          <button id="back-button" type="button">
+            ← Terug naar de introductie
+          </button>
+        </div>
       </div>
-    </section>
-
-    <section class="next-scene" id="next-scene" aria-live="polite">
-      <h2>De reis begint</h2>
-      <p>
-        Je stapt in en zoekt een plek bij het raam.
-        De trein komt langzaam in beweging. Op de stoel tegenover
-        je ligt iets wat er daarnet nog niet lag.
-      </p>
-      <p><em>Wat het is, ontdekken we in het volgende hoofdstuk.</em></p>
-      <button id="back-button" type="button">Terug naar het begin</button>
     </section>
 
     <footer>
@@ -261,22 +328,21 @@
   </main>
 
   <script>
+    const introScreen = document.getElementById("intro-screen");
+    const storyScreen = document.getElementById("story-screen");
     const boardButton = document.getElementById("board-button");
-    const nextScene = document.getElementById("next-scene");
     const backButton = document.getElementById("back-button");
 
     boardButton.addEventListener("click", function () {
-      nextScene.style.display = "block";
-      nextScene.scrollIntoView({ behavior: "smooth", block: "start" });
-      boardButton.textContent = "Je bent aan boord";
-      boardButton.disabled = true;
+      introScreen.style.display = "none";
+      storyScreen.style.display = "block";
+      window.scrollTo({ top: 0, behavior: "instant" });
     });
 
     backButton.addEventListener("click", function () {
-      nextScene.style.display = "none";
-      boardButton.textContent = "Stap aan boord →";
-      boardButton.disabled = false;
-      boardButton.scrollIntoView({ behavior: "smooth", block: "center" });
+      storyScreen.style.display = "none";
+      introScreen.style.display = "block";
+      window.scrollTo({ top: 0, behavior: "instant" });
     });
   </script>
 </body>
