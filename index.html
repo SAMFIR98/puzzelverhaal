@@ -4,346 +4,581 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#f2eadb">
-  <title>Spring aan boord — Ga mee spoorzoeken</title>
+  <title>Een uitnodiging zonder afzender</title>
 
   <style>
+    :root {
+      --background: #171b24;
+      --panel: #222936;
+      --text: #eee8dc;
+      --muted: #c0b8a9;
+      --gold: #c7a66a;
+      --border: #454443;
+    }
+
     * {
       box-sizing: border-box;
     }
 
     body {
       margin: 0;
-      background: #f2eadb;
-      color: #28291f;
+      background: var(--background);
+      color: var(--text);
       font-family: Georgia, "Times New Roman", serif;
+      line-height: 1.8;
     }
 
-    .page {
-      width: min(1100px, 100%);
+    .container {
+      width: min(900px, 100%);
       margin: 0 auto;
-      padding: 28px 24px 56px;
+      padding: 28px 22px 60px;
     }
 
     .eyebrow {
-      margin: 0 0 18px;
-      color: #766447;
-      font-family: Arial, sans-serif;
-      font-size: 12px;
-      letter-spacing: 3px;
-      text-align: center;
+      color: var(--gold);
       text-transform: uppercase;
-    }
-
-    .hero {
-      position: relative;
-      min-height: 390px;
-      display: flex;
-      align-items: center;
-      overflow: hidden;
-      background: #26332d;
-      color: #fff8e9;
-    }
-
-    .hero img {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: center;
-    }
-
-    .hero::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(
-        90deg,
-        rgba(16, 25, 22, 0.88),
-        rgba(16, 25, 22, 0.65) 48%,
-        rgba(16, 25, 22, 0.08)
-      );
-    }
-
-    .hero-content {
-      position: relative;
-      z-index: 1;
-      width: min(590px, 100%);
-      padding: 48px;
+      letter-spacing: 3px;
+      font-family: Arial, sans-serif;
+      font-size: 0.75rem;
+      margin-bottom: 12px;
     }
 
     h1 {
-      margin: 0 0 12px;
-      font-size: clamp(42px, 7vw, 70px);
+      font-size: clamp(2rem, 6vw, 3.4rem);
+      line-height: 1.15;
       font-weight: normal;
-      line-height: 1.03;
+      margin: 0 0 18px;
     }
 
-    .subtitle {
-      margin: 0;
-      color: #e7c88e;
-      font-size: clamp(21px, 3vw, 29px);
-      font-style: italic;
+    h2 {
+      color: var(--gold);
+      font-size: 1.65rem;
+      font-weight: normal;
+      margin-top: 34px;
     }
 
-    .story {
-      max-width: 690px;
-      margin: 42px auto 0;
-      font-size: 18px;
-      line-height: 1.8;
+    p {
+      margin: 0 0 18px;
     }
 
-    .story p {
-      margin: 0 0 20px;
+    .intro-image,
+    .story-image {
+      display: block;
+      width: 100%;
+      border: 1px solid var(--border);
+      margin: 28px 0;
     }
 
-    .invitation {
-      margin-top: 34px !important;
-      color: #526047;
-      font-style: italic;
+    .intro-image {
+      max-height: 440px;
+      object-fit: cover;
     }
 
-    .action {
-      margin-top: 32px;
+    .story-image {
+      max-height: 580px;
+      object-fit: contain;
+      background: #101319;
+      cursor: zoom-in;
+    }
+
+    .image-caption {
+      color: var(--muted);
+      font-size: 0.9rem;
       text-align: center;
+      margin-top: -18px;
+      margin-bottom: 28px;
     }
 
-    button {
+    .letter {
+      border-left: 2px solid var(--gold);
+      padding: 4px 0 4px 22px;
+      margin: 26px 0;
+      color: #ded6c8;
+      font-style: italic;
+    }
+
+    .separator {
       border: 0;
-      padding: 15px 27px;
-      background: #31483b;
-      color: #fff8e9;
+      border-top: 1px solid var(--border);
+      margin: 38px 0;
+    }
+
+    .button {
+      display: inline-block;
+      background: var(--gold);
+      color: #171b24;
+      border: 0;
+      padding: 13px 24px;
       font-family: Arial, sans-serif;
-      font-size: 15px;
+      font-size: 0.95rem;
+      font-weight: bold;
       cursor: pointer;
+      text-decoration: none;
+      margin-top: 8px;
     }
 
-    button:hover {
-      background: #49654f;
+    .button:hover {
+      background: #dfc18a;
     }
 
-    button:focus-visible {
-      outline: 3px solid #b38b4b;
+    .button:focus-visible,
+    input:focus-visible,
+    .story-image:focus-visible {
+      outline: 2px solid var(--gold);
       outline-offset: 4px;
     }
 
-    /* De tweede pagina */
-    #story-screen {
+    .secondary-button {
+      background: transparent;
+      border: 1px solid var(--gold);
+      color: var(--text);
+    }
+
+    .secondary-button:hover {
+      background: var(--panel);
+    }
+
+    .screen {
       display: none;
-      min-height: 75vh;
     }
 
-    .chapter {
-      max-width: 760px;
-      margin: 55px auto;
-    }
-
-    .chapter-image {
-      width: 100%;
-      max-height: 340px;
-      object-fit: cover;
+    .screen.active {
       display: block;
-      margin-bottom: 36px;
     }
 
-    .chapter h1 {
-      color: #31483b;
-      font-size: clamp(38px, 6vw, 58px);
+    .puzzle-box {
+      margin-top: 34px;
+      padding: 24px;
+      background: var(--panel);
+      border: 1px solid var(--border);
     }
 
-    .chapter .chapter-intro {
-      color: #766447;
-      font-size: 21px;
-      font-style: italic;
+    .puzzle-box h2 {
+      margin-top: 0;
     }
 
-    .chapter p {
-      font-size: 19px;
-      line-height: 1.8;
+    label {
+      display: block;
+      margin: 20px 0 8px;
     }
 
-    .chapter-footer {
-      margin-top: 40px;
-      padding-top: 20px;
-      border-top: 1px solid #c9bda8;
+    input {
+      display: block;
+      width: 100%;
+      padding: 13px;
+      background: #11151c;
+      color: var(--text);
+      border: 1px solid #77716a;
+      border-radius: 0;
+      font: inherit;
+      font-size: 1rem;
     }
 
-    footer {
-      margin-top: 54px;
-      color: #766f61;
-      font-family: Arial, sans-serif;
-      font-size: 12px;
+    #feedback {
+      margin-top: 18px;
+      font-weight: bold;
+    }
+
+    .success {
+      color: #b7d8a8;
+    }
+
+    .error {
+      color: #e5a39a;
+    }
+
+    .hint {
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    /* Vergrote afbeelding van de koffer */
+
+    .lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 10;
+      background: rgba(0, 0, 0, 0.92);
+      padding: 24px;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .lightbox.open {
+      display: flex;
+    }
+
+    .lightbox-content {
+      width: min(850px, 100%);
+      max-height: 90vh;
       text-align: center;
     }
 
+    .lightbox-content img {
+      max-width: 100%;
+      max-height: 75vh;
+      object-fit: contain;
+    }
+
+    .lightbox-caption {
+      color: var(--muted);
+      margin-top: 10px;
+    }
+
+    .close-button {
+      position: absolute;
+      top: 12px;
+      right: 20px;
+      color: var(--text);
+      background: transparent;
+      border: 0;
+      font-size: 2.5rem;
+      cursor: pointer;
+    }
+
+    .footer {
+      color: var(--muted);
+      font-size: 0.85rem;
+      text-align: center;
+      margin-top: 50px;
+    }
+
     @media (max-width: 600px) {
-      .page {
-        padding: 16px 14px 36px;
+      .container {
+        padding: 22px 16px 40px;
       }
 
-      .hero {
-        min-height: 430px;
-      }
-
-      .hero img {
-        object-position: 58% center;
-      }
-
-      .hero::after {
-        background: linear-gradient(
-          0deg,
-          rgba(16, 25, 22, 0.92),
-          rgba(16, 25, 22, 0.48) 75%,
-          rgba(16, 25, 22, 0.16)
-        );
-      }
-
-      .hero-content {
-        align-self: flex-end;
-        padding: 26px 22px;
-      }
-
-      .story {
-        margin-top: 30px;
-        font-size: 17px;
-      }
-
-      .chapter {
-        margin: 30px auto;
+      .puzzle-box {
+        padding: 18px;
       }
     }
   </style>
 </head>
 
 <body>
-  <main class="page">
+  <main class="container">
 
     <!-- PAGINA 1: INTRODUCTIE -->
-    <section id="intro-screen">
-      <p class="eyebrow">Een verhaal om te ontdekken</p>
 
-      <div class="hero">
-        <img
-          src="station_home.png"
-          alt="Een oude trein op een sfeervol Europees station"
-        >
-        <div class="hero-content">
-          <h1>Spring aan boord.</h1>
-          <p class="subtitle">Ga mee spoorzoeken.</p>
-        </div>
+    <section id="intro" class="screen active">
+      <div class="eyebrow">Een interactief mysterie</div>
+
+      <h1>Een uitnodiging zonder afzender</h1>
+
+      <p><strong>Parijs, 1925.</strong></p>
+
+      <p>
+        Sommige brieven vragen om een antwoord. Andere veranderen
+        de loop van je leven.
+      </p>
+
+      <p>
+        Drie dagen geleden lag er een envelop op je deurmat.
+        Geen afzender, geen poststempel, alleen je naam, geschreven
+        in een zorgvuldig, onbekend handschrift.
+      </p>
+
+      <p>Binnenin vond je een korte brief en een treinkaartje.</p>
+
+      <div class="letter">
+        <p>Geachte heer, geachte mevrouw,</p>
+
+        <p>
+          Er is iemand die u graag zou ontmoeten. Maar voordat
+          die ontmoeting kan plaatsvinden, moet eerst worden
+          vastgesteld of u geschikt bent.
+        </p>
+
+        <p>
+          U hoeft niets mee te nemen. Alleen uw verstand, uw
+          geduld en uw vermogen om te zien wat anderen over
+          het hoofd zien.
+        </p>
+
+        <p>Neem de trein naar Orléans. Verdere instructies volgen.</p>
+
+        <p>Vertrouw niet uitsluitend op wat u wordt verteld.</p>
       </div>
 
-      <div class="story">
-        <p>
-          Ergens in Europa staat een trein klaar om te vertrekken.
-          De oude locomotief ademt stoom, op het perron weerklinken
-          voetstappen en achter beslagen coupéramen brandt gedempt licht.
-        </p>
+      <p>
+        Dat was alles. Geen handtekening. Geen uitleg over wat
+        er van je werd verwacht, laat staan waarvoor je geschikt
+        zou moeten zijn.
+      </p>
 
-        <p>
-          Waar de reis je brengt, weet je nog niet. Misschien wacht er
-          een vergeten brief in een restauratiewagen. Misschien draagt
-          een medereiziger een geheim met zich mee. En misschien is
-          niets aan boord wat het lijkt.
-        </p>
+      <p>
+        Je had de brief bijna als een slechte grap terzijde
+        gelegd. Bijna.
+      </p>
 
-        <p>
-          Kijk goed om je heen. Luister naar wat niet wordt gezegd.
-          Ontcijfer de aanwijzingen en volg het spoor, van station
-          naar station, van raadsel naar raadsel.
-        </p>
+      <p>
+        Want wie kende je goed genoeg om juist deze woorden
+        te kiezen? En waarom had iemand de moeite genomen een
+        treinkaartje bij te sluiten?
+      </p>
 
-        <p>
-          De reis kent een vaste route. Maar wat je onderweg ontdekt,
-          moet je zelf zien te ontrafelen.
-        </p>
+      <p>
+        Vanmiddag besloot je dat je het antwoord alleen zou
+        vinden door te vertrekken.
+      </p>
 
-        <p class="invitation">
-          De deuren staan open. De trein wacht.
-        </p>
+      <img
+        class="intro-image"
+        src="station_home.png"
+        alt="Een oude Europese trein wacht op een mysterieus station"
+      >
 
-        <div class="action">
-          <button id="board-button" type="button">
-            Stap aan boord →
-          </button>
-        </div>
-      </div>
+      <p>
+        <strong>Gare d’Orsay, Parijs — 1925.</strong>
+      </p>
+
+      <p>
+        De locomotief staat klaar. Je ticket vermeldt Orléans.
+        Je weet niet wie je daar zal ontmoeten, of die persoon
+        werkelijk bestaat.
+      </p>
+
+      <p>
+        Maar je bent gekomen om erachter te komen.
+      </p>
+
+      <p>
+        <em>
+          Sommige reizen beginnen met een bestemming.
+          Deze begint met een vraag.
+        </em>
+      </p>
+
+      <button class="button" onclick="showStory()">
+        Stap aan boord →
+      </button>
     </section>
 
-    <!-- PAGINA 2: BEGIN VAN HET VERHAAL -->
-    <section id="story-screen">
-      <div class="chapter">
-        <p class="eyebrow">Hoofdstuk 1 · Vertrek</p>
 
-        <img
-          class="chapter-image"
-          src="station_home.png"
-          alt="De trein staat klaar voor vertrek"
-        >
+    <!-- PAGINA 2: VERTREK EN EERSTE PUZZEL -->
 
-        <h1>De reis begint</h1>
+    <section id="story" class="screen">
+      <div class="eyebrow">Hoofdstuk 1 · Parijs, 1925</div>
 
-        <p class="chapter-intro">
-          De deuren sluiten. De trein komt langzaam in beweging.
-        </p>
+      <h1>Het achtergelaten spoor</h1>
+
+      <p>
+        Een scherp fluitsignaal snijdt door het geroezemoes
+        van het station.
+      </p>
+
+      <p>
+        De conducteur heft zijn hand. De locomotief antwoordt
+        met een diepe stoot stoom. Onder je voeten begint de
+        trein te trillen; ergens achter je slaan koppelingen
+        tegen elkaar. Langzaam glijdt de coupé langs de
+        gietijzeren pilaren van de Gare d’Orsay.
+      </p>
+
+      <p>
+        Je kijkt door het raam naar het perron dat achter je
+        verdwijnt.
+      </p>
+
+      <p>Dan valt je iets op.</p>
+
+      <p>
+        Twee koffers staan naast een bankje. Geen reiziger in
+        de buurt, geen kruier die ernaar omkijkt. De ene is
+        klein en donker, de andere groter, met afgeronde hoeken
+        en leren riemen. Ze staan er alsof hun eigenaar ze ieder
+        moment weer zal komen ophalen.
+      </p>
+
+      <p>
+        Maar de trein rijdt inmiddels sneller.
+      </p>
+
+      <p>
+        Een wolk stoom trekt over het perron. Even verdwijnt
+        alles in een witte waas. Wanneer die optrekt, vang je
+        nog net een glimp op van het label aan de grote koffer.
+      </p>
+
+      <p>
+        Een plaatsnaam. Of een deel daarvan.
+      </p>
+
+      <p>
+        Je buigt je naar het raam, maar het station glijdt weg.
+        De letters zijn te klein om ze allemaal te kunnen lezen.
+        Toch heb je genoeg gezien om te weten dat deze koffer
+        niet toevallig op jouw perron stond.
+      </p>
+
+      <p>
+        Je haalt de anonieme brief uit je jaszak. Orléans,
+        staat er. Dat is jouw bestemming.
+      </p>
+
+      <p>
+        Maar waarom heb je dan het gevoel dat iemand je juist
+        deze koffer heeft willen laten zien?
+      </p>
+
+      <p>Misschien is dit de eerste proef.</p>
+
+      <!-- Vervang deze bestandsnamen als jouw afbeeldingen
+           een andere naam hebben. Beide bestanden horen naast
+           index.html in dezelfde map te staan. -->
+
+      <img
+        class="story-image"
+        src="vertrek_coupe.png"
+        alt="Je kijkt vanuit de trein naar het perron en de achtergelaten koffers"
+        role="button"
+        tabindex="0"
+        onclick="openDetail()"
+        onkeydown="if(event.key === 'Enter' || event.key === ' '){event.preventDefault();openDetail();}"
+      >
+
+      <p class="image-caption">
+        Klik op de afbeelding om het label van dichtbij te bekijken.
+      </p>
+
+      <div class="puzzle-box">
+        <div class="eyebrow">De eerste aanwijzing</div>
+
+        <h2>Het label</h2>
 
         <p>
-          Je zoekt een plek bij het raam. Het station glijdt langzaam
-          achter je weg. Lantaarns, lege bankjes en donkere perrons
-          verdwijnen in de avond.
+          In gedachten haal je de letters van het label terug.
+          Je weet niet zeker of je alles goed hebt gezien.
+          Gelukkig herinner je je ook een kleine aantekening
+          die onder de plaatsnaam stond:
         </p>
 
-        <p>
-          Wanneer je je omdraait, zie je op de stoel tegenover je iets
-          liggen wat er daarnet nog niet lag.
-        </p>
-
-        <p>
-          Een envelop. Vergeeld papier, geen postzegel en geen naam
-          op de voorkant. Alleen één zin, met de hand geschreven:
-        </p>
-
-        <p class="chapter-intro">
-          'Voor wie weet waar het spoor begint.'
-        </p>
-
-        <p>
-          Je pakt de envelop op. Er zit iets in. Maar voordat je hem
-          opent, klinkt er buiten je coupé een stem.
-        </p>
-
-        <div class="chapter-footer">
-          <p><em>Hier begint het eerste raadsel.</em></p>
-          <button id="back-button" type="button">
-            ← Terug naar de introductie
-          </button>
+        <div class="letter">
+          Waar de rivier naar de oceaan reist, rijpt de naam
+          in donkere flessen.
         </div>
+
+        <p>
+          De bestemming is een stad in Frankrijk. De rivier
+          voert erdoorheen richting de Atlantische Oceaan.
+          De stad is bovendien beroemd om haar wijn.
+        </p>
+
+        <p><strong>Welke stad stond er op het label?</strong></p>
+
+        <form onsubmit="checkAnswer(event)">
+          <label for="answer">Jouw antwoord</label>
+
+          <input
+            type="text"
+            id="answer"
+            name="answer"
+            placeholder="Typ de naam van de stad..."
+            autocomplete="off"
+            required
+          >
+
+          <button class="button" type="submit">
+            Controleer antwoord
+          </button>
+        </form>
+
+        <p id="feedback" role="status" aria-live="polite"></p>
       </div>
+
+      <hr class="separator">
+
+      <p class="hint">
+        De reis is begonnen. Niet iedere aanwijzing zal je vertellen
+        waar je naartoe moet. Soms vertelt ze je alleen wat je
+        moet weten.
+      </p>
+
+      <button class="button secondary-button" onclick="showIntro()">
+        ← Terug naar de introductie
+      </button>
     </section>
 
-    <footer>
-      Een reis langs verhalen, geheimen en raadsels.
-    </footer>
+    <p class="footer">
+      Een reis door Europa · 1925
+    </p>
   </main>
 
+
+  <!-- VERGROTE DETAILAFBEELDING -->
+
+  <div
+    id="lightbox"
+    class="lightbox"
+    role="dialog"
+    aria-modal="true"
+    aria-label="Detail van de achtergelaten koffer"
+    onclick="if(event.target === this) closeDetail()"
+  >
+    <button
+      class="close-button"
+      onclick="closeDetail()"
+      aria-label="Afbeelding sluiten"
+    >&times;</button>
+
+    <div class="lightbox-content">
+      <img
+        src="koffer_detail.png"
+        alt="Een uitvergroot detail van het label op de koffer"
+      >
+
+      <p class="lightbox-caption">
+        Het label op de achtergelaten koffer
+      </p>
+    </div>
+  </div>
+
+
   <script>
-    const introScreen = document.getElementById("intro-screen");
-    const storyScreen = document.getElementById("story-screen");
-    const boardButton = document.getElementById("board-button");
-    const backButton = document.getElementById("back-button");
+    function showStory() {
+      document.getElementById("intro").classList.remove("active");
+      document.getElementById("story").classList.add("active");
+      window.scrollTo(0, 0);
+    }
 
-    boardButton.addEventListener("click", function () {
-      introScreen.style.display = "none";
-      storyScreen.style.display = "block";
-      window.scrollTo({ top: 0, behavior: "instant" });
+    function showIntro() {
+      document.getElementById("story").classList.remove("active");
+      document.getElementById("intro").classList.add("active");
+      window.scrollTo(0, 0);
+    }
+
+    function openDetail() {
+      document.getElementById("lightbox").classList.add("open");
+    }
+
+    function closeDetail() {
+      document.getElementById("lightbox").classList.remove("open");
+    }
+
+    document.addEventListener("keydown", function(event) {
+      if (event.key === "Escape") {
+        closeDetail();
+      }
     });
 
-    backButton.addEventListener("click", function () {
-      storyScreen.style.display = "none";
-      introScreen.style.display = "block";
-      window.scrollTo({ top: 0, behavior: "instant" });
-    });
+    function checkAnswer(event) {
+      event.preventDefault();
+
+      const input = document.getElementById("answer");
+      const feedback = document.getElementById("feedback");
+      const answer = input.value.trim().toLocaleLowerCase("nl");
+
+      if (answer === "bordeaux") {
+        feedback.textContent =
+          "Juist. Bordeaux. Je hebt het eerste spoor ontcijferd. De bestemming op het label is duidelijk — maar waarom wilde iemand dat je die zou zien?";
+        feedback.className = "success";
+      } else {
+        feedback.textContent =
+          "Dat lijkt niet de juiste stad. Denk aan de rivier die richting de Atlantische Oceaan stroomt en aan de beroemde wijnstreek.";
+        feedback.className = "error";
+      }
+    }
   </script>
 </body>
 </html>
