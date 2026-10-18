@@ -18,15 +18,12 @@
       --green: #88b58a;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
       min-height: 100vh;
-      background:
-        radial-gradient(ellipse at top, #383024 0%, var(--background) 65%);
+      background: radial-gradient(ellipse at top, #383024 0%, var(--background) 65%);
       color: var(--text);
       font-family: Georgia, "Times New Roman", serif;
       line-height: 1.7;
@@ -57,25 +54,16 @@
       margin: 32px auto 60px;
     }
 
-    .screen {
-      display: none;
-      animation: appear 0.35s ease;
-    }
+    .screen { display: none; }
 
     .screen.active {
       display: block;
+      animation: appear 0.35s ease;
     }
 
     @keyframes appear {
-      from {
-        opacity: 0;
-        transform: translateY(6px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     .panel {
@@ -93,13 +81,9 @@
       line-height: 1.25;
     }
 
-    h3 {
-      color: var(--gold-light);
-    }
+    h3 { color: var(--gold-light); }
 
-    p {
-      margin: 0 0 1.1em;
-    }
+    p { margin: 0 0 1.1em; }
 
     .eyebrow {
       margin-bottom: 8px;
@@ -124,9 +108,7 @@
       transition: opacity 0.2s ease;
     }
 
-    .clickable-image:hover {
-      opacity: 0.88;
-    }
+    .clickable-image:hover { opacity: 0.88; }
 
     .image-hint {
       margin-top: -16px;
@@ -149,8 +131,7 @@
       font-weight: bold;
     }
 
-    input,
-    select {
+    input, select {
       display: block;
       width: 100%;
       min-height: 46px;
@@ -162,8 +143,7 @@
       font: inherit;
     }
 
-    input:focus,
-    select:focus {
+    input:focus, select:focus {
       outline: 2px solid var(--gold);
       outline-offset: 2px;
     }
@@ -181,9 +161,7 @@
       transition: background 0.2s ease, color 0.2s ease;
     }
 
-    button:hover {
-      background: var(--gold-light);
-    }
+    button:hover { background: var(--gold-light); }
 
     button.secondary {
       background: transparent;
@@ -200,9 +178,7 @@
       border-top: 1px solid rgba(200, 166, 91, 0.3);
     }
 
-    .access-panel h3 {
-      margin-top: 0;
-    }
+    .access-panel h3 { margin-top: 0; }
 
     .access-message {
       min-height: 1.5em;
@@ -216,9 +192,7 @@
       font-weight: bold;
     }
 
-    .hidden {
-      display: none !important;
-    }
+    .hidden { display: none !important; }
 
     .lightbox {
       position: fixed;
@@ -232,9 +206,7 @@
       cursor: pointer;
     }
 
-    .lightbox.open {
-      display: flex;
-    }
+    .lightbox.open { display: flex; }
 
     .lightbox img {
       display: block;
@@ -287,9 +259,7 @@
       object-fit: contain;
     }
 
-    .error-box p {
-      color: #f06459;
-    }
+    .error-box p { color: #f06459; }
 
     footer {
       padding: 20px;
@@ -300,21 +270,10 @@
     }
 
     @media (max-width: 600px) {
-      header {
-        padding-top: 22px;
-      }
-
-      main {
-        margin-top: 20px;
-      }
-
-      .panel {
-        padding: 20px;
-      }
-
-      button {
-        width: 100%;
-      }
+      header { padding-top: 22px; }
+      main { margin-top: 20px; }
+      .panel { padding: 20px; }
+      button { width: 100%; }
     }
   </style>
 </head>
@@ -355,7 +314,6 @@
 
         <div class="access-panel">
           <h3>Waar wil je beginnen?</h3>
-
           <p>
             Begin bij de eerste puzzel of kies een later punt als je
             de voorafgaande puzzel al hebt opgelost.
@@ -403,8 +361,7 @@
 
         <p>
           Bekijk de afbeelding zorgvuldig. Klik erop om de details
-          van dichterbij te bekijken. Klik vervolgens nogmaals om
-          terug te keren naar het overzicht.
+          van dichterbij te bekijken.
         </p>
 
         <img
@@ -416,7 +373,7 @@
         >
 
         <p class="image-hint">
-          Klik op de afbeelding om in te zoomen en terug te keren.
+          Klik op de afbeelding om het label te bekijken.
         </p>
 
         <div class="question">
@@ -446,7 +403,7 @@
         <h2>Een onverwachte bestemming</h2>
 
         <p>
-          Nog een paar minuten tot station Bordeaux. Met een goede
+          Nog een paar minuten tot station bordeaux. Met een goede
           maaltijd en een lekker glas wijn in het vooruitzicht, kun
           je wel juichen. Dan valt je oog op een spandoek. Waarvoor
           juichen ze hier?
@@ -455,8 +412,8 @@
         <img
           id="puzzle2-image"
           class="story-image clickable-image"
-          src="Puzzel 2a.png"
-          alt="Een aanwijzing op een spandoek in Bordeaux"
+          src="https://empty-brook-7f44.awoembaway.workers.dev/Puzzel%202a.png"
+          alt="Aanwijzing op een spandoek in Bordeaux"
           onclick="togglePuzzle2Image()"
         >
 
@@ -498,7 +455,7 @@
     Spoorzoeken · Een mysterie op het spoor door Europa · 1925
   </footer>
 
-  <!-- LICHTBAK VOOR DE AFBEELDINGEN VAN PUZZEL 1 -->
+  <!-- LICHTBAK PUZZEL 1 -->
   <div
     id="lightbox"
     class="lightbox"
@@ -532,9 +489,8 @@
 
   <script>
     /*
-     * Centrale puzzelconfiguratie.
-     * Bij het toevoegen van nieuwe puzzels kan hier worden vastgelegd
-     * welk scherm erbij hoort en welk antwoord toegang geeft.
+     * Centrale configuratie voor de puzzels.
+     * Voor een later toegevoegde puzzel kan hier een nieuwe entry komen.
      */
     const puzzles = {
       1: {
@@ -552,6 +508,12 @@
 
     let puzzle1Zoomed = false;
     let puzzle2ShowingSecondImage = false;
+
+    const PUZZLE2_IMAGE_A =
+      "https://empty-brook-7f44.awoembaway.workers.dev/Puzzel%202a.png";
+
+    const PUZZLE2_IMAGE_B =
+      "https://empty-brook-7f44.awoembaway.workers.dev/Puzzel%202b.png";
 
     function normalizeAnswer(value) {
       return value
@@ -616,7 +578,10 @@
 
         const previousPuzzle = puzzles[puzzle.previousPuzzle];
 
-        if (!answer || answer !== normalizeAnswer(previousPuzzle.answer || "")) {
+        if (
+          !answer ||
+          answer !== normalizeAnswer(previousPuzzle.answer || "")
+        ) {
           message.textContent =
             "Dat antwoord klopt niet. Los eerst de vorige puzzel op.";
           return;
@@ -661,40 +626,29 @@
       }
     }
 
-    /*
-     * Puzzel 1: wisselen tussen de overzichtsafbeelding en het label.
-     */
     function togglePuzzle1Image() {
-      const image = document.getElementById("puzzle1-image");
-
       if (!puzzle1Zoomed) {
         openLightbox("label.png", "Het label aan de koffer");
+        puzzle1Zoomed = true;
       } else {
         closeLightbox();
       }
-
-      puzzle1Zoomed = !puzzle1Zoomed;
-      image.setAttribute(
-        "aria-label",
-        puzzle1Zoomed
-          ? "Bekijk het label"
-          : "Bekijk de scène op het station"
-      );
     }
 
     /*
-     * Puzzel 2: wissel bij iedere klik tussen de twee bestanden.
-     * Let op: de spaties in de bestandsnamen zijn bewust behouden.
+     * Puzzel 2:
+     * gebruik de volledige, werkende afbeeldings-URL's.
+     * Iedere klik wisselt tussen afbeelding A en afbeelding B.
      */
     function togglePuzzle2Image() {
       const image = document.getElementById("puzzle2-image");
 
       if (puzzle2ShowingSecondImage) {
-        image.src = "Puzzel 2a.png";
-        image.alt = "De eerste afbeelding van het spandoek";
+        image.src = PUZZLE2_IMAGE_A;
+        image.alt = "Eerste afbeelding van puzzel 2";
       } else {
-        image.src = "Puzzel 2b.png";
-        image.alt = "De tweede afbeelding van het spandoek";
+        image.src = PUZZLE2_IMAGE_B;
+        image.alt = "Tweede afbeelding van puzzel 2";
       }
 
       puzzle2ShowingSecondImage = !puzzle2ShowingSecondImage;
@@ -711,9 +665,6 @@
       puzzle1Zoomed = false;
     }
 
-    /*
-     * Escape sluit een geopende afbeelding of foutmelding.
-     */
     document.addEventListener("keydown", (event) => {
       if (event.key === "Escape") {
         closeLightbox();
@@ -721,9 +672,6 @@
       }
     });
 
-    /*
-     * De juiste velden tonen bij het laden van de pagina.
-     */
     updateAccessForm();
   </script>
 </body>
