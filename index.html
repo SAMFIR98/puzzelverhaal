@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Het achtergelaten spoor</title>
+  <title>Een reis vol raadsels — Spoorzoeken</title>
 
   <style>
     :root {
@@ -98,6 +98,10 @@
       text-align: center;
     }
 
+    .clickable-image {
+      cursor: pointer;
+    }
+
     .letter {
       margin: 28px 0;
       padding: 24px 28px;
@@ -161,7 +165,8 @@
       font-size: 14px;
     }
 
-    input[type="text"] {
+    input[type="text"],
+    select {
       display: block;
       width: 100%;
       padding: 14px 15px;
@@ -174,7 +179,17 @@
       font-size: 16px;
     }
 
-    input[type="text"]:focus {
+    select {
+      cursor: pointer;
+    }
+
+    select option {
+      background: #17191d;
+      color: var(--text);
+    }
+
+    input[type="text"]:focus,
+    select:focus {
       border-color: var(--gold);
     }
 
@@ -193,6 +208,11 @@
 
     button:hover {
       background: var(--gold-hover);
+    }
+
+    button:disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
     }
 
     .primary-button {
@@ -225,7 +245,43 @@
       text-align: center;
     }
 
-    /* Afbeeldingenvenster voor de hoofdafbeelding en close-up */
+    .access-panel {
+      margin-top: 38px;
+      padding: 28px;
+      border: 1px solid var(--border);
+      background: var(--panel);
+    }
+
+    .access-panel h2 {
+      margin-top: 0;
+    }
+
+    .access-description {
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .access-message {
+      display: none;
+      margin-top: 18px;
+      padding: 14px;
+      border-left: 3px solid var(--red);
+      background: var(--background);
+      color: var(--text);
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .access-message.visible {
+      display: block;
+    }
+
+    .success-message {
+      border-left-color: var(--gold);
+    }
+
+    /* Afbeeldingenvenster van puzzel 1 */
 
     .lightbox {
       display: none;
@@ -324,7 +380,8 @@
         padding: 28px 16px 45px;
       }
 
-      .puzzle {
+      .puzzle,
+      .access-panel {
         padding: 20px;
       }
 
@@ -345,7 +402,7 @@
 
 <body>
 
-  <!-- INTRODUCTIE -->
+  <!-- INTRODUCTIE EN KEUZE VAN DE STARTPUZZEL -->
 
   <section id="intro" class="screen active">
     <main class="container">
@@ -420,15 +477,64 @@
 
       <div class="divider"></div>
 
-      <button class="primary-button" onclick="showScreen('story1')">
-        Stap aan boord →
-      </button>
+      <div class="access-panel">
+        <p class="eyebrow">Verder reizen</p>
+
+        <h2>Waar was je gebleven?</h2>
+
+        <p class="access-description">
+          Begin bij de eerste puzzel of stap verderop in de reis in.
+          Als je een puzzel overslaat, moet je het antwoord van de
+          voorgaande puzzel kennen.
+        </p>
+
+        <form id="access-form" onsubmit="startSelectedPuzzle(event)">
+
+          <label for="start-puzzle">
+            Kies de puzzel waarmee je wilt beginnen
+          </label>
+
+          <select id="start-puzzle" onchange="updateAccessForm()">
+            <option value="1">Puzzel 1 — Het achtergelaten spoor</option>
+            <option value="2">Puzzel 2 — Een onverwachte bestemming</option>
+          </select>
+
+          <div id="access-answer-area" hidden>
+            <label id="access-answer-label" for="access-answer">
+              Antwoord op de voorgaande puzzel
+            </label>
+
+            <input
+              type="text"
+              id="access-answer"
+              placeholder="Vul het antwoord in..."
+              autocomplete="off"
+            >
+          </div>
+
+          <div
+            id="access-message"
+            class="access-message"
+            role="status"
+            aria-live="polite"
+          ></div>
+
+          <button class="primary-button" type="submit">
+            Stap aan boord →
+          </button>
+
+        </form>
+      </div>
+
+      <p class="footer-note">
+        Parijs, 1925 · Spoorzoeken
+      </p>
 
     </main>
   </section>
 
 
-  <!-- PAGINA 1: EERSTE VERHAALSCÈNE EN PUZZEL -->
+  <!-- PUZZEL 1 -->
 
   <section id="story1" class="screen">
     <main class="container">
@@ -516,13 +622,12 @@
           Naar welke stad was de eigenaar van deze koffer op weg?
         </p>
 
-        <form onsubmit="checkAnswer(event)">
-          <label for="answer">Jouw antwoord</label>
+        <form onsubmit="checkAnswer1(event)">
+          <label for="answer1">Jouw antwoord</label>
 
           <input
             type="text"
-            id="answer"
-            name="answer"
+            id="answer1"
             placeholder="Typ de naam van de stad..."
             autocomplete="off"
             required
@@ -544,7 +649,7 @@
         type="button"
         onclick="showScreen('intro')"
       >
-        ← Terug naar het begin
+        ← Terug naar het startscherm
       </button>
 
       <p class="footer-note">
@@ -555,7 +660,7 @@
   </section>
 
 
-  <!-- PAGINA 2: VERVOLG VAN HET VERHAAL -->
+  <!-- PUZZEL 2 -->
 
   <section id="story2" class="screen">
     <main class="container">
@@ -594,11 +699,117 @@
         Want één ding is zeker: teruggaan is geen optie meer.
       </p>
 
+      <div class="divider"></div>
+
+      <p class="eyebrow">De volgende aanwijzing</p>
+
+      <h2>Een juichende menigte</h2>
+
+      <p>
+        Nog een paar minuten tot station Bordeaux. Met een goede
+        maaltijd en een lekker glas wijn in het vooruitzicht,
+        kun je wel juichen. Dan valt je oog op een spandoek.
+        Waarvoor juichen ze hier?
+      </p>
+
+      <img
+        id="puzzle2-image"
+        class="story-image clickable-image"
+        src="Puzzel2a.png"
+        alt="Een spandoek bij een juichende menigte"
+        onclick="togglePuzzle2Image()"
+        title="Klik op de afbeelding om de andere afbeelding te bekijken"
+      >
+
+      <p class="image-caption">
+        Klik op de afbeelding om de andere afbeelding te bekijken.
+      </p>
+
+      <div class="puzzle">
+        <p class="eyebrow">De tweede aanwijzing</p>
+
+        <h2>Waarvoor juichen ze?</h2>
+
+        <p class="question">
+          Waarvoor juichen ze hier?
+        </p>
+
+        <form onsubmit="checkAnswer2(event)">
+          <label for="answer2">Jouw antwoord</label>
+
+          <input
+            type="text"
+            id="answer2"
+            placeholder="Vul je antwoord in..."
+            autocomplete="off"
+            required
+          >
+
+          <button class="primary-button" type="submit">
+            Controleer antwoord
+          </button>
+        </form>
+
+        <div
+          id="puzzle2-success"
+          class="access-message success-message"
+          role="status"
+          aria-live="polite"
+        >
+          Dat klopt! Je hebt de tweede puzzel opgelost.
+          Onthoud dit antwoord: je hebt het nodig om later
+          verderop in de reeks in te stappen.
+        </div>
+      </div>
+
+      <button
+        class="secondary-button"
+        type="button"
+        onclick="showScreen('intro')"
+      >
+        ← Terug naar het startscherm
+      </button>
+
+      <p class="footer-note">
+        Bordeaux, 1925 · Een onverwachte bestemming
+      </p>
+
     </main>
   </section>
 
 
-  <!-- AFBEELDINGENWEERGAVE: HOOFDAFBEELDING EN CLOSE-UP -->
+  <!-- MELDING: VOLGENDE PUZZEL NOG NIET BESCHIKBAAR -->
+
+  <section id="story-next" class="screen">
+    <main class="container">
+
+      <p class="eyebrow">Het spoor loopt verder</p>
+
+      <h1>Je hebt de aanwijzing gevonden</h1>
+
+      <p>
+        Je hebt de tweede puzzel opgelost. De volgende halte
+        van je reis wordt nog voorbereid.
+      </p>
+
+      <p>
+        Bewaar je antwoord. Wanneer de volgende puzzel beschikbaar
+        is, kun je daarmee rechtstreeks verder reizen.
+      </p>
+
+      <button
+        class="primary-button"
+        type="button"
+        onclick="showScreen('intro')"
+      >
+        Terug naar het startscherm
+      </button>
+
+    </main>
+  </section>
+
+
+  <!-- AFBEELDINGENWEERGAVE VAN PUZZEL 1 -->
 
   <div
     id="lightbox"
@@ -665,7 +876,31 @@
 
 
   <script>
-    // Wisselen tussen de verhaalpagina's.
+    /*
+      CENTRALE PUZZELCONFIGURATIE
+
+      Om een nieuwe puzzel toe te voegen, voegen we later een
+      nieuwe vermelding aan deze structuur toe en bouwen we de
+      bijbehorende verhaalpagina.
+    */
+
+    const puzzles = {
+      1: {
+        screen: "story1",
+        title: "Het achtergelaten spoor",
+        answer: null
+      },
+
+      2: {
+        screen: "story2",
+        title: "Een onverwachte bestemming",
+        answer: "bordeaux",
+        previousPuzzle: 1
+      }
+    };
+
+
+    // Schermen wisselen.
 
     function showScreen(screenId) {
       document.querySelectorAll(".screen").forEach(function(screen) {
@@ -678,7 +913,131 @@
     }
 
 
-    // Open de close-up van het label.
+    // Startscherm: toon het antwoordveld alleen als dat nodig is.
+
+    function updateAccessForm() {
+      const selected = document.getElementById("start-puzzle").value;
+      const answerArea = document.getElementById("access-answer-area");
+      const answerInput = document.getElementById("access-answer");
+      const message = document.getElementById("access-message");
+
+      message.classList.remove("visible", "success-message");
+      message.textContent = "";
+
+      if (selected === "1") {
+        answerArea.hidden = true;
+        answerInput.required = false;
+        answerInput.value = "";
+      } else {
+        answerArea.hidden = false;
+        answerInput.required = true;
+        answerInput.value = "";
+      }
+    }
+
+
+    // Antwoorden normaliseren: hoofdletters en extra spaties negeren.
+
+    function normalizeAnswer(value) {
+      return value
+        .trim()
+        .toLocaleLowerCase("nl-NL")
+        .normalize("NFC");
+    }
+
+
+    // Toegang tot een gekozen puzzel controleren.
+
+    function startSelectedPuzzle(event) {
+      event.preventDefault();
+
+      const selected = document.getElementById("start-puzzle").value;
+      const message = document.getElementById("access-message");
+
+      message.classList.remove("visible", "success-message");
+      message.textContent = "";
+
+      if (selected === "1") {
+        showScreen("story1");
+        return;
+      }
+
+      const answer = normalizeAnswer(
+        document.getElementById("access-answer").value
+      );
+
+      const requiredAnswer = puzzles[selected].answer;
+
+      if (answer === requiredAnswer) {
+        showScreen(puzzles[selected].screen);
+      } else {
+        message.textContent =
+          "Dat antwoord klopt niet. Vul het antwoord in van de puzzel " +
+          "die direct voorafgaat aan jouw gekozen startpunt.";
+
+        message.classList.add("visible");
+        document.getElementById("access-answer").focus();
+      }
+    }
+
+
+    // Puzzel 1: controleer het antwoord Bordeaux.
+
+    function checkAnswer1(event) {
+      event.preventDefault();
+
+      const answer = normalizeAnswer(
+        document.getElementById("answer1").value
+      );
+
+      if (answer === "bordeaux") {
+        closeErrorPopup();
+        document.getElementById("access-answer").value = "";
+        showScreen("story2");
+      } else {
+        showErrorPopup();
+      }
+    }
+
+
+    // Puzzel 2: controleer het antwoord Girondins.
+
+    function checkAnswer2(event) {
+      event.preventDefault();
+
+      const answer = normalizeAnswer(
+        document.getElementById("answer2").value
+      );
+
+      if (answer === "girondins") {
+        closeErrorPopup();
+
+        document.getElementById("puzzle2-success").classList.add("visible");
+
+        // De volgende puzzel is nog niet gebouwd.
+        // Zodra die bestaat, kan deze stap daarnaartoe verwijzen.
+      } else {
+        showErrorPopup();
+      }
+    }
+
+
+    // Puzzel 2: afwisselen tussen de twee afbeeldingen.
+
+    function togglePuzzle2Image() {
+      const image = document.getElementById("puzzle2-image");
+
+      if (image.getAttribute("src") === "Puzzel2a.png") {
+        image.src = "Puzzel2b.png";
+        image.alt = "De andere afbeelding bij de aanwijzing in Bordeaux";
+      } else {
+        image.src = "Puzzel2a.png";
+        image.alt = "Een spandoek bij een juichende menigte";
+      }
+    }
+
+
+    // Puzzel 1: open de close-up van het label.
 
     function openDetail() {
       const lightbox = document.getElementById("lightbox");
@@ -692,7 +1051,7 @@
     }
 
 
-    // Wissel onbeperkt tussen label.png en Vertrek_Orsay.png.
+    // Wissel tussen label.png en Vertrek_Orsay.png.
 
     function toggleDetail() {
       const image = document.getElementById("lightbox-image");
@@ -721,7 +1080,7 @@
     }
 
 
-    // Pop-up bij een fout antwoord.
+    // Foutmelding.
 
     function showErrorPopup() {
       document.getElementById("error-popup").classList.add("visible");
@@ -730,7 +1089,6 @@
 
     function closeErrorPopup() {
       document.getElementById("error-popup").classList.remove("visible");
-      document.getElementById("answer").focus();
     }
 
 
@@ -741,29 +1099,7 @@
     }
 
 
-    // Hoofdletters worden genegeerd; de spelling moet exact kloppen.
-
-    function checkAnswer(event) {
-      event.preventDefault();
-
-      const answer = document
-        .getElementById("answer")
-        .value
-        .trim()
-        .toLocaleLowerCase("nl-NL");
-
-      if (answer === "bordeaux") {
-        document.getElementById("error-popup").classList.remove("visible");
-
-        // Direct door naar de volgende verhaalpagina.
-        showScreen("story2");
-      } else {
-        showErrorPopup();
-      }
-    }
-
-
-    // Escape sluit een geopend venster.
+    // Escape sluit geopende vensters.
 
     document.addEventListener("keydown", function(event) {
       if (event.key === "Escape") {
@@ -776,6 +1112,11 @@
         }
       }
     });
+
+
+    // Stel bij het laden de juiste toegangsvorm in.
+
+    updateAccessForm();
   </script>
 
 </body>
