@@ -103,6 +103,10 @@
       background: #111;
     }
 
+    .intro-image {
+      max-height: 480px;
+    }
+
     .clickable-image {
       cursor: pointer;
       transition: opacity 0.2s ease;
@@ -291,6 +295,12 @@
         <div class="eyebrow">Parijs, voorjaar 1925</div>
         <h2>Een onverwachte reis</h2>
 
+        <img
+          class="story-image intro-image"
+          src="station_home.png"
+          alt="Een oud station als begin van een onverwachte reis"
+        >
+
         <p>
           Op het station Gare d’Orsay wacht een trein op vertrek.
           Tussen de reizigers, het gestommel van koffers en het
@@ -367,7 +377,7 @@
         <img
           id="puzzle1-image"
           class="story-image clickable-image"
-          src="Vertrek_Orsay.png"
+          src="Puzzel%201a.png"
           alt="Een scène op het station Gare d’Orsay"
           onclick="togglePuzzle1Image()"
         >
@@ -506,8 +516,10 @@
       }
     };
 
-    let puzzle1Zoomed = false;
     let puzzle2ShowingSecondImage = false;
+
+    const PUZZLE1_IMAGE_A = "Puzzel%201a.png";
+    const PUZZLE1_IMAGE_B = "Puzzel%201b.png";
 
     const PUZZLE2_IMAGE_A =
       "https://empty-brook-7f44.awoembaway.workers.dev/Puzzel%202a.png";
@@ -626,19 +638,18 @@
       }
     }
 
+    /*
+     * Puzzel 1:
+     * open de ingezoomde afbeelding van het label in de lichtbak.
+     * Bij sluiten keer je terug naar de scène op Gare d’Orsay.
+     */
     function togglePuzzle1Image() {
-      if (!puzzle1Zoomed) {
-        openLightbox("label.png", "Het label aan de koffer");
-        puzzle1Zoomed = true;
-      } else {
-        closeLightbox();
-      }
+      openLightbox(PUZZLE1_IMAGE_B, "Het label aan de koffer");
     }
 
     /*
      * Puzzel 2:
-     * gebruik de volledige, werkende afbeeldings-URL's.
-     * Iedere klik wisselt tussen afbeelding A en afbeelding B.
+     * iedere klik wisselt tussen afbeelding A en afbeelding B.
      */
     function togglePuzzle2Image() {
       const image = document.getElementById("puzzle2-image");
@@ -662,7 +673,6 @@
 
     function closeLightbox() {
       document.getElementById("lightbox").classList.remove("open");
-      puzzle1Zoomed = false;
     }
 
     document.addEventListener("keydown", (event) => {
