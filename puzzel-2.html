@@ -32,21 +32,66 @@
           juichen ze hier?
         </p>
 
-        <img
-          id="puzzle2-image"
-          class="story-image clickable-image"
-          src="Puzzel%202a.png"
-          alt="Aanwijzing op een spandoek in Bordeaux"
-          tabindex="0"
-          role="button"
-          aria-label="Wissel tussen de twee afbeeldingen van puzzel 2"
-          data-image-a="Puzzel%202a.png"
-          data-image-b="Puzzel%202b.png"
-        >
+        <!-- BASISAFBEELDING PUZZEL 2A -->
+        <div id="puzzle2-image-view">
+          <img
+            id="puzzle2-image"
+            class="story-image clickable-image"
+            src="Puzzel%202a.png"
+            alt="Aanwijzing op een spandoek in Bordeaux"
+            tabindex="0"
+            role="button"
+            aria-label="Open de interactieve Japanse puzzel"
+          >
 
-        <p class="image-hint">
-          Klik op de afbeelding om tussen de twee afbeeldingen te wisselen.
-        </p>
+          <p class="image-hint" id="puzzle2-image-hint">
+            Klik op de afbeelding om de Japanse puzzel te openen.
+          </p>
+        </div>
+
+        <!-- INTERACTIEVE PUZZEL 2B -->
+        <div id="nonogram-view" class="nonogram-view hidden">
+          <h3>De Japanse puzzel</h3>
+
+          <p class="nonogram-instruction">
+            Kleur de vakjes zwart om de afbeelding te ontdekken.
+            De cijfers geven aan hoeveel aaneengesloten zwarte vakjes
+            er in iedere rij en kolom staan. Tussen twee reeksen zit
+            altijd minstens één wit vakje. Klik de cijfers aan om ze
+            door te strepen wanneer je ze hebt opgelost.
+          </p>
+
+          <div class="nonogram-scroll">
+            <div
+              id="nonogram-board"
+              class="nonogram-board"
+              aria-label="Interactief raster van 15 bij 15 vakjes"
+            ></div>
+          </div>
+
+          <div class="nonogram-controls">
+            <button
+              type="button"
+              class="secondary"
+              id="clear-nonogram"
+            >
+              Wis alle vakjes
+            </button>
+
+            <button
+              type="button"
+              class="secondary"
+              id="show-image-a"
+            >
+              Terug naar afbeelding 2a
+            </button>
+          </div>
+
+          <p class="image-hint">
+            De vakjes en doorgestreepte cijfers kun je op elk moment
+            weer aanpassen.
+          </p>
+        </div>
 
         <div class="question">
           <h3>De vraag</h3>
@@ -71,8 +116,7 @@
             class="success-message hidden"
             aria-live="polite"
           >
-            Goed gevonden! Je hebt puzzel 2 opgelost.
-            Het volgende spoor kan later aan deze reis worden toegevoegd.
+            Goed gevonden! Je gaat verder naar het volgende spoor.
           </p>
         </div>
 
@@ -91,7 +135,7 @@
     Spoorzoeken · Een mysterie op het spoor door Europa · 1925
   </footer>
 
-  <!-- Foutmelding -->
+  <!-- FOUTMELDING -->
   <div
     id="error-overlay"
     class="error-overlay"
@@ -104,7 +148,6 @@
       <img src="Stop.png" alt="Het spoor loopt dood">
 
       <h2 id="error-title">Het spoor loopt dood</h2>
-
       <p>
         Dat is niet het goede antwoord. Het sein staat op rood.
         Vind het goede antwoord om door te kunnen stomen.
