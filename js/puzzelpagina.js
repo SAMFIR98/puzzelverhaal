@@ -13,6 +13,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const puzzel1Afbeelding = document.getElementById("puzzle1-image");
   const puzzel2Afbeelding = document.getElementById("puzzle2-image");
+  const puzzel3Afbeelding = document.getElementById("puzzle3-image");
   const succesmelding = document.getElementById("success-message");
 
   // Bepaal welke puzzel op deze pagina staat.
@@ -22,6 +23,8 @@ document.addEventListener("DOMContentLoaded", function () {
     puzzelNummer = 1;
   } else if (puzzel2Afbeelding) {
     puzzelNummer = 2;
+  } else if (puzzel3Afbeelding) {
+    puzzelNummer = 3;
   }
 
   let toonTweedeAfbeelding = false;
@@ -48,18 +51,16 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     if (controleerAntwoord(puzzelNummer, antwoordveld.value)) {
-      antwoordveld.value = "";
-
       const volgendePuzzel = haalVolgendePuzzelOp(puzzelNummer);
 
-      // Als er een volgende puzzel bestaat, ga er direct naartoe.
-      if (volgendePuzzel) {
+      if (volgendePuzzel && volgendePuzzel.pagina) {
         window.location.href = volgendePuzzel.pagina;
         return;
       }
 
-      // Anders is de huidige puzzel de laatste beschikbare puzzel.
+      // Alleen bij de laatste puzzel verschijnt de succesmelding.
       if (succesmelding) {
+        antwoordveld.value = "";
         succesmelding.classList.remove("hidden");
         succesmelding.scrollIntoView({
           behavior: "smooth",
