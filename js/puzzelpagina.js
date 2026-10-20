@@ -1,7 +1,7 @@
 
 /* =========================================================
    SPOORZOEKEN — GEDEELDE PUZZELPAGINA-FUNCTIES
-   Antwoordcontrole, foutmelding en afbeeldingen
+   Geschikt voor puzzel 1, puzzel 2 en volgende puzzels
    ========================================================= */
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -10,7 +10,21 @@ document.addEventListener("DOMContentLoaded", function () {
   const foutmelding = document.getElementById("error-overlay");
   const foutSluiten = document.getElementById("error-close");
   const startKnop = document.getElementById("home-button");
-  const puzzelAfbeelding = document.getElementById("puzzle1-image");
+
+  const puzzel1Afbeelding = document.getElementById("puzzle1-image");
+  const puzzel2Afbeelding = document.getElementById("puzzle2-image");
+  const succesmelding = document.getElementById("success-message");
+
+  // Bepaal welke puzzel op deze pagina staat.
+  let puzzelNummer = null;
+
+  if (puzzel1Afbeelding) {
+    puzzelNummer = 1;
+  } else if (puzzel2Afbeelding) {
+    puzzelNummer = 2;
+  }
+
+  let toonTweedeAfbeelding = false;
 
   function toonFoutmelding() {
     if (!foutmelding) return;
@@ -29,10 +43,29 @@ document.addEventListener("DOMContentLoaded", function () {
   function controleerInvoer(event) {
     event.preventDefault();
 
-    const gegevenAntwoord = antwoordveld.value;
+    if (puzzelNummer === null || !antwoordveld) {
+      return;
+    }
 
-    if (controleerAntwoord(1, gegevenAntwoord)) {
-      window.location.href = haalVolgendePuzzelOp(1).pagina;
+    if (controleerAntwoord(puzzelNummer, antwoordveld.value)) {
+      antwoordveld.value = "";
+
+      const volgendePuzzel = haalVolgendePuzzelOp(puzzelNummer);
+
+      // Als er een volgende puzzel bestaat, ga er direct naartoe.
+      if (volgendePuzzel) {
+        window.location.href = volgendePuzzel.pagina;
+        return;
+      }
+
+      // Anders is de huidige puzzel de laatste beschikbare puzzel.
+      if (succesmelding) {
+        succesmelding.classList.remove("hidden");
+        succesmelding.scrollIntoView({
+          behavior: "smooth",
+          block: "nearest"
+        });
+      }
     } else {
       toonFoutmelding();
     }
@@ -42,7 +75,37 @@ document.addEventListener("DOMContentLoaded", function () {
     openLightbox("Puzzel%201b.png", "Het label aan de koffer");
   }
 
-  if (formulier && antwoordveld) {
+  function wisselPuzzel2Afbeelding() {
+    if (!puzzel2Afbeelding) return;
+
+    const afbeeldingA = puzzel2Afbeelding.dataset.imageA;
+    const afbeeldingB = puzzel2Afbeelding.dataset.imageB;
+
+    if (!afbeeldingA || !afbeeldingB) return;
+
+    if (toonTweedeAfbeelding) {
+      puzzel2Afbeelding.src = afbeeldingA;
+      puzzel2Afbeelding.alt = "Eerste afbeelding van puzzel 2";
+    } else {
+      puzzel2Afbeelding.src = afbeeldingB;
+      puzzel2Afbeelding.alt = "Tweede afbeelding van puzzel 2";
+    }
+
+    toonTweedeAfbeelding = !toonTweedeAfbeelding;
+  }
+
+  function voegToetsbedieningToe(element, actie) {
+    if (!element) return;
+
+    element.addEventListener("keydown", function (event) {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        actie();
+      }
+    });
+  }
+
+  if (formulier) {
     formulier.addEventListener("submit", controleerInvoer);
   }
 
@@ -64,20 +127,23 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  if (puzzelAfbeelding) {
-    puzzelAfbeelding.addEventListener("click", openLabel);
+  if (puzzel1Afbeelding) {
+    puzzel1Afbeelding.addEventListener("click", openLabel);
+    voegToetsbedieningToe(puzzel1Afbeelding, openLabel);
+  }
 
-    puzzelAfbeelding.addEventListener("keydown", function (event) {
-      if (event.key === "Enter" || event.key === " ") {
-        event.preventDefault();
-        openLabel();
-      }
-    });
+  if (puzzel2Afbeelding) {
+    puzzel2Afbeelding.addEventListener("click", wisselPuzzel2Afbeelding);
+    voegToetsbedieningToe(
+      puzzel2Afbeelding,
+      wisselPuzzel2Afbeelding
+    );
   }
 
   document.addEventListener("keydown", function (event) {
     if (event.key === "Escape") {
       sluitFoutmelding();
+      sluitLightbox();
     }
   });
 });
