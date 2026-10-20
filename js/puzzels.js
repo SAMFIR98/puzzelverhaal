@@ -1,7 +1,7 @@
 
 /* =========================================================
-   SPOORZOEKEN — PUZZELGEGEVENS
-   Centrale registratie van de puzzels
+   SPOORZOEKEN — CENTRALE PUZZELGEGEVENS
+   Alle puzzels, antwoorden en paginaverwijzingen
    ========================================================= */
 
 const puzzels = {
@@ -9,7 +9,7 @@ const puzzels = {
     nummer: 1,
     titel: "Het achtergelaten spoor",
     pagina: "puzzel-1.html",
-    antwoord: null,
+    antwoord: "bordeaux",
     vorigePuzzel: null,
     volgendePuzzel: 2
   },
@@ -18,27 +18,27 @@ const puzzels = {
     nummer: 2,
     titel: "Een onverwachte bestemming",
     pagina: "puzzel-2.html",
-    antwoord: "bordeaux",
+    antwoord: "girondins",
     vorigePuzzel: 1,
     volgendePuzzel: null
   }
 };
 
 /**
- * Geeft de gegevens van een puzzel terug.
+ * Haalt de gegevens van een puzzel op.
  */
 function haalPuzzelOp(nummer) {
   return puzzels[Number(nummer)] ?? null;
 }
 
 /**
- * Controleert of een antwoord overeenkomt met het juiste antwoord.
+ * Controleert een antwoord.
  * Hoofdletters en spaties aan begin en einde tellen niet mee.
  */
 function controleerAntwoord(nummer, gegevenAntwoord) {
   const puzzel = haalPuzzelOp(nummer);
 
-  if (!puzzel || puzzel.antwoord === null) {
+  if (!puzzel || !puzzel.antwoord) {
     return false;
   }
 
@@ -49,7 +49,7 @@ function controleerAntwoord(nummer, gegevenAntwoord) {
 }
 
 /**
- * Geeft de volgende puzzel terug, indien bekend.
+ * Haalt de volgende puzzel op, indien die bestaat.
  */
 function haalVolgendePuzzelOp(nummer) {
   const puzzel = haalPuzzelOp(nummer);
