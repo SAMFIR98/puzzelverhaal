@@ -6,280 +6,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Spoorzoeken – Een spoorwegmysterie</title>
 
-  <style>
-    :root {
-      --background: #171613;
-      --panel: #24211b;
-      --gold: #c8a65b;
-      --gold-light: #e0c780;
-      --text: #eee8dc;
-      --muted: #b9b0a0;
-      --red: #c7463b;
-      --green: #88b58a;
-    }
+  <link rel="stylesheet" href="css/stijl.css">
 
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      min-height: 100vh;
-      background: radial-gradient(ellipse at top, #383024 0%, var(--background) 65%);
-      color: var(--text);
-      font-family: Georgia, "Times New Roman", serif;
-      line-height: 1.7;
-    }
-
-    header {
-      padding: 28px 20px 16px;
-      text-align: center;
-      border-bottom: 1px solid rgba(200, 166, 91, 0.35);
-    }
-
-    header h1 {
-      margin: 0;
-      color: var(--gold-light);
-      font-size: clamp(2rem, 5vw, 3.3rem);
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-    }
-
-    header p {
-      margin: 4px 0 0;
-      color: var(--muted);
-      font-style: italic;
-    }
-
-    main {
-      width: min(900px, calc(100% - 32px));
-      margin: 32px auto 60px;
-    }
-
-    .screen { display: none; }
-
-    .screen.active {
-      display: block;
-      animation: appear 0.35s ease;
-    }
-
-    @keyframes appear {
-      from { opacity: 0; transform: translateY(6px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .panel {
-      padding: clamp(20px, 4vw, 38px);
-      background: rgba(36, 33, 27, 0.94);
-      border: 1px solid rgba(200, 166, 91, 0.4);
-      border-radius: 5px;
-      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.25);
-    }
-
-    h2 {
-      margin-top: 0;
-      color: var(--gold-light);
-      font-size: clamp(1.6rem, 4vw, 2.2rem);
-      line-height: 1.25;
-    }
-
-    h3 { color: var(--gold-light); }
-
-    p { margin: 0 0 1.1em; }
-
-    .eyebrow {
-      margin-bottom: 8px;
-      color: var(--gold);
-      font-size: 0.82rem;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-    }
-
-    .story-image {
-      display: block;
-      width: 100%;
-      max-height: 620px;
-      margin: 24px auto;
-      object-fit: contain;
-      border: 1px solid rgba(200, 166, 91, 0.35);
-      background: #111;
-    }
-
-    .intro-image {
-      max-height: 480px;
-    }
-
-    .clickable-image {
-      cursor: pointer;
-      transition: opacity 0.2s ease;
-    }
-
-    .clickable-image:hover { opacity: 0.88; }
-
-    .image-hint {
-      margin-top: -16px;
-      color: var(--muted);
-      font-size: 0.9rem;
-      font-style: italic;
-      text-align: center;
-    }
-
-    .question {
-      margin-top: 26px;
-      padding-top: 20px;
-      border-top: 1px solid rgba(200, 166, 91, 0.3);
-    }
-
-    label {
-      display: block;
-      margin: 12px 0 6px;
-      color: var(--gold-light);
-      font-weight: bold;
-    }
-
-    input, select {
-      display: block;
-      width: 100%;
-      min-height: 46px;
-      padding: 10px 12px;
-      border: 1px solid #877650;
-      border-radius: 3px;
-      background: #171613;
-      color: var(--text);
-      font: inherit;
-    }
-
-    input:focus, select:focus {
-      outline: 2px solid var(--gold);
-      outline-offset: 2px;
-    }
-
-    button {
-      display: inline-block;
-      margin-top: 16px;
-      padding: 11px 22px;
-      border: 1px solid var(--gold);
-      border-radius: 3px;
-      background: var(--gold);
-      color: #211c12;
-      font: bold 1rem Georgia, "Times New Roman", serif;
-      cursor: pointer;
-      transition: background 0.2s ease, color 0.2s ease;
-    }
-
-    button:hover { background: var(--gold-light); }
-
-    button.secondary {
-      background: transparent;
-      color: var(--gold-light);
-    }
-
-    button.secondary:hover {
-      background: rgba(200, 166, 91, 0.12);
-    }
-
-    .access-panel {
-      margin-top: 30px;
-      padding-top: 22px;
-      border-top: 1px solid rgba(200, 166, 91, 0.3);
-    }
-
-    .access-panel h3 { margin-top: 0; }
-
-    .access-message {
-      min-height: 1.5em;
-      margin-top: 12px;
-      color: var(--red);
-    }
-
-    .success-message {
-      margin-top: 18px;
-      color: var(--green);
-      font-weight: bold;
-    }
-
-    .hidden { display: none !important; }
-
-    .lightbox {
-      position: fixed;
-      z-index: 1000;
-      inset: 0;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      background: rgba(0, 0, 0, 0.92);
-      cursor: pointer;
-    }
-
-    .lightbox.open { display: flex; }
-
-    .lightbox img {
-      display: block;
-      max-width: 96vw;
-      max-height: 92vh;
-      object-fit: contain;
-      border: 1px solid rgba(200, 166, 91, 0.45);
-    }
-
-    .lightbox-caption {
-      position: fixed;
-      right: 0;
-      bottom: 10px;
-      left: 0;
-      color: #ddd;
-      font-size: 0.85rem;
-      text-align: center;
-      pointer-events: none;
-    }
-
-    .error-overlay {
-      position: fixed;
-      z-index: 1100;
-      inset: 0;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      background: rgba(0, 0, 0, 0.88);
-    }
-
-    .error-overlay.open {
-      display: flex;
-    }
-
-    .error-box {
-      width: min(500px, 100%);
-      padding: 24px;
-      background: var(--panel);
-      border: 1px solid var(--red);
-      border-radius: 5px;
-      text-align: center;
-    }
-
-    .error-box img {
-      display: block;
-      width: min(240px, 80%);
-      max-height: 200px;
-      margin: 0 auto 18px;
-      object-fit: contain;
-    }
-
-    .error-box p { color: #f06459; }
-
-    footer {
-      padding: 20px;
-      color: var(--muted);
-      font-size: 0.85rem;
-      text-align: center;
-      border-top: 1px solid rgba(200, 166, 91, 0.2);
-    }
-
-    @media (max-width: 600px) {
-      header { padding-top: 22px; }
-      main { margin-top: 20px; }
-      .panel { padding: 20px; }
-      button { width: 100%; }
-    }
-  </style>
+  <script src="js/algemeen.js" defer></script>
+  <script src="js/puzzels.js" defer></script>
+  <script src="js/startpagina.js" defer></script>
 </head>
 
 <body>
@@ -289,8 +20,7 @@
   </header>
 
   <main>
-    <!-- INTRODUCTIE -->
-    <section id="intro" class="screen active">
+    <section class="screen active">
       <div class="panel">
         <div class="eyebrow">Parijs, voorjaar 1925</div>
         <h2>Een onverwachte reis</h2>
@@ -324,13 +54,15 @@
 
         <div class="access-panel">
           <h3>Waar wil je beginnen?</h3>
+
           <p>
             Begin bij de eerste puzzel of kies een later punt als je
             de voorafgaande puzzel al hebt opgelost.
           </p>
 
           <label for="start-puzzle">Kies je startpunt</label>
-          <select id="start-puzzle" onchange="updateAccessForm()">
+
+          <select id="start-puzzle">
             <option value="1">Puzzel 1 – Het achtergelaten spoor</option>
             <option value="2">Puzzel 2 – Een onverwachte bestemming</option>
           </select>
@@ -339,6 +71,7 @@
             <label for="previous-answer">
               Wat was het antwoord op de vorige puzzel?
             </label>
+
             <input
               id="previous-answer"
               type="text"
@@ -347,116 +80,16 @@
             >
           </div>
 
-          <button type="button" onclick="startSelectedPuzzle()">
+          <button id="start-button" type="button">
             Reis beginnen
           </button>
 
-          <p id="access-message" class="access-message" aria-live="polite"></p>
+          <p
+            id="access-message"
+            class="access-message"
+            aria-live="polite"
+          ></p>
         </div>
-      </div>
-    </section>
-
-    <!-- PUZZEL 1 -->
-    <section id="story1" class="screen">
-      <div class="panel">
-        <div class="eyebrow">Puzzel 1</div>
-        <h2>Het achtergelaten spoor</h2>
-
-        <p>
-          Je bent aangekomen op Gare d’Orsay. Op het station trekt
-          een achtergelaten koffer je aandacht. Er hangt een label
-          aan, maar de informatie erop roept meer vragen op dan ze
-          beantwoordt.
-        </p>
-
-        <p>
-          Bekijk de afbeelding zorgvuldig. Klik erop om de details
-          van dichterbij te bekijken.
-        </p>
-
-        <img
-          id="puzzle1-image"
-          class="story-image clickable-image"
-          src="Puzzel%201a.png"
-          alt="Een scène op het station Gare d’Orsay"
-          onclick="togglePuzzle1Image()"
-        >
-
-        <p class="image-hint">
-          Klik op de afbeelding om het label te bekijken.
-        </p>
-
-        <div class="question">
-          <h3>De vraag</h3>
-          <p>Naar welke stad was de eigenaar van deze koffer op weg?</p>
-
-          <label for="answer1">Jouw antwoord</label>
-          <input
-            id="answer1"
-            type="text"
-            autocomplete="off"
-            placeholder="Vul de plaatsnaam in"
-            onkeydown="if(event.key === 'Enter') checkAnswer1()"
-          >
-
-          <button type="button" onclick="checkAnswer1()">
-            Antwoord controleren
-          </button>
-        </div>
-      </div>
-    </section>
-
-    <!-- PUZZEL 2 -->
-    <section id="story2" class="screen">
-      <div class="panel">
-        <div class="eyebrow">Puzzel 2</div>
-        <h2>Een onverwachte bestemming</h2>
-
-        <p>
-          Nog een paar minuten tot station bordeaux. Met een goede
-          maaltijd en een lekker glas wijn in het vooruitzicht, kun
-          je wel juichen. Dan valt je oog op een spandoek. Waarvoor
-          juichen ze hier?
-        </p>
-
-        <img
-          id="puzzle2-image"
-          class="story-image clickable-image"
-          src="https://empty-brook-7f44.awoembaway.workers.dev/Puzzel%202a.png"
-          alt="Aanwijzing op een spandoek in Bordeaux"
-          onclick="togglePuzzle2Image()"
-        >
-
-        <p class="image-hint">
-          Klik op de afbeelding om tussen de twee afbeeldingen te wisselen.
-        </p>
-
-        <div class="question">
-          <h3>De vraag</h3>
-          <p>Waarvoor juichen ze hier?</p>
-
-          <label for="answer2">Jouw antwoord</label>
-          <input
-            id="answer2"
-            type="text"
-            autocomplete="off"
-            placeholder="Vul je antwoord in"
-            onkeydown="if(event.key === 'Enter') checkAnswer2()"
-          >
-
-          <button type="button" onclick="checkAnswer2()">
-            Antwoord controleren
-          </button>
-
-          <p id="success2" class="success-message hidden" aria-live="polite">
-            Goed gevonden! Je hebt puzzel 2 opgelost.
-            Het volgende spoor kan later aan deze reis worden toegevoegd.
-          </p>
-        </div>
-
-        <button type="button" class="secondary" onclick="showScreen('intro')">
-          Terug naar de start
-        </button>
       </div>
     </section>
   </main>
@@ -464,224 +97,5 @@
   <footer>
     Spoorzoeken · Een mysterie op het spoor door Europa · 1925
   </footer>
-
-  <!-- LICHTBAK PUZZEL 1 -->
-  <div
-    id="lightbox"
-    class="lightbox"
-    role="dialog"
-    aria-label="Vergrote afbeelding"
-    aria-modal="true"
-    onclick="closeLightbox()"
-  >
-    <img id="lightbox-image" src="" alt="Vergrote afbeelding">
-    <div class="lightbox-caption">Klik om terug te keren</div>
-  </div>
-
-  <!-- FOUTMELDING -->
-  <div
-    id="error-overlay"
-    class="error-overlay"
-    role="alertdialog"
-    aria-modal="true"
-    aria-labelledby="error-title"
-  >
-    <div class="error-box">
-      <img src="Stop.png" alt="Het spoor loopt dood">
-      <h2 id="error-title">Het spoor loopt dood</h2>
-      <p>
-        Dat is niet het goede antwoord. Het sein staat op rood.
-        Vind het goede antwoord om door te kunnen stomen.
-      </p>
-      <button type="button" onclick="closeError()">Verder zoeken</button>
-    </div>
-  </div>
-
-  <script>
-    /*
-     * Centrale configuratie voor de puzzels.
-     * Voor een later toegevoegde puzzel kan hier een nieuwe entry komen.
-     */
-    const puzzles = {
-      1: {
-        screen: "story1",
-        title: "Het achtergelaten spoor",
-        answer: null
-      },
-      2: {
-        screen: "story2",
-        title: "Een onverwachte bestemming",
-        answer: "bordeaux",
-        previousPuzzle: 1
-      }
-    };
-
-    let puzzle2ShowingSecondImage = false;
-
-    const PUZZLE1_IMAGE_A = "Puzzel%201a.png";
-    const PUZZLE1_IMAGE_B = "Puzzel%201b.png";
-
-    const PUZZLE2_IMAGE_A =
-      "https://empty-brook-7f44.awoembaway.workers.dev/Puzzel%202a.png";
-
-    const PUZZLE2_IMAGE_B =
-      "https://empty-brook-7f44.awoembaway.workers.dev/Puzzel%202b.png";
-
-    function normalizeAnswer(value) {
-      return value
-        .trim()
-        .toLocaleLowerCase("nl-NL")
-        .normalize("NFC");
-    }
-
-    function showScreen(screenId) {
-      document.querySelectorAll(".screen").forEach((screen) => {
-        screen.classList.remove("active");
-      });
-
-      const screen = document.getElementById(screenId);
-
-      if (screen) {
-        screen.classList.add("active");
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      }
-
-      closeLightbox();
-      closeError();
-    }
-
-    function updateAccessForm() {
-      const selectedPuzzle = Number(
-        document.getElementById("start-puzzle").value
-      );
-
-      const answerWrap = document.getElementById("previous-answer-wrap");
-      const answerInput = document.getElementById("previous-answer");
-      const message = document.getElementById("access-message");
-
-      message.textContent = "";
-
-      if (puzzles[selectedPuzzle] && puzzles[selectedPuzzle].previousPuzzle) {
-        answerWrap.classList.remove("hidden");
-        answerInput.value = "";
-      } else {
-        answerWrap.classList.add("hidden");
-        answerInput.value = "";
-      }
-    }
-
-    function startSelectedPuzzle() {
-      const selectedPuzzle = Number(
-        document.getElementById("start-puzzle").value
-      );
-
-      const puzzle = puzzles[selectedPuzzle];
-      const message = document.getElementById("access-message");
-
-      if (!puzzle) {
-        message.textContent = "Dit startpunt is nog niet beschikbaar.";
-        return;
-      }
-
-      if (puzzle.previousPuzzle) {
-        const answer = normalizeAnswer(
-          document.getElementById("previous-answer").value
-        );
-
-        const previousPuzzle = puzzles[puzzle.previousPuzzle];
-
-        if (
-          !answer ||
-          answer !== normalizeAnswer(previousPuzzle.answer || "")
-        ) {
-          message.textContent =
-            "Dat antwoord klopt niet. Los eerst de vorige puzzel op.";
-          return;
-        }
-      }
-
-      message.textContent = "";
-      showScreen(puzzle.screen);
-    }
-
-    function showError() {
-      document.getElementById("error-overlay").classList.add("open");
-    }
-
-    function closeError() {
-      document.getElementById("error-overlay").classList.remove("open");
-    }
-
-    function checkAnswer1() {
-      const answer = normalizeAnswer(
-        document.getElementById("answer1").value
-      );
-
-      if (answer === "bordeaux") {
-        document.getElementById("answer1").value = "";
-        showScreen("story2");
-      } else {
-        showError();
-      }
-    }
-
-    function checkAnswer2() {
-      const answer = normalizeAnswer(
-        document.getElementById("answer2").value
-      );
-
-      if (answer === "girondins") {
-        document.getElementById("success2").classList.remove("hidden");
-        document.getElementById("answer2").value = "";
-      } else {
-        showError();
-      }
-    }
-
-    /*
-     * Puzzel 1:
-     * open de ingezoomde afbeelding van het label in de lichtbak.
-     */
-    function togglePuzzle1Image() {
-      openLightbox(PUZZLE1_IMAGE_B, "Het label aan de koffer");
-    }
-
-    /*
-     * Puzzel 2:
-     * iedere klik wisselt tussen afbeelding A en afbeelding B.
-     */
-    function togglePuzzle2Image() {
-      const image = document.getElementById("puzzle2-image");
-
-      if (puzzle2ShowingSecondImage) {
-        image.src = PUZZLE2_IMAGE_A;
-        image.alt = "Eerste afbeelding van puzzel 2";
-      } else {
-        image.src = PUZZLE2_IMAGE_B;
-        image.alt = "Tweede afbeelding van puzzel 2";
-      }
-
-      puzzle2ShowingSecondImage = !puzzle2ShowingSecondImage;
-    }
-
-    function openLightbox(imageSrc, altText) {
-      document.getElementById("lightbox-image").src = imageSrc;
-      document.getElementById("lightbox-image").alt = altText;
-      document.getElementById("lightbox").classList.add("open");
-    }
-
-    function closeLightbox() {
-      document.getElementById("lightbox").classList.remove("open");
-    }
-
-    document.addEventListener("keydown", (event) => {
-      if (event.key === "Escape") {
-        closeLightbox();
-        closeError();
-      }
-    });
-
-    updateAccessForm();
-  </script>
 </body>
 </html>
