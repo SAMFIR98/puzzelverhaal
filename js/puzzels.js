@@ -20,6 +20,15 @@ const puzzels = {
     pagina: "puzzel-2.html",
     antwoord: "girondins",
     vorigePuzzel: 1,
+    volgendePuzzel: 3
+  },
+
+  3: {
+    nummer: 3,
+    titel: "Het volgende spoor",
+    pagina: "puzzel-3.html",
+    antwoord: "",
+    vorigePuzzel: 2,
     volgendePuzzel: null
   }
 };
