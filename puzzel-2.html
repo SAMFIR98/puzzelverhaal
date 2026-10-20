@@ -1,0 +1,119 @@
+
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Puzzel 2 – Een onverwachte bestemming | Spoorzoeken</title>
+
+  <link rel="stylesheet" href="css/stijl.css">
+
+  <script src="js/algemeen.js" defer></script>
+  <script src="js/puzzels.js" defer></script>
+  <script src="js/puzzelpagina.js" defer></script>
+</head>
+
+<body>
+  <header>
+    <h1>Spoorzoeken</h1>
+    <p>Een spoorwegmysterie uit 1925</p>
+  </header>
+
+  <main>
+    <section class="screen active">
+      <div class="panel">
+        <div class="eyebrow">Puzzel 2</div>
+        <h2>Een onverwachte bestemming</h2>
+
+        <p>
+          Nog een paar minuten tot station Bordeaux. Met een goede
+          maaltijd en een lekker glas wijn in het vooruitzicht, kun
+          je wel juichen. Dan valt je oog op een spandoek. Waarvoor
+          juichen ze hier?
+        </p>
+
+        <img
+          id="puzzle2-image"
+          class="story-image clickable-image"
+          src="Puzzel%202a.png"
+          alt="Aanwijzing op een spandoek in Bordeaux"
+          tabindex="0"
+          role="button"
+          aria-label="Wissel tussen de twee afbeeldingen van puzzel 2"
+          data-image-a="Puzzel%202a.png"
+          data-image-b="Puzzel%202b.png"
+        >
+
+        <p class="image-hint">
+          Klik op de afbeelding om tussen de twee afbeeldingen te wisselen.
+        </p>
+
+        <div class="question">
+          <h3>De vraag</h3>
+          <p>Waarvoor juichen ze hier?</p>
+
+          <form id="answer-form">
+            <label for="answer">Jouw antwoord</label>
+
+            <input
+              id="answer"
+              type="text"
+              autocomplete="off"
+              placeholder="Vul je antwoord in"
+              required
+            >
+
+            <button type="submit">Antwoord controleren</button>
+          </form>
+
+          <p
+            id="success-message"
+            class="success-message hidden"
+            aria-live="polite"
+          >
+            Goed gevonden! Je hebt puzzel 2 opgelost.
+            Het volgende spoor kan later aan deze reis worden toegevoegd.
+          </p>
+        </div>
+
+        <button
+          type="button"
+          class="secondary"
+          id="home-button"
+        >
+          Terug naar de start
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    Spoorzoeken · Een mysterie op het spoor door Europa · 1925
+  </footer>
+
+  <!-- Foutmelding -->
+  <div
+    id="error-overlay"
+    class="error-overlay"
+    role="alertdialog"
+    aria-modal="true"
+    aria-labelledby="error-title"
+    aria-hidden="true"
+  >
+    <div class="error-box">
+      <img src="Stop.png" alt="Het spoor loopt dood">
+
+      <h2 id="error-title">Het spoor loopt dood</h2>
+
+      <p>
+        Dat is niet het goede antwoord. Het sein staat op rood.
+        Vind het goede antwoord om door te kunnen stomen.
+      </p>
+
+      <button type="button" id="error-close">
+        Verder zoeken
+      </button>
+    </div>
+  </div>
+</body>
+</html>
