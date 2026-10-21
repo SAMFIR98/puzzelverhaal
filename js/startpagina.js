@@ -33,8 +33,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (gekozenNummer === 1) {
       vorigAntwoordWrap.classList.add("hidden");
+      startKnop.textContent = "Reis beginnen";
     } else {
       vorigAntwoordWrap.classList.remove("hidden");
+      startKnop.textContent = "Antwoord controleren";
     }
 
     const gekozenPuzzel = haalPuzzelOp(gekozenNummer);
@@ -63,14 +65,13 @@ document.addEventListener("DOMContentLoaded", function () {
       return;
     }
 
-    // De eerste puzzel is het beginpunt: geen antwoord nodig.
+    // Puzzel 1 is het beginpunt: geen antwoord nodig.
     if (gekozenNummer === 1) {
       window.location.href = gekozenPuzzel.pagina;
       return;
     }
 
-    // Bij hervatten controleren we het antwoord van de gekozen
-    // puzzel, niet dat van de puzzel ervoor.
+    // Controleer het antwoord van de gekozen puzzel.
     if (!controleerAntwoord(gekozenNummer, vorigAntwoordVeld.value)) {
       melding.textContent =
         "Dat antwoord klopt niet. Controleer je antwoord op puzzel " +
@@ -78,7 +79,7 @@ document.addEventListener("DOMContentLoaded", function () {
       return;
     }
 
-    // De gekozen puzzel is al opgelost. Ga dus naar de volgende.
+    // Bij een correct antwoord ga je naar de volgende puzzel.
     const volgendePuzzel = haalVolgendePuzzelOp(gekozenNummer);
 
     if (!volgendePuzzel) {
