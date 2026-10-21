@@ -15,7 +15,6 @@ document.addEventListener("DOMContentLoaded", function () {
   const puzzel3Afbeelding = document.getElementById("puzzle3-image");
   const succesmelding = document.getElementById("success-message");
 
-  // Bepaal welke puzzel op deze pagina staat.
   let puzzelNummer = null;
 
   if (puzzel1Afbeelding) {
@@ -60,13 +59,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
       const volgendePuzzel = haalVolgendePuzzelOp(puzzelNummer);
 
-      // Ga direct door naar de volgende puzzel als die bestaat.
       if (volgendePuzzel) {
         window.location.href = volgendePuzzel.pagina;
         return;
       }
 
-      // Alleen tonen als er geen volgende puzzel is ingesteld.
       if (succesmelding) {
         succesmelding.classList.remove("hidden");
         succesmelding.scrollIntoView({
@@ -88,8 +85,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   /* ---------------------------------------------------------
-     PUZZEL 2: WISSELEN TUSSEN AFBEELDING 2A EN DE JAPANSE
-     PUZZEL 2B
+     PUZZEL 2: WISSELEN TUSSEN AFBEELDING 2A EN NONOGRAM 2B
      --------------------------------------------------------- */
 
   const afbeeldingWeergave = document.getElementById(
@@ -111,6 +107,18 @@ document.addEventListener("DOMContentLoaded", function () {
   const wisVakjesKnop = document.getElementById(
     "clear-nonogram"
   );
+
+  // Wordt true zodra de volledige oplossing correct is.
+  let nonogramOpgelost = false;
+
+  // Melding die verschijnt wanneer de nonogram is opgelost.
+  const nonogramStatus = document.createElement("p");
+  nonogramStatus.className = "nonogram-complete-message";
+  nonogramStatus.setAttribute("role", "status");
+  nonogramStatus.setAttribute("aria-live", "polite");
+  nonogramStatus.textContent =
+    "Goed gedaan! De nonogram is opgelost. Alle vakjes zijn vastgezet.";
+  nonogramStatus.hidden = true;
 
   function toonNonogram() {
     if (!afbeeldingWeergave || !nonogramWeergave) return;
@@ -137,10 +145,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   /* ---------------------------------------------------------
-     AANWIJZINGEN VAN DE JAPANSE PUZZEL
-
-     De kolommen lopen van links naar rechts.
-     De rijen lopen van boven naar beneden.
+     AANWIJZINGEN VAN DE NONOGRAM
      --------------------------------------------------------- */
 
   const kolomAanwijzingen = [
@@ -180,7 +185,117 @@ document.addEventListener("DOMContentLoaded", function () {
   ];
 
   /* ---------------------------------------------------------
-     AANWIJZINGEN MAKEN
+     DE JUISTE OPLOSSING
+
+     Elke rij bevat de kolomnummers van de zwarte vakjes.
+     Rijen en kolommen worden genummerd vanaf 1.
+
+     Deze oplossing is gebaseerd op de door de gebruiker
+     opgegeven zwarte vakjes per rij en per kolom.
+     --------------------------------------------------------- */
+
+  const juisteOplossing = [
+    [1, 4, 5, 6, 7, 9, 10, 11, 12, 15],
+    [1, 4, 7, 9, 12, 15],
+    [1, 4, 7, 9, 12, 15],
+    [1, 4, 5, 6, 7, 9, 10, 11, 12, 15],
+    [1, 4, 7, 9, 12, 15],
+    [1, 4, 7, 9, 12, 15],
+    [1, 4, 5, 6, 7, 9, 10, 11, 12, 15],
+    [],
+    [1, 5, 6, 7, 8, 9, 10, 11, 15],
+    [1, 2, 6, 7, 8, 9, 10, 14, 15],
+    [1, 2, 3, 7, 8, 9, 13, 14, 15],
+    [1, 2, 3, 4, 8, 12, 13, 14, 15],
+    [1, 2, 3, 4, 5, 11, 12, 13, 14, 15],
+    [1, 2, 3, 4, 5, 6, 10, 11, 12, 13, 14, 15],
+    [1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15]
+  ];
+
+  /* ---------------------------------------------------------
+     CONTROLEREN OF DE OPLOSSING CORRECT IS
+
+     Ieder zwart én ieder wit vakje moet overeenkomen met
+     de bedoelde oplossing. Een extra zwart vakje voorkomt
+     dus dat de puzzel als opgelost wordt aangemerkt.
+     --------------------------------------------------------- */
+
+  function controleerNonogram() {
+    if (!nonogramBord || nonogramOpgelost) return;
+
+    const vakjes = nonogramBord.querySelectorAll(
+      ".nonogram-cell"
+    );
+
+    if (vakjes.length !== 225) return;
+
+    for (const vakje of vakjes) {
+      const rijNummer = Number(vakje.dataset.rij);
+      const kolomNummer = Number(vakje.dataset.kolom);
+
+      const moetZwart = juisteOplossing[rijNummer - 1]
+        .includes(kolomNummer);
+
+      const isZwart = vakje.classList.contains("is-black");
+
+      if (isZwart !== moetZwart) {
+        return;
+      }
+    }
+
+    // Alle 225 vakjes komen exact overeen met de oplossing.
+    fixeerNonogram();
+  }
+
+  /* ---------------------------------------------------------
+     OPLOSSING VASTZETTEN
+     --------------------------------------------------------- */
+
+  function fixeerNonogram() {
+    if (nonogramOpgelost || !nonogramBord) return;
+
+    nonogramOpgelost = true;
+
+    nonogramBord.classList.add("is-complete");
+
+    nonogramBord
+      .querySelectorAll(".nonogram-cell")
+      .forEach(function (vakje) {
+        const isZwart = vakje.classList.contains("is-black");
+
+        vakje.disabled = true;
+        vakje.classList.add("is-locked");
+
+        vakje.setAttribute(
+          "aria-label",
+          `Rij ${vakje.dataset.rij}, kolom ${vakje.dataset.kolom}, ${
+            isZwart ? "zwart" : "wit"
+          }, correct en vastgezet`
+        );
+
+        vakje.setAttribute(
+          "aria-pressed",
+          String(isZwart)
+        );
+      });
+
+    // Voorkom dat de opgeloste puzzel weer wordt gewist.
+    if (wisVakjesKnop) {
+      wisVakjesKnop.disabled = true;
+      wisVakjesKnop.setAttribute("aria-disabled", "true");
+    }
+
+    if (nonogramWeergave) {
+      if (!nonogramStatus.isConnected) {
+        nonogramWeergave.appendChild(nonogramStatus);
+      }
+
+      nonogramStatus.hidden = false;
+    }
+  }
+
+  /* ---------------------------------------------------------
+     AANWIJZINGSKNOPPEN MAKEN
      --------------------------------------------------------- */
 
   function maakAanwijzingsknop(
@@ -227,10 +342,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   /* ---------------------------------------------------------
-     RASTER MAKEN
-
-     Alle vakjes beginnen wit.
-     De speler kan ieder vakje afzonderlijk zwart of wit maken.
+     VAKJES MAKEN
      --------------------------------------------------------- */
 
   function maakVakje(rijNummer, kolomNummer) {
@@ -238,6 +350,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     vakje.type = "button";
     vakje.className = "nonogram-cell";
+    vakje.dataset.rij = String(rijNummer);
+    vakje.dataset.kolom = String(kolomNummer);
     vakje.setAttribute("aria-pressed", "false");
 
     function werkVakjeBij() {
@@ -257,8 +371,14 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     vakje.addEventListener("click", function () {
+      // Extra beveiliging: een opgeloste puzzel blijft vast.
+      if (nonogramOpgelost) return;
+
       vakje.classList.toggle("is-black");
       werkVakjeBij();
+
+      // Controleer direct na iedere wijziging.
+      controleerNonogram();
     });
 
     werkVakjeBij();
@@ -267,7 +387,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   /* ---------------------------------------------------------
-     DE VOLLEDIGE JAPANSE PUZZEL OPBOUWEN
+     DE VOLLEDIGE NONOGRAM OPBOUWEN
      --------------------------------------------------------- */
 
   function bouwNonogram() {
@@ -340,6 +460,11 @@ document.addEventListener("DOMContentLoaded", function () {
       rij.appendChild(rasterRij);
       nonogramBord.appendChild(rij);
     });
+
+    // Zorg dat de melding beschikbaar is op de pagina.
+    if (nonogramWeergave && !nonogramStatus.isConnected) {
+      nonogramWeergave.appendChild(nonogramStatus);
+    }
   }
 
   /* ---------------------------------------------------------
@@ -347,7 +472,7 @@ document.addEventListener("DOMContentLoaded", function () {
      --------------------------------------------------------- */
 
   function wisAlleVakjes() {
-    if (!nonogramBord) return;
+    if (!nonogramBord || nonogramOpgelost) return;
 
     nonogramBord
       .querySelectorAll(".nonogram-cell")
@@ -355,16 +480,10 @@ document.addEventListener("DOMContentLoaded", function () {
         vakje.classList.remove("is-black");
         vakje.setAttribute("aria-pressed", "false");
 
-        const rij = vakje.getAttribute("aria-label").match(
-          /Rij (\d+), kolom (\d+)/
+        vakje.setAttribute(
+          "aria-label",
+          `Rij ${vakje.dataset.rij}, kolom ${vakje.dataset.kolom}, wit`
         );
-
-        if (rij) {
-          vakje.setAttribute(
-            "aria-label",
-            `Rij ${rij[1]}, kolom ${rij[2]}, wit`
-          );
-        }
       });
   }
 
