@@ -344,10 +344,11 @@ footer {
   color: #171613;
 }
 
+/* De aanwijzingenkolom en het raster blijven exact uitgelijnd. */
 .nonogram-top,
 .nonogram-row {
   display: grid;
-  grid-template-columns: 100px minmax(0, 1fr);
+  grid-template-columns: 120px minmax(0, 1fr);
   gap: 0;
 }
 
@@ -357,6 +358,7 @@ footer {
 
 .nonogram-corner {
   min-height: 1px;
+  min-width: 0;
 }
 
 .nonogram-column-clues,
@@ -381,15 +383,17 @@ footer {
   border-right: 1px solid #c8c0b0;
 }
 
+/* Rijaanwijzingen: extra ruimte links, cijfers rechts uitgelijnd. */
 .nonogram-row-clues {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: 2px;
+  gap: 3px;
   min-width: 0;
-  padding: 0 6px 0 2px;
+  padding: 0 8px 0 12px;
   border-right: 2px solid #877650;
   white-space: nowrap;
+  overflow: visible;
 }
 
 .nonogram-row {
@@ -443,6 +447,7 @@ footer {
   width: auto;
   min-width: 18px;
   min-height: 22px;
+  flex-shrink: 0;
   margin: 0;
   padding: 0 1px;
   border: 0;
@@ -452,7 +457,6 @@ footer {
   font: bold 0.88rem Arial, sans-serif;
   line-height: 1.2;
   box-shadow: none;
-  flex-shrink: 0;
 }
 
 .nonogram-clue:hover {
