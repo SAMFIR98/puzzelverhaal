@@ -108,16 +108,14 @@ document.addEventListener("DOMContentLoaded", function () {
     "clear-nonogram"
   );
 
-  // Wordt true zodra de volledige oplossing correct is.
   let nonogramOpgelost = false;
 
-  // Melding die verschijnt wanneer de nonogram is opgelost.
   const nonogramStatus = document.createElement("p");
   nonogramStatus.className = "nonogram-complete-message";
   nonogramStatus.setAttribute("role", "status");
   nonogramStatus.setAttribute("aria-live", "polite");
   nonogramStatus.textContent =
-    "Goed gedaan! De nonogram is opgelost. Alle vakjes zijn vastgezet.";
+    "Precies, dit staat op het spandoek. Dus... voor wie juichen ze hier? 'Vive les ...'";
   nonogramStatus.hidden = true;
 
   function toonNonogram() {
@@ -188,10 +186,6 @@ document.addEventListener("DOMContentLoaded", function () {
      DE JUISTE OPLOSSING
 
      Elke rij bevat de kolomnummers van de zwarte vakjes.
-     Rijen en kolommen worden genummerd vanaf 1.
-
-     Deze oplossing is gebaseerd op de door de gebruiker
-     opgegeven zwarte vakjes per rij en per kolom.
      --------------------------------------------------------- */
 
   const juisteOplossing = [
@@ -213,11 +207,10 @@ document.addEventListener("DOMContentLoaded", function () {
   ];
 
   /* ---------------------------------------------------------
-     CONTROLEREN OF DE OPLOSSING CORRECT IS
+     OPLOSSING CONTROLEREN
 
-     Ieder zwart én ieder wit vakje moet overeenkomen met
-     de bedoelde oplossing. Een extra zwart vakje voorkomt
-     dus dat de puzzel als opgelost wordt aangemerkt.
+     Alle 225 vakjes moeten exact overeenkomen met de
+     bedoelde oplossing.
      --------------------------------------------------------- */
 
   function controleerNonogram() {
@@ -243,12 +236,14 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     }
 
-    // Alle 225 vakjes komen exact overeen met de oplossing.
     fixeerNonogram();
   }
 
   /* ---------------------------------------------------------
      OPLOSSING VASTZETTEN
+
+     Zwarte vakjes worden blauwgrijs (#4B5576).
+     Witte vakjes blijven wit.
      --------------------------------------------------------- */
 
   function fixeerNonogram() {
@@ -266,10 +261,14 @@ document.addEventListener("DOMContentLoaded", function () {
         vakje.disabled = true;
         vakje.classList.add("is-locked");
 
+        if (isZwart) {
+          vakje.style.backgroundColor = "#4B5576";
+        }
+
         vakje.setAttribute(
           "aria-label",
           `Rij ${vakje.dataset.rij}, kolom ${vakje.dataset.kolom}, ${
-            isZwart ? "zwart" : "wit"
+            isZwart ? "ingevuld" : "leeg"
           }, correct en vastgezet`
         );
 
@@ -279,7 +278,6 @@ document.addEventListener("DOMContentLoaded", function () {
         );
       });
 
-    // Voorkom dat de opgeloste puzzel weer wordt gewist.
     if (wisVakjesKnop) {
       wisVakjesKnop.disabled = true;
       wisVakjesKnop.setAttribute("aria-disabled", "true");
@@ -371,13 +369,11 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     vakje.addEventListener("click", function () {
-      // Extra beveiliging: een opgeloste puzzel blijft vast.
       if (nonogramOpgelost) return;
 
       vakje.classList.toggle("is-black");
       werkVakjeBij();
 
-      // Controleer direct na iedere wijziging.
       controleerNonogram();
     });
 
@@ -395,7 +391,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     nonogramBord.replaceChildren();
 
-    // Bovenste deel: aanwijzingen van de 15 kolommen.
     const bovensteRij = document.createElement("div");
     bovensteRij.className = "nonogram-top";
 
@@ -426,7 +421,6 @@ document.addEventListener("DOMContentLoaded", function () {
     bovensteRij.appendChild(kolomContainer);
     nonogramBord.appendChild(bovensteRij);
 
-    // De 15 rijen met links de cijfers en rechts de vakjes.
     rijAanwijzingen.forEach(function (aanwijzingen, rijIndex) {
       const rijNummer = rijIndex + 1;
 
@@ -461,7 +455,6 @@ document.addEventListener("DOMContentLoaded", function () {
       nonogramBord.appendChild(rij);
     });
 
-    // Zorg dat de melding beschikbaar is op de pagina.
     if (nonogramWeergave && !nonogramStatus.isConnected) {
       nonogramWeergave.appendChild(nonogramStatus);
     }
@@ -556,6 +549,5 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-  // Maak het raster zodra de pagina geladen is.
   bouwNonogram();
 });
