@@ -347,7 +347,7 @@ footer {
 .nonogram-top,
 .nonogram-row {
   display: grid;
-  grid-template-columns: 72px minmax(0, 1fr);
+  grid-template-columns: 100px minmax(0, 1fr);
   gap: 0;
 }
 
@@ -385,9 +385,11 @@ footer {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: 3px;
-  padding: 0 7px 0 0;
+  gap: 2px;
+  min-width: 0;
+  padding: 0 6px 0 2px;
   border-right: 2px solid #877650;
+  white-space: nowrap;
 }
 
 .nonogram-row {
@@ -442,7 +444,7 @@ footer {
   min-width: 18px;
   min-height: 22px;
   margin: 0;
-  padding: 0 2px;
+  padding: 0 1px;
   border: 0;
   border-radius: 0;
   background: transparent;
@@ -450,6 +452,7 @@ footer {
   font: bold 0.88rem Arial, sans-serif;
   line-height: 1.2;
   box-shadow: none;
+  flex-shrink: 0;
 }
 
 .nonogram-clue:hover {
