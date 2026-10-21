@@ -2,6 +2,10 @@
 /* =========================================================
    SPOORZOEKEN — STARTPAGINA
    Keuze van het startpunt en navigatie naar puzzels
+
+   Puzzel 1 = begin van het verhaal.
+   Een latere puzzelkeuze = laatst opgeloste puzzel.
+   Het juiste antwoord brengt je naar de volgende puzzel.
    ========================================================= */
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -23,46 +27,67 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function werkStartformulierBij() {
     const gekozenNummer = Number(startKeuze.value);
-    const puzzel = haalPuzzelOp(gekozenNummer);
 
     melding.textContent = "";
     vorigAntwoordVeld.value = "";
 
-    if (puzzel && puzzel.vorigePuzzel !== null) {
-      vorigAntwoordWrap.classList.remove("hidden");
-    } else {
+    if (gekozenNummer === 1) {
       vorigAntwoordWrap.classList.add("hidden");
+    } else {
+      vorigAntwoordWrap.classList.remove("hidden");
+    }
+
+    const gekozenPuzzel = haalPuzzelOp(gekozenNummer);
+
+    if (gekozenNummer > 1 && gekozenPuzzel) {
+      const label = vorigAntwoordWrap.querySelector("label");
+
+      if (label) {
+        label.textContent =
+          "Wat was het antwoord op puzzel " + gekozenNummer + "?";
+      }
+
+      vorigAntwoordVeld.placeholder =
+        "Antwoord van puzzel " + gekozenNummer;
     }
   }
 
   function beginReis() {
     const gekozenNummer = Number(startKeuze.value);
-    const puzzel = haalPuzzelOp(gekozenNummer);
+    const gekozenPuzzel = haalPuzzelOp(gekozenNummer);
 
     melding.textContent = "";
 
-    if (!puzzel) {
+    if (!gekozenPuzzel) {
       melding.textContent = "Dit startpunt is nog niet beschikbaar.";
       return;
     }
 
-    if (puzzel.vorigePuzzel !== null) {
-      const vorigAntwoord = vorigAntwoordVeld.value;
-      const vorigePuzzel = haalPuzzelOp(puzzel.vorigePuzzel);
-
-      if (
-        !vorigePuzzel ||
-        !vorigePuzzel.antwoord ||
-        normaliseerAntwoord(vorigAntwoord) !==
-          normaliseerAntwoord(vorigePuzzel.antwoord)
-      ) {
-        melding.textContent =
-          "Dat antwoord klopt niet. Los eerst de vorige puzzel op.";
-        return;
-      }
+    // De eerste puzzel is het beginpunt: geen antwoord nodig.
+    if (gekozenNummer === 1) {
+      window.location.href = gekozenPuzzel.pagina;
+      return;
     }
 
-    window.location.href = puzzel.pagina;
+    // Bij hervatten controleren we het antwoord van de gekozen
+    // puzzel, niet dat van de puzzel ervoor.
+    if (!controleerAntwoord(gekozenNummer, vorigAntwoordVeld.value)) {
+      melding.textContent =
+        "Dat antwoord klopt niet. Controleer je antwoord op puzzel " +
+        gekozenNummer + ".";
+      return;
+    }
+
+    // De gekozen puzzel is al opgelost. Ga dus naar de volgende.
+    const volgendePuzzel = haalVolgendePuzzelOp(gekozenNummer);
+
+    if (!volgendePuzzel) {
+      melding.textContent =
+        "Er is nog geen volgende puzzel beschikbaar.";
+      return;
+    }
+
+    window.location.href = volgendePuzzel.pagina;
   }
 
   startKeuze.addEventListener("change", werkStartformulierBij);
