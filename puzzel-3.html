@@ -91,6 +91,7 @@
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       grid-template-rows: repeat(3, 1fr);
+      gap: 0;
     }
 
     .tile {
@@ -150,26 +151,42 @@
       margin-top: 12px;
     }
 
+    /* Het verzamelbord: 3 x 3 zonder tussenruimtes. */
     .board {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 8px;
+      grid-template-rows: repeat(3, minmax(0, 1fr));
+      gap: 0;
+      width: 100%;
       max-width: 570px;
+      overflow: hidden;
+      border: 1px solid #9e9688;
+      border-radius: 0;
     }
 
     .slot {
       position: relative;
       display: flex;
       min-width: 0;
+      min-height: 0;
       aspect-ratio: 1 / 1;
       overflow: hidden;
       padding: 0;
       align-items: center;
       justify-content: center;
-      border: 2px dashed #9e9688;
-      border-radius: 4px;
+      border: 0;
+      border-radius: 0;
       background: #f1ece2;
       cursor: pointer;
+    }
+
+    /* Dunne scheidslijnen zonder witruimte tussen de afbeeldingen. */
+    .slot:not(:nth-child(3n)) {
+      border-right: 1px solid #9e9688;
+    }
+
+    .slot:nth-child(-n+6) {
+      border-bottom: 1px solid #9e9688;
     }
 
     .slot-label {
@@ -288,7 +305,6 @@
 
     <section class="board-panel">
       <div id="board" class="board" aria-label="Verzamelbord">
-
         <button class="slot" type="button" data-index="0" data-label="A" aria-label="Vak A">
           <span class="slot-label">A</span>
           <span class="empty">Sleep hier</span>
@@ -333,7 +349,6 @@
           <span class="slot-label">I</span>
           <span class="empty">Sleep hier</span>
         </button>
-
       </div>
 
       <div class="controls">
