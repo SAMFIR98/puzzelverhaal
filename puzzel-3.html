@@ -4,77 +4,167 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>Puzzel 3 | Lading op weg naar Spanje</title>
-
-  <link rel="stylesheet" href="stijl.css">
+  <title>Spoorzoeken – Puzzel 3: Lading op weg naar Spanje</title>
 
   <style>
-    /* Paginaopmaak in de stijl van Spoorzoeken */
-    .puzzel3-intro-image {
+    :root {
+      --background: #171613;
+      --panel: #24211b;
+      --gold: #c8a65b;
+      --gold-light: #e0c780;
+      --text: #eee8dc;
+      --muted: #b9b0a0;
+      --red: #c7463b;
+      --green: #88b58a;
+      --line: rgba(200, 166, 91, 0.4);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: radial-gradient(
+        ellipse at top,
+        #383024 0%,
+        var(--background) 65%
+      );
+      color: var(--text);
+      font-family: Georgia, "Times New Roman", serif;
+      line-height: 1.7;
+    }
+
+    header {
+      padding: 28px 20px 16px;
+      text-align: center;
+      border-bottom: 1px solid rgba(200, 166, 91, 0.35);
+    }
+
+    header p {
+      margin: 0;
+      color: var(--muted);
+      font-style: italic;
+    }
+
+    header .eyebrow {
+      margin-bottom: 4px;
+      color: var(--gold);
+      font-size: 0.82rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      font-style: normal;
+    }
+
+    header h1 {
+      margin: 0;
+      color: var(--gold-light);
+      font-size: clamp(2rem, 5vw, 3.3rem);
+      line-height: 1.25;
+    }
+
+    main {
+      width: min(900px, calc(100% - 32px));
+      margin: 32px auto 60px;
+    }
+
+    h2 {
+      margin-top: 0;
+      color: var(--gold-light);
+      font-size: clamp(1.6rem, 4vw, 2.2rem);
+      line-height: 1.25;
+    }
+
+    h3 {
+      color: var(--gold-light);
+    }
+
+    p {
+      margin: 0 0 1.1em;
+    }
+
+    .panel {
+      padding: clamp(20px, 4vw, 38px);
+      background: rgba(36, 33, 27, 0.94);
+      border: 1px solid var(--line);
+      border-radius: 5px;
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.25);
+    }
+
+    .intro-text {
+      margin-bottom: 20px;
+    }
+
+    /* Restaurantafbeelding bij de introductie. */
+    .cafe-intro {
+      margin: 24px 0 0;
+    }
+
+    .story-image {
       display: block;
       width: 100%;
       max-height: 620px;
-      margin: 24px auto 8px;
+      margin: 24px auto;
       object-fit: contain;
-      border: 1px solid rgba(200, 166, 91, 0.45);
+      border: 1px solid rgba(200, 166, 91, 0.35);
       background: #111;
+    }
+
+    .intro-image {
+      max-height: 480px;
+    }
+
+    .clickable-image {
       cursor: pointer;
       transition: opacity 0.2s ease;
     }
 
-    .puzzel3-intro-image:hover {
+    .clickable-image:hover {
       opacity: 0.88;
     }
 
-    .puzzel3-image-hint {
-      color: var(--muted, #b9b0a0);
+    .clickable-image:focus-visible {
+      outline: 3px solid var(--gold-light);
+      outline-offset: 4px;
+    }
+
+    .image-hint {
+      margin-top: -16px;
+      color: var(--muted);
       font-size: 0.9rem;
       font-style: italic;
       text-align: center;
-      margin-top: 8px;
     }
 
+    /* De interactieve puzzel begint verborgen. */
     #interactive-puzzle {
       display: none;
     }
 
-    #interactive-puzzle.visible {
-      display: block;
+    .puzzle-instruction {
+      margin-bottom: 24px;
     }
 
-    .puzzel3-section-title {
-      margin-top: 26px;
-      padding-top: 20px;
-      border-top: 1px solid rgba(200, 166, 91, 0.3);
-    }
-
-    .puzzel3-instruction {
-      margin-bottom: 20px;
-    }
-
-    /* De negen basisafbeeldingen */
-    #gallery {
+    .gallery {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 16px;
-      margin-top: 20px;
+      gap: 18px;
     }
 
-    .source-card {
+    .source-card,
+    .board-panel {
       min-width: 0;
-      padding: 10px;
-      border: 1px solid rgba(200, 166, 91, 0.4);
-      border-radius: 4px;
-      background: rgba(23, 22, 19, 0.8);
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 5px;
+      background: rgba(36, 33, 27, 0.94);
     }
 
     .source-title {
-      margin: 0 0 8px;
-      color: var(--gold-light, #e0c780);
-      font-family: Georgia, "Times New Roman", serif;
-      font-size: 1rem;
-      text-align: center;
+      margin: 0 0 10px;
+      font-size: 1.05rem;
+      line-height: 1.4;
     }
 
     .image-grid {
@@ -82,203 +172,346 @@
       width: 100%;
       aspect-ratio: 1 / 1;
       overflow: hidden;
-      background: #111;
+      background: #e8e2d7;
+      border: 1px solid rgba(200, 166, 91, 0.3);
+      border-radius: 3px;
     }
 
     .image-grid > img {
       display: block;
       width: 100%;
       height: 100%;
-      object-fit: fill;
+      object-fit: cover;
     }
 
     .tile-overlay {
       position: absolute;
       inset: 0;
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      grid-template-rows: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(3, 1fr);
+      gap: 0;
     }
 
+    /* Fragmentknoppen: eigen opmaak, los van de gewone knoppen. */
     .tile-overlay .tile {
       position: relative;
+      display: block;
       min-width: 0;
       min-height: 0;
+      width: auto;
       margin: 0;
       padding: 0;
-      border: 1px dashed rgba(255, 255, 255, 0.85);
+      border: 1px dashed rgba(255, 255, 255, 0.95);
       border-radius: 0;
-      outline: 1px dashed rgba(0, 0, 0, 0.65);
-      outline-offset: -2px;
-      background: transparent;
+      background: rgba(20, 20, 20, 0.035);
+      color: white;
+      font: inherit;
+      text-shadow: 0 1px 3px #000;
       cursor: grab;
+      touch-action: manipulation;
+      box-shadow: none;
     }
 
     .tile-overlay .tile:hover {
-      background: rgba(224, 199, 128, 0.18);
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    .tile-overlay .tile:active {
+      cursor: grabbing;
     }
 
     .tile-overlay .tile.selected {
-      background: rgba(224, 199, 128, 0.3);
-      box-shadow: inset 0 0 0 3px var(--gold, #c8a65b);
+      outline: 4px solid #d18a27;
+      outline-offset: -4px;
     }
 
     .tile-overlay .tile.used {
       opacity: 0.35;
     }
 
+    .tile-overlay .tile:disabled {
+      cursor: default;
+    }
+
     .tile-number {
       position: absolute;
-      top: 3px;
-      left: 3px;
-      padding: 1px 4px;
-      border-radius: 2px;
-      background: rgba(23, 22, 19, 0.85);
-      color: #eee8dc;
-      font: bold 0.7rem Arial, sans-serif;
-      pointer-events: none;
+      left: 5px;
+      top: 4px;
+      padding: 3px 4px;
+      border-radius: 3px;
+      background: rgba(0, 0, 0, 0.65);
+      color: white;
+      font: bold 12px/1 Arial, sans-serif;
+      text-shadow: none;
     }
 
-    /* Verzamelbord */
-    .puzzel3-workspace {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-      gap: 22px;
-      align-items: start;
-      margin-top: 28px;
+    .image-error {
+      display: flex;
+      width: 100%;
+      height: 100%;
+      padding: 14px;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: var(--red);
+      font: 14px/1.4 Arial, sans-serif;
+      overflow-wrap: anywhere;
     }
 
-    .puzzel3-panel {
-      min-width: 0;
-      padding: 18px;
-      border: 1px solid rgba(200, 166, 91, 0.4);
-      border-radius: 4px;
-      background: rgba(23, 22, 19, 0.55);
+    .board-heading {
+      margin-top: 30px;
     }
 
-    #board {
+    .board-panel {
+      margin-top: 12px;
+    }
+
+    /* Verzamelbord: negen vakken zonder tussenruimte. */
+    .board {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 7px;
-      margin-top: 18px;
+      grid-template-rows: repeat(3, minmax(0, 1fr));
+      gap: 0;
+      width: 100%;
+      max-width: 570px;
+      overflow: hidden;
+      border: 1px solid #9e9688;
+      border-radius: 0;
     }
 
-    #board .slot {
+    .board .slot {
       position: relative;
       display: flex;
       min-width: 0;
       min-height: 0;
+      width: auto;
       aspect-ratio: 1 / 1;
-      align-items: center;
-      justify-content: center;
       overflow: hidden;
       margin: 0;
       padding: 0;
-      border: 1px dashed rgba(200, 166, 91, 0.75);
-      border-radius: 2px;
-      background: rgba(0, 0, 0, 0.25);
-      color: var(--muted, #b9b0a0);
+      align-items: center;
+      justify-content: center;
+      border: 0;
+      border-radius: 0;
+      background: #f1ece2;
+      color: #292821;
+      font: inherit;
       cursor: pointer;
+      box-shadow: none;
     }
 
-    #board .slot:hover {
-      background: rgba(200, 166, 91, 0.1);
+    .board .slot:not(:nth-child(3n)) {
+      border-right: 1px solid #9e9688;
     }
 
-    #board .slot::before {
-      content: attr(data-label);
+    .board .slot:nth-child(-n+6) {
+      border-bottom: 1px solid #9e9688;
+    }
+
+    .board .slot:hover {
+      background: #f1ece2;
+    }
+
+    .slot-label {
       position: absolute;
-      top: 4px;
-      left: 5px;
       z-index: 2;
-      padding: 0 4px;
-      border-radius: 2px;
-      background: rgba(23, 22, 19, 0.85);
-      color: var(--gold-light, #e0c780);
-      font: bold 0.75rem Arial, sans-serif;
-      pointer-events: none;
+      top: 5px;
+      left: 6px;
+      padding: 3px 5px;
+      border-radius: 3px;
+      background: rgba(255, 253, 248, 0.9);
+      color: #4c473d;
+      font: bold 12px Arial, sans-serif;
     }
 
-    #board .slot img {
+    .slot img {
       display: block;
       width: 100%;
       height: 100%;
       object-fit: fill;
     }
 
-    #board .slot .empty {
-      padding: 4px;
-      color: var(--muted, #b9b0a0);
-      font: 0.75rem Arial, sans-serif;
-      text-align: center;
+    .empty {
+      color: #706d63;
+      font: 14px Arial, sans-serif;
     }
 
-    .puzzel3-actions {
+    .controls {
       display: flex;
       flex-wrap: wrap;
-      gap: 8px;
+      gap: 10px;
       margin-top: 14px;
     }
 
-    .puzzel3-actions button {
-      margin-top: 0;
+    /* Gewone knoppen in de stijl van Spoorzoeken. */
+    button.action {
+      display: inline-block;
+      width: auto;
+      margin-top: 16px;
+      padding: 11px 22px;
+      border: 1px solid var(--gold);
+      border-radius: 3px;
+      background: var(--gold);
+      color: #211c12;
+      font: bold 1rem Georgia, "Times New Roman", serif;
+      cursor: pointer;
+      box-shadow: none;
+    }
+
+    button.action:hover {
+      background: var(--gold-light);
+    }
+
+    button.action.secondary {
+      background: transparent;
+      color: var(--gold-light);
+    }
+
+    button.action.secondary:hover {
+      background: rgba(200, 166, 91, 0.12);
+    }
+
+    button:focus-visible {
+      outline: 3px solid var(--gold-light);
+      outline-offset: 3px;
+    }
+
+    button:disabled {
+      opacity: 0.55;
+      cursor: default;
     }
 
     #status {
       min-height: 1.5em;
-      margin-top: 12px;
-      color: var(--muted, #b9b0a0);
-      font-size: 0.9rem;
-      line-height: 1.5;
+      margin: 14px 0 0;
+      color: var(--muted);
+      font: 14px/1.45 Arial, sans-serif;
     }
 
-    /* Antwoordveld dat door puzzel-3.js wordt toegevoegd */
-    .puzzel3-answer-panel {
-      margin-top: 24px;
-      padding-top: 20px;
-      border-top: 1px solid rgba(200, 166, 91, 0.3);
+    .hint {
+      margin-top: 8px;
+      color: var(--muted);
+      font: 13px/1.45 Arial, sans-serif;
     }
 
+    code {
+      color: var(--gold-light);
+    }
+
+    /* Antwoordvraag die verschijnt nadat het bord is opgelost. */
     #puzzel3-answer {
-      box-sizing: border-box;
+      margin-top: 24px;
+      padding: clamp(20px, 4vw, 30px);
+      border: 1px solid var(--line);
+      border-radius: 5px;
+      background: rgba(36, 33, 27, 0.94);
+    }
+
+    #puzzel3-answer h2 {
+      margin-top: 0;
+    }
+
+    #puzzel3-answer label {
+      display: block;
+      margin: 12px 0 6px;
+      color: var(--gold-light);
+      font-weight: bold;
+    }
+
+    #puzzel3-answer input {
+      display: block;
       width: 100%;
+      max-width: 480px;
       min-height: 46px;
+      margin: 8px 0 12px;
       padding: 10px 12px;
       border: 1px solid #877650;
       border-radius: 3px;
       background: #171613;
-      color: #eee8dc;
+      color: var(--text);
       font: inherit;
     }
 
+    #puzzel3-answer input:focus {
+      outline: 2px solid var(--gold);
+      outline-offset: 2px;
+    }
+
+    #puzzel3-answer form button {
+      display: inline-block;
+      width: auto;
+      margin-top: 4px;
+      padding: 11px 22px;
+      border: 1px solid var(--gold);
+      border-radius: 3px;
+      background: var(--gold);
+      color: #211c12;
+      font: bold 1rem Georgia, "Times New Roman", serif;
+      cursor: pointer;
+    }
+
+    #puzzel3-answer-feedback {
+      margin: 14px 0 0;
+      font-family: Arial, sans-serif;
+    }
+
+    .success-feedback {
+      color: var(--green);
+      font-weight: bold;
+    }
+
+    .error-feedback {
+      color: #f06459;
+    }
+
+    footer {
+      padding: 20px;
+      color: var(--muted);
+      font-size: 0.85rem;
+      text-align: center;
+      border-top: 1px solid rgba(200, 166, 91, 0.2);
+    }
+
     @media (max-width: 760px) {
-      #gallery {
+      header {
+        padding-top: 22px;
+      }
+
+      main {
+        margin-top: 20px;
+      }
+
+      .panel {
+        padding: 20px;
+      }
+
+      .gallery {
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 10px;
       }
 
-      .puzzel3-workspace {
-        grid-template-columns: 1fr;
+      .source-card {
+        padding: 8px;
+      }
+
+      .source-title {
+        font-size: 0.95rem;
+      }
+
+      .board {
+        max-width: 100%;
       }
     }
 
     @media (max-width: 420px) {
-      #gallery {
-        gap: 7px;
+      .gallery {
+        grid-template-columns: 1fr;
       }
 
-      .source-card {
-        padding: 5px;
-      }
-
-      .puzzel3-panel {
-        padding: 10px;
-      }
-
-      .tile-number {
-        top: 2px;
-        left: 2px;
-        font-size: 0.6rem;
+      button.action,
+      #puzzel3-answer form button {
+        max-width: 100%;
       }
     }
   </style>
@@ -291,124 +524,149 @@
   </header>
 
   <main>
-    <!-- Introductie -->
-    <section id="puzzel3-intro" class="panel">
-      <p>
-        Bordeaux, een tussenstop. Vanaf het perron loop je met je
-        koffers een restaurant binnen, waar je aan tafel in gesprek
-        raakt met een handelaar, die met dezelfde trein op weg is
-        naar Spanje voor zaken. Hij wijst je op de 9 schilderijen
-        die aan de muur hangen. Grappig zegt hij. Behalve boter
-        kaas en eieren exporteer ik vooral dit merk.
-      </p>
+    <section id="introduction" class="panel">
+      <div class="intro-text">
+        <p>
+          Bordeaux, een tussenstop. Vanaf het perron loop je met je koffers
+          een restaurant binnen, waar je aan tafel in gesprek raakt met een
+          handelaar, die met dezelfde trein op weg is naar Spanje voor zaken.
+          Hij wijst je op de 9 schilderijen die aan de muur hangen. Grappig
+          zegt hij. Behalve boter kaas en eieren exporteer ik vooral dit merk.
+        </p>
+      </div>
 
-      <img
-        id="puzzel3-cafe-image"
-        class="puzzel3-intro-image"
-        src="Puzzel3_cafe.jpg"
-        alt="Een restaurant in Bordeaux waar een handelaar je op schilderijen aan de muur wijst"
-        role="button"
-        tabindex="0"
-        aria-label="Klik om puzzel 3 te openen"
-      >
+      <div class="cafe-intro">
+        <img
+          id="cafe-image"
+          class="story-image intro-image clickable-image"
+          src="Puzzel3_cafe.jpg"
+          alt="Het restaurant in Bordeaux, met negen lege schilderijlijsten aan de muur"
+          tabindex="0"
+          role="button"
+          aria-label="Klik om de puzzel met de negen afbeeldingen te openen"
+        >
 
-      <p class="puzzel3-image-hint">
-        Klik op de afbeelding om de schilderijen te bekijken.
-      </p>
+        <p class="image-hint">
+          Klik op de afbeelding om de negen schilderijen nader te bekijken.
+        </p>
+      </div>
     </section>
 
-    <!-- De interactieve puzzel verschijnt na het aanklikken van de afbeelding -->
     <section id="interactive-puzzle" class="panel">
-      <h2>reclame buiten de kaders</h2>
-
-      <p class="puzzel3-instruction">
-        De 9 schilderijen maken samen reclame voor het exportproduct
-        van de handelaar. Maak het plaatje compleet.
+      <p class="puzzle-instruction">
+        Bekijk de negen basisafbeeldingen. Sleep fragmenten naar het
+        verzamelbord met vakken A tot en met I. Je kunt ook op een
+        fragment klikken en daarna op het gewenste vak.
       </p>
 
-      <div id="gallery" aria-label="De negen basisafbeeldingen"></div>
+      <h2>De negen basisafbeeldingen</h2>
 
-      <div class="puzzel3-workspace">
-        <section class="puzzel3-panel">
-          <h2>Verzamelbord</h2>
+      <section
+        id="gallery"
+        class="gallery"
+        aria-label="Negen basisafbeeldingen met fragmenten">
+      </section>
 
-          <p>
-            Sleep fragmenten naar de vakken A tot en met I.
-            Je kunt ook op een fragment klikken en daarna op het
-            gewenste vak.
-          </p>
+      <h2 class="board-heading">Het verzamelbord</h2>
 
-          <div id="board" aria-label="Verzamelbord met negen vakken">
-            <button class="slot" data-index="0" data-label="A" type="button">
-              <span class="empty">Vak A</span>
-            </button>
-            <button class="slot" data-index="1" data-label="B" type="button">
-              <span class="empty">Vak B</span>
-            </button>
-            <button class="slot" data-index="2" data-label="C" type="button">
-              <span class="empty">Vak C</span>
-            </button>
-            <button class="slot" data-index="3" data-label="D" type="button">
-              <span class="empty">Vak D</span>
-            </button>
-            <button class="slot" data-index="4" data-label="E" type="button">
-              <span class="empty">Vak E</span>
-            </button>
-            <button class="slot" data-index="5" data-label="F" type="button">
-              <span class="empty">Vak F</span>
-            </button>
-            <button class="slot" data-index="6" data-label="G" type="button">
-              <span class="empty">Vak G</span>
-            </button>
-            <button class="slot" data-index="7" data-label="H" type="button">
-              <span class="empty">Vak H</span>
-            </button>
-            <button class="slot" data-index="8" data-label="I" type="button">
-              <span class="empty">Vak I</span>
-            </button>
-          </div>
+      <section class="board-panel">
+        <div id="board" class="board" aria-label="Verzamelbord">
+          <button class="slot" type="button" data-index="0" data-label="A" aria-label="Vak A">
+            <span class="slot-label">A</span>
+            <span class="empty">Sleep hier</span>
+          </button>
 
-          <div class="puzzel3-actions">
-            <button id="clear" class="secondary" type="button">
-              Leeg verzamelbord
-            </button>
-          </div>
+          <button class="slot" type="button" data-index="1" data-label="B" aria-label="Vak B">
+            <span class="slot-label">B</span>
+            <span class="empty">Sleep hier</span>
+          </button>
 
-          <p id="status" role="status" aria-live="polite">
-            Kies een fragment uit een van de negen afbeeldingen.
-          </p>
-        </section>
-      </div>
+          <button class="slot" type="button" data-index="2" data-label="C" aria-label="Vak C">
+            <span class="slot-label">C</span>
+            <span class="empty">Sleep hier</span>
+          </button>
+
+          <button class="slot" type="button" data-index="3" data-label="D" aria-label="Vak D">
+            <span class="slot-label">D</span>
+            <span class="empty">Sleep hier</span>
+          </button>
+
+          <button class="slot" type="button" data-index="4" data-label="E" aria-label="Vak E">
+            <span class="slot-label">E</span>
+            <span class="empty">Sleep hier</span>
+          </button>
+
+          <button class="slot" type="button" data-index="5" data-label="F" aria-label="Vak F">
+            <span class="slot-label">F</span>
+            <span class="empty">Sleep hier</span>
+          </button>
+
+          <button class="slot" type="button" data-index="6" data-label="G" aria-label="Vak G">
+            <span class="slot-label">G</span>
+            <span class="empty">Sleep hier</span>
+          </button>
+
+          <button class="slot" type="button" data-index="7" data-label="H" aria-label="Vak H">
+            <span class="slot-label">H</span>
+            <span class="empty">Sleep hier</span>
+          </button>
+
+          <button class="slot" type="button" data-index="8" data-label="I" aria-label="Vak I">
+            <span class="slot-label">I</span>
+            <span class="empty">Sleep hier</span>
+          </button>
+        </div>
+
+        <div class="controls">
+          <button id="clear" class="action secondary" type="button">
+            Verzamelbord leegmaken
+          </button>
+        </div>
+
+        <p id="status" role="status" aria-live="polite">
+          Afbeeldingen worden geladen…
+        </p>
+
+        <p class="hint">
+          De afbeeldingen worden geladen vanuit de map <code>puzzel3</code>.
+          Als een afbeelding ontbreekt, wordt dat bij die afbeelding gemeld.
+        </p>
+      </section>
     </section>
   </main>
 
   <footer>
-    Spoorzoeken · Een spoorwegmysterie · 1925
+    Spoorzoeken · Een spoorwegmysterie
   </footer>
 
-  <script src="puzzel-3.js"></script>
-
   <script>
-    (function () {
-      const intro = document.getElementById("puzzel3-intro");
-      const puzzle = document.getElementById("interactive-puzzle");
-      const image = document.getElementById("puzzel3-cafe-image");
+    (() => {
+      const cafeImage = document.getElementById("cafe-image");
+      const introduction = document.getElementById("introduction");
+      const interactivePuzzle = document.getElementById("interactive-puzzle");
 
-      function openPuzzle() {
-        intro.hidden = true;
-        puzzle.classList.add("visible");
-        window.scrollTo({ top: 0, behavior: "smooth" });
+      function openInteractivePuzzle() {
+        introduction.style.display = "none";
+        interactivePuzzle.style.display = "block";
+
+        // Breng de puzzel in beeld nadat de restaurantafbeelding is aangeklikt.
+        interactivePuzzle.scrollIntoView({
+          behavior: "smooth",
+          block: "start"
+        });
       }
 
-      image.addEventListener("click", openPuzzle);
+      cafeImage.addEventListener("click", openInteractivePuzzle);
 
-      image.addEventListener("keydown", function (event) {
+      cafeImage.addEventListener("keydown", event => {
         if (event.key === "Enter" || event.key === " ") {
           event.preventDefault();
-          openPuzzle();
+          openInteractivePuzzle();
         }
       });
     })();
   </script>
+
+  <script src="puzzel-3.js"></script>
 </body>
 </html>
