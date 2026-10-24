@@ -4,55 +4,355 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Puzzel 3 | Spoorzoeken</title>
+  <title>Spoorzoeken – Puzzel 3</title>
 
-  <link rel="stylesheet" href="css/stijl.css">
+  <style>
+    :root {
+      --bg: #f3efe7;
+      --panel: #fffdf8;
+      --ink: #292821;
+      --muted: #706d63;
+      --line: #c9c1b2;
+      --accent: #8c342b;
+    }
 
-  <script src="js/algemeen.js" defer></script>
-  <script src="js/puzzels.js" defer></script>
-  <script src="js/puzzelpagina.js" defer></script>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 24px;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: Georgia, "Times New Roman", serif;
+    }
+
+    main {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: clamp(1.8rem, 3vw, 2.6rem);
+    }
+
+    h2 {
+      margin: 28px 0 12px;
+      font-size: 1.35rem;
+    }
+
+    .intro {
+      max-width: 850px;
+      line-height: 1.55;
+      margin-bottom: 24px;
+    }
+
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .source-card,
+    .board-panel {
+      min-width: 0;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: var(--panel);
+    }
+
+    .source-title {
+      margin: 0 0 10px;
+      font-size: 1.05rem;
+    }
+
+    .image-grid {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      overflow: hidden;
+      background: #e8e2d7;
+      border-radius: 4px;
+    }
+
+    .image-grid > img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .tile-overlay {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(3, 1fr);
+    }
+
+    .tile {
+      position: relative;
+      min-width: 0;
+      min-height: 0;
+      padding: 0;
+      border: 1px dashed rgba(255, 255, 255, 0.95);
+      background: rgba(20, 20, 20, 0.035);
+      color: white;
+      text-shadow: 0 1px 3px #000;
+      cursor: grab;
+      touch-action: manipulation;
+    }
+
+    .tile:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    .tile:active {
+      cursor: grabbing;
+    }
+
+    .tile.selected {
+      outline: 4px solid #d18a27;
+      outline-offset: -4px;
+    }
+
+    .tile.used {
+      opacity: 0.35;
+    }
+
+    .tile-number {
+      position: absolute;
+      left: 5px;
+      top: 4px;
+      padding: 3px 4px;
+      border-radius: 3px;
+      background: rgba(0, 0, 0, 0.58);
+      font: bold 12px/1 Arial, sans-serif;
+    }
+
+    .image-error {
+      display: flex;
+      width: 100%;
+      height: 100%;
+      padding: 14px;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: var(--accent);
+      font: 14px/1.4 Arial, sans-serif;
+      overflow-wrap: anywhere;
+    }
+
+    .board-panel {
+      margin-top: 12px;
+    }
+
+    .board {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      max-width: 570px;
+    }
+
+    .slot {
+      position: relative;
+      display: flex;
+      min-width: 0;
+      aspect-ratio: 1 / 1;
+      overflow: hidden;
+      padding: 0;
+      align-items: center;
+      justify-content: center;
+      border: 2px dashed #9e9688;
+      border-radius: 4px;
+      background: #f1ece2;
+      cursor: pointer;
+    }
+
+    .slot-label {
+      position: absolute;
+      z-index: 2;
+      top: 5px;
+      left: 6px;
+      padding: 3px 5px;
+      border-radius: 3px;
+      background: rgba(255, 253, 248, 0.85);
+      color: #4c473d;
+      font: bold 12px Arial, sans-serif;
+    }
+
+    .slot img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: fill;
+    }
+
+    .empty {
+      color: var(--muted);
+      font: 14px Arial, sans-serif;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .action {
+      padding: 10px 15px;
+      border: 0;
+      border-radius: 5px;
+      background: var(--accent);
+      color: white;
+      font: 600 14px Arial, sans-serif;
+      cursor: pointer;
+    }
+
+    .action.secondary {
+      background: #5f5b51;
+    }
+
+    button:focus-visible {
+      outline: 3px solid #d18a27;
+      outline-offset: 2px;
+    }
+
+    #status {
+      min-height: 1.5em;
+      margin: 14px 0 0;
+      color: var(--muted);
+      font: 14px/1.45 Arial, sans-serif;
+    }
+
+    .hint {
+      margin-top: 8px;
+      color: var(--muted);
+      font: 13px/1.45 Arial, sans-serif;
+    }
+
+    @media (max-width: 760px) {
+      body {
+        padding: 14px;
+      }
+
+      .gallery {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      .source-card {
+        padding: 8px;
+      }
+
+      .source-title {
+        font-size: 0.95rem;
+      }
+
+      .board {
+        max-width: 100%;
+      }
+    }
+
+    @media (max-width: 420px) {
+      .gallery {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
 </head>
 
 <body>
-  <header>
-    <h1>Spoorzoeken</h1>
-    <p>Een spoorwegmysterie uit 1925</p>
-  </header>
-
   <main>
-    <section class="screen active">
-      <div class="panel">
-        <div class="eyebrow">Puzzel 3</div>
+    <h1>Puzzel 3 – Het verzamelbord</h1>
 
-        <h2>Het volgende spoor</h2>
+    <p class="intro">
+      Bekijk de negen basisafbeeldingen. Sleep fragmenten naar het
+      verzamelbord met vakken A tot en met I. Je kunt ook op een
+      fragment klikken en daarna op het gewenste vak.
+    </p>
 
-        <p>
-          Je hebt het volgende spoor gevonden. De reis gaat verder,
-          maar wat je onderweg zult ontdekken, moet nog blijken.
-        </p>
+    <h2>De negen basisafbeeldingen</h2>
 
-        <div class="question">
-          <h3>Puzzel 3</h3>
+    <section
+      id="gallery"
+      class="gallery"
+      aria-label="Negen basisafbeeldingen met fragmenten">
+    </section>
 
-          <p>
-            Deze pagina is klaar om de volgende scène, afbeelding
-            en puzzelvraag te ontvangen.
-          </p>
-        </div>
+    <h2>Het verzamelbord</h2>
 
-        <button
-          type="button"
-          class="secondary"
-          id="home-button"
-        >
-          Terug naar de start
+    <section class="board-panel">
+      <div id="board" class="board" aria-label="Verzamelbord">
+
+        <button class="slot" type="button" data-index="0" data-label="A" aria-label="Vak A">
+          <span class="slot-label">A</span>
+          <span class="empty">Sleep hier</span>
+        </button>
+
+        <button class="slot" type="button" data-index="1" data-label="B" aria-label="Vak B">
+          <span class="slot-label">B</span>
+          <span class="empty">Sleep hier</span>
+        </button>
+
+        <button class="slot" type="button" data-index="2" data-label="C" aria-label="Vak C">
+          <span class="slot-label">C</span>
+          <span class="empty">Sleep hier</span>
+        </button>
+
+        <button class="slot" type="button" data-index="3" data-label="D" aria-label="Vak D">
+          <span class="slot-label">D</span>
+          <span class="empty">Sleep hier</span>
+        </button>
+
+        <button class="slot" type="button" data-index="4" data-label="E" aria-label="Vak E">
+          <span class="slot-label">E</span>
+          <span class="empty">Sleep hier</span>
+        </button>
+
+        <button class="slot" type="button" data-index="5" data-label="F" aria-label="Vak F">
+          <span class="slot-label">F</span>
+          <span class="empty">Sleep hier</span>
+        </button>
+
+        <button class="slot" type="button" data-index="6" data-label="G" aria-label="Vak G">
+          <span class="slot-label">G</span>
+          <span class="empty">Sleep hier</span>
+        </button>
+
+        <button class="slot" type="button" data-index="7" data-label="H" aria-label="Vak H">
+          <span class="slot-label">H</span>
+          <span class="empty">Sleep hier</span>
+        </button>
+
+        <button class="slot" type="button" data-index="8" data-label="I" aria-label="Vak I">
+          <span class="slot-label">I</span>
+          <span class="empty">Sleep hier</span>
+        </button>
+
+      </div>
+
+      <div class="controls">
+        <button id="clear" class="action secondary" type="button">
+          Verzamelbord leegmaken
         </button>
       </div>
+
+      <p id="status" role="status" aria-live="polite">
+        Afbeeldingen worden geladen…
+      </p>
+
+      <p class="hint">
+        De afbeeldingen worden geladen vanuit de map <code>puzzel3</code>.
+        Als een afbeelding ontbreekt, wordt dat bij die afbeelding gemeld.
+      </p>
     </section>
   </main>
 
-  <footer>
-    Spoorzoeken · Een mysterie op het spoor door Europa · 1925
-  </footer>
+  <script src="puzzel-3.js"></script>
 </body>
 </html>
