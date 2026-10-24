@@ -2,10 +2,13 @@
 (() => {
   "use strict";
 
-  // Map met de negen afbeeldingen.
-  const IMAGE_FOLDER = "puzzel3";
+  // =========================================================
+  // PUZZEL 3 — HET VERZAMELBORD
+  // Het bord wordt vergrendeld zodra alle negen fragmenten
+  // op de juiste plek liggen.
+  // =========================================================
 
-  // Verander dit naar ".jpg" of ".webp" als dat de echte extensie is.
+  const IMAGE_FOLDER = "puzzel3";
   const EXTENSION = ".png";
 
   const sources = [
@@ -20,6 +23,22 @@
     { title: "9 – Besturen", file: "besturen" }
   ];
 
+  // De juiste combinatie van fragment en vak.
+  // slot is het vaknummer: A = 0, B = 1, enzovoort.
+  const correctPieces = [
+    { source: 9, tile: 1, slot: 0 }, // Besturen, fragment 1 -> A
+    { source: 8, tile: 2, slot: 1 }, // Fotograferen, fragment 2 -> B
+    { source: 7, tile: 3, slot: 2 }, // Feliciteren, fragment 3 -> C
+    { source: 5, tile: 4, slot: 3 }, // Vliegen, fragment 4 -> D
+    { source: 6, tile: 5, slot: 4 }, // Bloeien, fragment 5 -> E
+    { source: 4, tile: 6, slot: 5 }, // Dansen, fragment 6 -> F
+    { source: 3, tile: 7, slot: 6 }, // Skateboarden, fragment 7 -> G
+    { source: 2, tile: 8, slot: 7 }, // Lezen, fragment 8 -> H
+    { source: 1, tile: 9, slot: 8 }  // Ontbijten, fragment 9 -> I
+  ];
+
+  const correctAnswer = "chanel";
+
   const gallery = document.getElementById("gallery");
   const slots = Array.from(document.querySelectorAll(".slot"));
   const status = document.getElementById("status");
@@ -30,6 +49,11 @@
   let selectedPiece = null;
   let loadedCount = 0;
   let failedCount = 0;
+  let boardLocked = false;
+  let answerPanel = null;
+  let answerFeedback = null;
+  let answerInput = null;
+  let answerButton = null;
 
   function setStatus(message) {
     if (status) {
@@ -46,7 +70,8 @@
       const image = new Image();
 
       image.onload = () => resolve(image);
-      image.onerror = () => reject(new Error(`Afbeelding niet gevonden: ${path}`));
+      image.onerror = () =>
+        reject(new Error(`Afbeelding niet gevonden: ${path}`));
 
       image.src = path;
     });
@@ -59,8 +84,12 @@
 
     const sourceX = Math.round(image.naturalWidth * column / 3);
     const sourceY = Math.round(image.naturalHeight * row / 3);
-    const sourceRight = Math.round(image.naturalWidth * (column + 1) / 3);
-    const sourceBottom = Math.round(image.naturalHeight * (row + 1) / 3);
+    const sourceRight = Math.round(
+      image.naturalWidth * (column + 1) / 3
+    );
+    const sourceBottom = Math.round(
+      image.naturalHeight * (row + 1) / 3
+    );
 
     const canvas = document.createElement("canvas");
     canvas.width = 400;
@@ -129,6 +158,8 @@
   }
 
   function returnPiece(pieceId) {
+    if (boardLocked) return;
+
     const piece = pieces.get(pieceId);
 
     if (!piece) return;
@@ -146,6 +177,7 @@
   }
 
   function placePiece(pieceId, targetSlot) {
+    if (boardLocked) return;
     if (!pieces.has(pieceId) || !targetSlot) return;
 
     const piece = pieces.get(pieceId);
@@ -159,7 +191,7 @@
       }
     }
 
-    // Als het doelvak al gevuld is, komt dat fragment weer vrij.
+    // Maak een eventueel bezet doelvak vrij.
     const existingPieceId = targetSlot.dataset.pieceId;
 
     if (existingPieceId && existingPieceId !== pieceId) {
@@ -183,6 +215,12 @@
 
     selectedPiece = null;
 
+    // Controleer direct of het volledige bord goed ligt.
+    if (checkBoard()) {
+      lockBoard();
+      return;
+    }
+
     setStatus(
       `${piece.sourceTitle}, fragment ${piece.tile}, geplaatst op vak ${targetSlot.dataset.label}.`
     );
@@ -190,12 +228,19 @@
 
   function wireTile(button, pieceId) {
     button.addEventListener("dragstart", event => {
+      if (boardLocked) {
+        event.preventDefault();
+        return;
+      }
+
       event.dataTransfer.setData("text/plain", pieceId);
       event.dataTransfer.effectAllowed = "move";
       selectedPiece = pieceId;
     });
 
     button.addEventListener("click", () => {
+      if (boardLocked) return;
+
       document.querySelectorAll(".tile.selected").forEach(tile => {
         tile.classList.remove("selected");
       });
@@ -225,7 +270,10 @@
 
     imageArea.appendChild(message);
 
-    console.error(`Puzzel 3: ${path} kon niet worden geladen.`, error);
+    console.error(
+      `Puzzel 3: ${path} kon niet worden geladen.`,
+      error
+    );
 
     updateSummary();
   }
@@ -244,9 +292,8 @@
       );
     } else {
       setStatus(
-        `${loadedCount} van de sources.length afbeeldingen geladen; ` +
+        `${loadedCount} van de ${sources.length} afbeeldingen geladen; ` +
         `${failedCount} afbeelding(en) ontbreken. De overige afbeeldingen werken wel.`
-          .replace("sources.length", String(sources.length))
       );
     }
   }
@@ -298,6 +345,7 @@
         pieces.set(pieceId, {
           id: pieceId,
           sourceTitle: source.title,
+          sourceNumber: index + 1,
           tile,
           data,
           slot: null
@@ -328,19 +376,149 @@
       updateSummary();
 
     } catch (error) {
-      // Een fout bij deze afbeelding blokkeert de andere acht niet.
       showImageError(source, card, path, error);
     }
+  }
+
+  // Controleert of elk vak het juiste fragment bevat.
+  function checkBoard() {
+    if (slots.length !== correctPieces.length) return false;
+
+    return correctPieces.every(expected => {
+      const slot = slots[expected.slot];
+      if (!slot) return false;
+
+      const expectedPieceId =
+        `image-${expected.source}-tile-${expected.tile}`;
+
+      return slot.dataset.pieceId === expectedPieceId;
+    });
+  }
+
+  function lockBoard() {
+    if (boardLocked) return;
+
+    boardLocked = true;
+    selectedPiece = null;
+
+    document.querySelectorAll(".tile.selected").forEach(button => {
+      button.classList.remove("selected");
+    });
+
+    // Vergrendel alle fragmenten, vakken en de leegmaakknop.
+    document.querySelectorAll(".tile").forEach(button => {
+      button.disabled = true;
+      button.draggable = false;
+    });
+
+    slots.forEach(slot => {
+      slot.setAttribute("aria-disabled", "true");
+      slot.style.cursor = "default";
+    });
+
+    clearButton.disabled = true;
+
+    setStatus(
+      "Uitstekend! Alle negen fragmenten liggen op de juiste plek. Het bord is vergrendeld."
+    );
+
+    showAnswerPanel();
+  }
+
+  function showAnswerPanel() {
+    if (answerPanel) {
+      answerPanel.hidden = false;
+      answerInput.focus();
+      return;
+    }
+
+    answerPanel = document.createElement("section");
+    answerPanel.id = "puzzel3-answer";
+    answerPanel.setAttribute("aria-labelledby", "puzzel3-question");
+
+    answerPanel.style.marginTop = "24px";
+    answerPanel.style.padding = "20px";
+    answerPanel.style.border = "1px solid currentColor";
+    answerPanel.style.borderRadius = "8px";
+
+    const question = document.createElement("h2");
+    question.id = "puzzel3-question";
+    question.textContent =
+      "Welk merk exporteert de handelaar naar Spanje?";
+
+    const form = document.createElement("form");
+    form.id = "puzzel3-answer-form";
+
+    answerInput = document.createElement("input");
+    answerInput.id = "puzzel3-answer-input";
+    answerInput.name = "answer";
+    answerInput.type = "text";
+    answerInput.autocomplete = "off";
+    answerInput.required = true;
+    answerInput.setAttribute("aria-label", "Jouw antwoord");
+    answerInput.placeholder = "Vul het merk in";
+    answerInput.style.marginRight = "8px";
+    answerInput.style.marginBottom = "8px";
+    answerInput.style.maxWidth = "100%";
+
+    answerButton = document.createElement("button");
+    answerButton.type = "submit";
+    answerButton.textContent = "Antwoord controleren";
+
+    answerFeedback = document.createElement("p");
+    answerFeedback.id = "puzzel3-answer-feedback";
+    answerFeedback.setAttribute("aria-live", "polite");
+
+    form.appendChild(answerInput);
+    form.appendChild(answerButton);
+    form.appendChild(answerFeedback);
+
+    form.addEventListener("submit", event => {
+      event.preventDefault();
+
+      if (answerInput.value.trim().toLocaleLowerCase("nl-NL") === correctAnswer) {
+        answerFeedback.textContent = "Goed antwoord!";
+        answerFeedback.style.color = "green";
+        answerInput.disabled = true;
+        answerButton.disabled = true;
+
+        // Er wordt geen volgende pagina geopend zonder dat die
+        // expliciet in deze puzzel is ingesteld.
+      } else {
+        answerFeedback.textContent = "Dat is niet het goede antwoord. Probeer het opnieuw.";
+        answerFeedback.style.color = "red";
+        answerInput.select();
+        answerInput.focus();
+      }
+    });
+
+    answerPanel.appendChild(question);
+    answerPanel.appendChild(form);
+
+    // Plaats de vraag direct na het verzamelbord.
+    const board = document.getElementById("board");
+
+    if (board && board.parentNode) {
+      board.parentNode.insertBefore(answerPanel, board.nextSibling);
+    } else {
+      document.body.appendChild(answerPanel);
+    }
+
+    answerInput.focus();
   }
 
   function setupBoard() {
     slots.forEach(slot => {
       slot.addEventListener("dragover", event => {
+        if (boardLocked) return;
+
         event.preventDefault();
         event.dataTransfer.dropEffect = "move";
       });
 
       slot.addEventListener("drop", event => {
+        if (boardLocked) return;
+
         event.preventDefault();
 
         const pieceId =
@@ -352,6 +530,8 @@
       });
 
       slot.addEventListener("click", () => {
+        if (boardLocked) return;
+
         if (selectedPiece) {
           placePiece(selectedPiece, slot);
           return;
@@ -363,12 +543,16 @@
         if (pieceId) {
           returnPiece(pieceId);
           renderSlot(slot);
-          setStatus("Fragment teruggehaald. Je kunt een ander fragment kiezen.");
+          setStatus(
+            "Fragment teruggehaald. Je kunt een ander fragment kiezen."
+          );
         }
       });
     });
 
     clearButton.addEventListener("click", () => {
+      if (boardLocked) return;
+
       slots.forEach(slot => {
         const pieceId = slot.dataset.pieceId;
 
@@ -402,7 +586,6 @@
 
     setupBoard();
 
-    // Alle afbeeldingen worden onafhankelijk geladen.
     await Promise.all(
       sources.map((source, index) => buildSourceCard(source, index))
     );
