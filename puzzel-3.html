@@ -4,16 +4,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Spoorzoeken – Puzzel 3</title>
+  <title>Spoorzoeken – Puzzel 3: Lading op weg naar Spanje</title>
 
   <style>
     :root {
-      --bg: #f3efe7;
-      --panel: #fffdf8;
-      --ink: #292821;
-      --muted: #706d63;
-      --line: #c9c1b2;
-      --accent: #8c342b;
+      --background: #171613;
+      --panel: #24211b;
+      --gold: #c8a65b;
+      --gold-light: #e0c780;
+      --text: #eee8dc;
+      --muted: #b9b0a0;
+      --red: #c7463b;
+      --green: #88b58a;
+      --line: rgba(200, 166, 91, 0.4);
     }
 
     * {
@@ -22,61 +25,125 @@
 
     body {
       margin: 0;
-      padding: 24px;
-      background: var(--bg);
-      color: var(--ink);
+      min-height: 100vh;
+      background: radial-gradient(
+        ellipse at top,
+        #383024 0%,
+        var(--background) 65%
+      );
+      color: var(--text);
       font-family: Georgia, "Times New Roman", serif;
+      line-height: 1.7;
+    }
+
+    header {
+      padding: 28px 20px 16px;
+      text-align: center;
+      border-bottom: 1px solid rgba(200, 166, 91, 0.35);
+    }
+
+    header p {
+      margin: 0;
+      color: var(--muted);
+      font-style: italic;
+    }
+
+    header .eyebrow {
+      margin-bottom: 4px;
+      color: var(--gold);
+      font-size: 0.82rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      font-style: normal;
+    }
+
+    header h1 {
+      margin: 0;
+      color: var(--gold-light);
+      font-size: clamp(2rem, 5vw, 3.3rem);
+      line-height: 1.25;
     }
 
     main {
-      max-width: 1400px;
-      margin: 0 auto;
-    }
-
-    h1 {
-      margin: 0 0 8px;
-      font-size: clamp(1.8rem, 3vw, 2.6rem);
+      width: min(900px, calc(100% - 32px));
+      margin: 32px auto 60px;
     }
 
     h2 {
-      margin: 28px 0 12px;
-      font-size: 1.35rem;
+      margin-top: 0;
+      color: var(--gold-light);
+      font-size: clamp(1.6rem, 4vw, 2.2rem);
+      line-height: 1.25;
     }
 
-    .intro {
-      max-width: 850px;
-      line-height: 1.55;
-      margin-bottom: 24px;
+    h3 {
+      color: var(--gold-light);
     }
 
-    /* Introductieafbeelding */
+    p {
+      margin: 0 0 1.1em;
+    }
+
+    .panel {
+      padding: clamp(20px, 4vw, 38px);
+      background: rgba(36, 33, 27, 0.94);
+      border: 1px solid var(--line);
+      border-radius: 5px;
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.25);
+    }
+
+    .intro-text {
+      margin-bottom: 20px;
+    }
+
+    /* Restaurantafbeelding bij de introductie. */
     .cafe-intro {
-      max-width: 1100px;
-      margin: 0 auto 24px;
+      margin: 24px 0 0;
     }
 
-    #cafe-image {
+    .story-image {
       display: block;
       width: 100%;
-      height: auto;
-      border: 1px solid var(--line);
-      cursor: pointer;
+      max-height: 620px;
+      margin: 24px auto;
+      object-fit: contain;
+      border: 1px solid rgba(200, 166, 91, 0.35);
+      background: #111;
     }
 
-    #cafe-image:focus-visible {
-      outline: 3px solid #d18a27;
+    .intro-image {
+      max-height: 480px;
+    }
+
+    .clickable-image {
+      cursor: pointer;
+      transition: opacity 0.2s ease;
+    }
+
+    .clickable-image:hover {
+      opacity: 0.88;
+    }
+
+    .clickable-image:focus-visible {
+      outline: 3px solid var(--gold-light);
       outline-offset: 4px;
     }
 
-    .image-instruction {
-      margin: 8px 0 0;
+    .image-hint {
+      margin-top: -16px;
       color: var(--muted);
-      font: 14px/1.45 Arial, sans-serif;
+      font-size: 0.9rem;
+      font-style: italic;
+      text-align: center;
     }
 
-    /* De interactieve puzzel is aanvankelijk verborgen. */
+    /* De interactieve puzzel begint verborgen. */
     #interactive-puzzle {
       display: none;
+    }
+
+    .puzzle-instruction {
+      margin-bottom: 24px;
     }
 
     .gallery {
@@ -90,13 +157,14 @@
       min-width: 0;
       padding: 12px;
       border: 1px solid var(--line);
-      border-radius: 10px;
-      background: var(--panel);
+      border-radius: 5px;
+      background: rgba(36, 33, 27, 0.94);
     }
 
     .source-title {
       margin: 0 0 10px;
       font-size: 1.05rem;
+      line-height: 1.4;
     }
 
     .image-grid {
@@ -105,7 +173,8 @@
       aspect-ratio: 1 / 1;
       overflow: hidden;
       background: #e8e2d7;
-      border-radius: 4px;
+      border: 1px solid rgba(200, 166, 91, 0.3);
+      border-radius: 3px;
     }
 
     .image-grid > img {
@@ -124,34 +193,45 @@
       gap: 0;
     }
 
-    .tile {
+    /* Fragmentknoppen: eigen opmaak, los van de gewone knoppen. */
+    .tile-overlay .tile {
       position: relative;
+      display: block;
       min-width: 0;
       min-height: 0;
+      width: auto;
+      margin: 0;
       padding: 0;
       border: 1px dashed rgba(255, 255, 255, 0.95);
+      border-radius: 0;
       background: rgba(20, 20, 20, 0.035);
       color: white;
+      font: inherit;
       text-shadow: 0 1px 3px #000;
       cursor: grab;
       touch-action: manipulation;
+      box-shadow: none;
     }
 
-    .tile:hover {
+    .tile-overlay .tile:hover {
       background: rgba(255, 255, 255, 0.15);
     }
 
-    .tile:active {
+    .tile-overlay .tile:active {
       cursor: grabbing;
     }
 
-    .tile.selected {
+    .tile-overlay .tile.selected {
       outline: 4px solid #d18a27;
       outline-offset: -4px;
     }
 
-    .tile.used {
+    .tile-overlay .tile.used {
       opacity: 0.35;
+    }
+
+    .tile-overlay .tile:disabled {
+      cursor: default;
     }
 
     .tile-number {
@@ -160,8 +240,10 @@
       top: 4px;
       padding: 3px 4px;
       border-radius: 3px;
-      background: rgba(0, 0, 0, 0.58);
+      background: rgba(0, 0, 0, 0.65);
+      color: white;
       font: bold 12px/1 Arial, sans-serif;
+      text-shadow: none;
     }
 
     .image-error {
@@ -172,16 +254,20 @@
       align-items: center;
       justify-content: center;
       text-align: center;
-      color: var(--accent);
+      color: var(--red);
       font: 14px/1.4 Arial, sans-serif;
       overflow-wrap: anywhere;
+    }
+
+    .board-heading {
+      margin-top: 30px;
     }
 
     .board-panel {
       margin-top: 12px;
     }
 
-    /* Het verzamelbord: 3 x 3 zonder tussenruimtes. */
+    /* Verzamelbord: negen vakken zonder tussenruimte. */
     .board {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -194,28 +280,37 @@
       border-radius: 0;
     }
 
-    .slot {
+    .board .slot {
       position: relative;
       display: flex;
       min-width: 0;
       min-height: 0;
+      width: auto;
       aspect-ratio: 1 / 1;
       overflow: hidden;
+      margin: 0;
       padding: 0;
       align-items: center;
       justify-content: center;
       border: 0;
       border-radius: 0;
       background: #f1ece2;
+      color: #292821;
+      font: inherit;
       cursor: pointer;
+      box-shadow: none;
     }
 
-    .slot:not(:nth-child(3n)) {
+    .board .slot:not(:nth-child(3n)) {
       border-right: 1px solid #9e9688;
     }
 
-    .slot:nth-child(-n+6) {
+    .board .slot:nth-child(-n+6) {
       border-bottom: 1px solid #9e9688;
+    }
+
+    .board .slot:hover {
+      background: #f1ece2;
     }
 
     .slot-label {
@@ -225,7 +320,7 @@
       left: 6px;
       padding: 3px 5px;
       border-radius: 3px;
-      background: rgba(255, 253, 248, 0.85);
+      background: rgba(255, 253, 248, 0.9);
       color: #4c473d;
       font: bold 12px Arial, sans-serif;
     }
@@ -238,7 +333,7 @@
     }
 
     .empty {
-      color: var(--muted);
+      color: #706d63;
       font: 14px Arial, sans-serif;
     }
 
@@ -249,23 +344,42 @@
       margin-top: 14px;
     }
 
-    .action {
-      padding: 10px 15px;
-      border: 0;
-      border-radius: 5px;
-      background: var(--accent);
-      color: white;
-      font: 600 14px Arial, sans-serif;
+    /* Gewone knoppen in de stijl van Spoorzoeken. */
+    button.action {
+      display: inline-block;
+      width: auto;
+      margin-top: 16px;
+      padding: 11px 22px;
+      border: 1px solid var(--gold);
+      border-radius: 3px;
+      background: var(--gold);
+      color: #211c12;
+      font: bold 1rem Georgia, "Times New Roman", serif;
       cursor: pointer;
+      box-shadow: none;
     }
 
-    .action.secondary {
-      background: #5f5b51;
+    button.action:hover {
+      background: var(--gold-light);
+    }
+
+    button.action.secondary {
+      background: transparent;
+      color: var(--gold-light);
+    }
+
+    button.action.secondary:hover {
+      background: rgba(200, 166, 91, 0.12);
     }
 
     button:focus-visible {
-      outline: 3px solid #d18a27;
-      outline-offset: 2px;
+      outline: 3px solid var(--gold-light);
+      outline-offset: 3px;
+    }
+
+    button:disabled {
+      opacity: 0.55;
+      cursor: default;
     }
 
     #status {
@@ -281,9 +395,95 @@
       font: 13px/1.45 Arial, sans-serif;
     }
 
+    code {
+      color: var(--gold-light);
+    }
+
+    /* Antwoordvraag die verschijnt nadat het bord is opgelost. */
+    #puzzel3-answer {
+      margin-top: 24px;
+      padding: clamp(20px, 4vw, 30px);
+      border: 1px solid var(--line);
+      border-radius: 5px;
+      background: rgba(36, 33, 27, 0.94);
+    }
+
+    #puzzel3-answer h2 {
+      margin-top: 0;
+    }
+
+    #puzzel3-answer label {
+      display: block;
+      margin: 12px 0 6px;
+      color: var(--gold-light);
+      font-weight: bold;
+    }
+
+    #puzzel3-answer input {
+      display: block;
+      width: 100%;
+      max-width: 480px;
+      min-height: 46px;
+      margin: 8px 0 12px;
+      padding: 10px 12px;
+      border: 1px solid #877650;
+      border-radius: 3px;
+      background: #171613;
+      color: var(--text);
+      font: inherit;
+    }
+
+    #puzzel3-answer input:focus {
+      outline: 2px solid var(--gold);
+      outline-offset: 2px;
+    }
+
+    #puzzel3-answer form button {
+      display: inline-block;
+      width: auto;
+      margin-top: 4px;
+      padding: 11px 22px;
+      border: 1px solid var(--gold);
+      border-radius: 3px;
+      background: var(--gold);
+      color: #211c12;
+      font: bold 1rem Georgia, "Times New Roman", serif;
+      cursor: pointer;
+    }
+
+    #puzzel3-answer-feedback {
+      margin: 14px 0 0;
+      font-family: Arial, sans-serif;
+    }
+
+    .success-feedback {
+      color: var(--green);
+      font-weight: bold;
+    }
+
+    .error-feedback {
+      color: #f06459;
+    }
+
+    footer {
+      padding: 20px;
+      color: var(--muted);
+      font-size: 0.85rem;
+      text-align: center;
+      border-top: 1px solid rgba(200, 166, 91, 0.2);
+    }
+
     @media (max-width: 760px) {
-      body {
-        padding: 14px;
+      header {
+        padding-top: 22px;
+      }
+
+      main {
+        margin-top: 20px;
+      }
+
+      .panel {
+        padding: 20px;
       }
 
       .gallery {
@@ -308,45 +508,58 @@
       .gallery {
         grid-template-columns: 1fr;
       }
+
+      button.action,
+      #puzzel3-answer form button {
+        max-width: 100%;
+      }
     }
   </style>
 </head>
 
 <body>
-  <main>
-    <h1>Puzzel 3 – Het verzamelbord</h1>
+  <header>
+    <p class="eyebrow">Puzzel 3</p>
+    <h1>Lading op weg naar Spanje</h1>
+  </header>
 
-    <section id="introduction">
-      <p class="intro">
-        Bordeaux, een tussenstop. Vanaf het perron loop je met je koffers
-        een restaurant binnen, waar je aan tafel in gesprek raakt met een
-        handelaar, die met dezelfde trein op weg is naar Spanje voor zaken.
-        Hij wijst je op de 9 schilderijen die aan de muur hangen. Grappig
-        zegt hij. Behalve boter kaas en eieren exporteer ik vooral dit merk.
-      </p>
+  <main>
+    <section id="introduction" class="panel">
+      <div class="intro-text">
+        <p>
+          Bordeaux, een tussenstop. Vanaf het perron loop je met je koffers
+          een restaurant binnen, waar je aan tafel in gesprek raakt met een
+          handelaar, die met dezelfde trein op weg is naar Spanje voor zaken.
+          Hij wijst je op de 9 schilderijen die aan de muur hangen. Grappig
+          zegt hij. Behalve boter kaas en eieren exporteer ik vooral dit merk.
+        </p>
+      </div>
 
       <div class="cafe-intro">
         <img
           id="cafe-image"
+          class="story-image intro-image clickable-image"
           src="Puzzel3_cafe.jpg"
           alt="Het restaurant in Bordeaux, met negen lege schilderijlijsten aan de muur"
           tabindex="0"
           role="button"
           aria-label="Klik om de puzzel met de negen afbeeldingen te openen"
         >
-        <p class="image-instruction">
+
+        <p class="image-hint">
           Klik op de afbeelding om de negen schilderijen nader te bekijken.
         </p>
       </div>
     </section>
 
-    <section id="interactive-puzzle">
-      <h2>De negen basisafbeeldingen</h2>
-
-      <p class="intro">
-        Sleep fragmenten naar het verzamelbord met vakken A tot en met I.
-        Je kunt ook op een fragment klikken en daarna op het gewenste vak.
+    <section id="interactive-puzzle" class="panel">
+      <p class="puzzle-instruction">
+        Bekijk de negen basisafbeeldingen. Sleep fragmenten naar het
+        verzamelbord met vakken A tot en met I. Je kunt ook op een
+        fragment klikken en daarna op het gewenste vak.
       </p>
+
+      <h2>De negen basisafbeeldingen</h2>
 
       <section
         id="gallery"
@@ -354,7 +567,7 @@
         aria-label="Negen basisafbeeldingen met fragmenten">
       </section>
 
-      <h2>Het verzamelbord</h2>
+      <h2 class="board-heading">Het verzamelbord</h2>
 
       <section class="board-panel">
         <div id="board" class="board" aria-label="Verzamelbord">
@@ -422,24 +635,36 @@
     </section>
   </main>
 
+  <footer>
+    Spoorzoeken · Een spoorwegmysterie
+  </footer>
+
   <script>
-    const cafeImage = document.getElementById("cafe-image");
-    const introduction = document.getElementById("introduction");
-    const interactivePuzzle = document.getElementById("interactive-puzzle");
+    (() => {
+      const cafeImage = document.getElementById("cafe-image");
+      const introduction = document.getElementById("introduction");
+      const interactivePuzzle = document.getElementById("interactive-puzzle");
 
-    function openInteractivePuzzle() {
-      introduction.style.display = "none";
-      interactivePuzzle.style.display = "block";
-    }
+      function openInteractivePuzzle() {
+        introduction.style.display = "none";
+        interactivePuzzle.style.display = "block";
 
-    cafeImage.addEventListener("click", openInteractivePuzzle);
-
-    cafeImage.addEventListener("keydown", function (event) {
-      if (event.key === "Enter" || event.key === " ") {
-        event.preventDefault();
-        openInteractivePuzzle();
+        // Breng de puzzel in beeld nadat de restaurantafbeelding is aangeklikt.
+        interactivePuzzle.scrollIntoView({
+          behavior: "smooth",
+          block: "start"
+        });
       }
-    });
+
+      cafeImage.addEventListener("click", openInteractivePuzzle);
+
+      cafeImage.addEventListener("keydown", event => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          openInteractivePuzzle();
+        }
+      });
+    })();
   </script>
 
   <script src="puzzel-3.js"></script>
