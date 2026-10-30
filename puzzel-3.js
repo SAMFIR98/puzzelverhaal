@@ -6,6 +6,7 @@
   // PUZZEL 3 — HET VERZAMELBORD
   // De negen basisafbeeldingen worden willekeurig gerangschikt.
   // De oorspronkelijke nummers blijven intern behouden.
+  // De antwoordcontrole verloopt via Cloudflare.
   // =========================================================
 
   const IMAGE_FOLDER = "puzzel3";
@@ -26,18 +27,16 @@
   // De juiste combinatie van fragment en vak.
   // slot is het vaknummer: A = 0, B = 1, enzovoort.
   const correctPieces = [
-    { source: 9, tile: 1, slot: 0 }, // Besturen, fragment 1 -> A
-    { source: 8, tile: 2, slot: 1 }, // Fotograferen, fragment 2 -> B
-    { source: 7, tile: 3, slot: 2 }, // Feliciteren, fragment 3 -> C
-    { source: 5, tile: 4, slot: 3 }, // Vliegen, fragment 4 -> D
-    { source: 6, tile: 5, slot: 4 }, // Bloeien, fragment 5 -> E
-    { source: 4, tile: 6, slot: 5 }, // Dansen, fragment 6 -> F
-    { source: 3, tile: 7, slot: 6 }, // Skateboarden, fragment 7 -> G
-    { source: 2, tile: 8, slot: 7 }, // Lezen, fragment 8 -> H
-    { source: 1, tile: 9, slot: 8 }  // Ontbijten, fragment 9 -> I
+    { source: 9, tile: 1, slot: 0 }, // Besturen -> A
+    { source: 8, tile: 2, slot: 1 }, // Fotograferen -> B
+    { source: 7, tile: 3, slot: 2 }, // Feliciteren -> C
+    { source: 5, tile: 4, slot: 3 }, // Vliegen -> D
+    { source: 6, tile: 5, slot: 4 }, // Bloeien -> E
+    { source: 4, tile: 6, slot: 5 }, // Dansen -> F
+    { source: 3, tile: 7, slot: 6 }, // Skateboarden -> G
+    { source: 2, tile: 8, slot: 7 }, // Lezen -> H
+    { source: 1, tile: 9, slot: 8 }  // Ontbijten -> I
   ];
-
-  const correctAnswer = "chanel";
 
   const gallery = document.getElementById("gallery");
   const slots = Array.from(document.querySelectorAll(".slot"));
@@ -56,16 +55,17 @@
   let failedCount = 0;
   let boardLocked = false;
 
-  // =========================================================
-  // WILLEKEURIGE VOLGORDE VAN DE BASISAFBEELDINGEN
-  // =========================================================
+  /* ---------------------------------------------------------
+     WILLEKEURIGE VOLGORDE
+     --------------------------------------------------------- */
 
   function shuffleSources(array) {
     const shuffled = [...array];
 
-    // Fisher-Yates: iedere afbeelding krijgt een willekeurige plek.
     for (let i = shuffled.length - 1; i > 0; i--) {
-      const randomIndex = Math.floor(Math.random() * (i + 1));
+      const randomIndex = Math.floor(
+        Math.random() * (i + 1)
+      );
 
       [shuffled[i], shuffled[randomIndex]] =
         [shuffled[randomIndex], shuffled[i]];
@@ -80,9 +80,9 @@
     }
   }
 
-  // =========================================================
-  // ANTWOORDFORMULIER
-  // =========================================================
+  /* ---------------------------------------------------------
+     ANTWOORD CONTROLEREN VIA CLOUDFLARE
+     --------------------------------------------------------- */
 
   function setupAnswerForm() {
     if (!answerForm || !answerInput || !answerFeedback) {
@@ -92,31 +92,103 @@
       return;
     }
 
-    answerForm.addEventListener("submit", event => {
+    const answerButton = answerForm.querySelector(
+      'button[type="submit"]'
+    );
+
+    answerForm.addEventListener("submit", async event => {
       event.preventDefault();
 
-      const submittedAnswer = answerInput.value
-        .trim()
-        .toLocaleLowerCase("nl-NL");
+      const submittedAnswer = answerInput.value.trim();
 
-      if (submittedAnswer === correctAnswer) {
-        // Het juiste antwoord brengt de speler direct naar puzzel 4.
-        window.location.assign("puzzel-4.html");
+      if (!submittedAnswer) {
+        answerInput.focus();
         return;
       }
 
-      answerFeedback.textContent =
-        "Dat is niet het goede antwoord. Probeer het opnieuw.";
+      if (answerButton) {
+        answerButton.disabled = true;
+      }
 
-      answerFeedback.className = "error-feedback";
-      answerInput.select();
-      answerInput.focus();
+      answerFeedback.textContent = "";
+      answerFeedback.className = "";
+
+      try {
+        const response = await fetch("/api/answer", {
+          method: "POST",
+          credentials: "same-origin",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            puzzleNumber: 3,
+            answer: submittedAnswer
+          })
+        });
+
+        let resultaat;
+
+        try {
+          resultaat = await response.json();
+        } catch {
+          throw new Error("Ongeldig antwoord van de server.");
+        }
+
+        if (!response.ok || !resultaat.ok) {
+          if (resultaat.code === "wrong_answer") {
+            answerFeedback.textContent =
+              "Dat is niet het goede antwoord. Probeer het opnieuw.";
+
+            answerFeedback.className = "error-feedback";
+
+            answerInput.select();
+            answerInput.focus();
+
+          } else {
+            answerFeedback.textContent =
+              "De antwoordcontrole is momenteel niet beschikbaar. " +
+              "Controleer je verbinding en probeer het opnieuw.";
+
+            answerFeedback.className = "error-feedback";
+          }
+
+          return;
+        }
+
+        answerInput.value = "";
+
+        if (resultaat.nextPage) {
+          window.location.assign(resultaat.nextPage);
+          return;
+        }
+
+        if (resultaat.completed) {
+          answerFeedback.textContent =
+            "Uitstekend! Je hebt de reis voltooid.";
+
+          answerFeedback.className = "success-feedback";
+        }
+
+      } catch (error) {
+        console.error("Spoorzoeken:", error);
+
+        answerFeedback.textContent =
+          "De antwoordcontrole kon niet worden uitgevoerd. " +
+          "Controleer je verbinding en probeer het opnieuw.";
+
+        answerFeedback.className = "error-feedback";
+
+      } finally {
+        if (answerButton) {
+          answerButton.disabled = false;
+        }
+      }
     });
   }
 
-  // =========================================================
-  // AFBEELDINGEN LADEN EN FRAGMENTEN MAKEN
-  // =========================================================
+  /* ---------------------------------------------------------
+     AFBEELDINGEN LADEN EN FRAGMENTEN MAKEN
+     --------------------------------------------------------- */
 
   function getImagePath(source) {
     return `${IMAGE_FOLDER}/${source.file}${EXTENSION}`;
@@ -127,8 +199,10 @@
       const image = new Image();
 
       image.onload = () => resolve(image);
-      image.onerror = () =>
+
+      image.onerror = () => {
         reject(new Error(`Afbeelding niet gevonden: ${path}`));
+      };
 
       image.src = path;
     });
@@ -139,8 +213,13 @@
     const column = (tileNumber - 1) % 3;
     const row = Math.floor((tileNumber - 1) / 3);
 
-    const sourceX = Math.round(image.naturalWidth * column / 3);
-    const sourceY = Math.round(image.naturalHeight * row / 3);
+    const sourceX = Math.round(
+      image.naturalWidth * column / 3
+    );
+
+    const sourceY = Math.round(
+      image.naturalHeight * row / 3
+    );
 
     const sourceRight = Math.round(
       image.naturalWidth * (column + 1) / 3
@@ -175,9 +254,9 @@
     return canvas.toDataURL("image/png");
   }
 
-  // =========================================================
-  // VERZAMELBORD
-  // =========================================================
+  /* ---------------------------------------------------------
+     VERZAMELBORD
+     --------------------------------------------------------- */
 
   function renderSlot(slot, pieceId = null) {
     slot.innerHTML = "";
@@ -185,6 +264,7 @@
     const label = document.createElement("span");
     label.className = "slot-label";
     label.textContent = slot.dataset.label;
+
     slot.appendChild(label);
 
     delete slot.dataset.pieceId;
@@ -193,6 +273,7 @@
       const empty = document.createElement("span");
       empty.className = "empty";
       empty.textContent = "Sleep hier";
+
       slot.appendChild(empty);
       return;
     }
@@ -298,6 +379,7 @@
 
       event.dataTransfer.setData("text/plain", pieceId);
       event.dataTransfer.effectAllowed = "move";
+
       selectedPiece = pieceId;
     });
 
@@ -319,9 +401,9 @@
     });
   }
 
-  // =========================================================
-  // BASISAFBEELDINGEN OPBOUWEN
-  // =========================================================
+  /* ---------------------------------------------------------
+     BASISAFBEELDINGEN OPBOUWEN
+     --------------------------------------------------------- */
 
   function showImageError(source, card, path, error) {
     failedCount++;
@@ -331,6 +413,7 @@
 
     const message = document.createElement("div");
     message.className = "image-error";
+
     message.textContent =
       `Deze afbeelding kan niet worden geladen: ${path}. ` +
       "Controleer de bestandsnaam, extensie en map.";
@@ -350,6 +433,7 @@
       setStatus(
         `Afbeeldingen laden… ${loadedCount} geladen, ${failedCount} niet beschikbaar.`
       );
+
       return;
     }
 
@@ -374,7 +458,8 @@
     const title = document.createElement("h3");
     title.className = "source-title";
 
-    // Alleen de naam wordt zichtbaar getoond; het nummer blijft intern.
+    // Alleen de naam wordt zichtbaar getoond.
+    // Het oorspronkelijke nummer blijft intern behouden.
     title.textContent = source.title;
 
     const imageArea = document.createElement("div");
@@ -382,6 +467,7 @@
 
     card.appendChild(title);
     card.appendChild(imageArea);
+
     gallery.appendChild(card);
 
     try {
@@ -398,17 +484,20 @@
 
       for (let tile = 1; tile <= 9; tile++) {
         // Gebruik het oorspronkelijke nummer, niet de willekeurige positie.
-        const pieceId = `image-${source.number}-tile-${tile}`;
+        const pieceId =
+          `image-${source.number}-tile-${tile}`;
 
         let data;
 
         try {
           data = cropImage(image, tile);
+
         } catch (error) {
           console.error(
             `Fragment ${tile} van ${path} kon niet worden gemaakt.`,
             error
           );
+
           continue;
         }
 
@@ -439,6 +528,7 @@
         number.textContent = tile;
 
         button.appendChild(number);
+
         wireTile(button, pieceId);
         overlay.appendChild(button);
       }
@@ -453,15 +543,18 @@
     }
   }
 
-  // =========================================================
-  // OPLOSSING CONTROLEREN EN BORD VERGRENDELEN
-  // =========================================================
+  /* ---------------------------------------------------------
+     OPLOSSING CONTROLEREN EN BORD VERGRENDELEN
+     --------------------------------------------------------- */
 
   function checkBoard() {
-    if (slots.length !== correctPieces.length) return false;
+    if (slots.length !== correctPieces.length) {
+      return false;
+    }
 
     return correctPieces.every(expected => {
       const slot = slots[expected.slot];
+
       if (!slot) return false;
 
       const expectedPieceId =
@@ -499,9 +592,9 @@
     );
   }
 
-  // =========================================================
-  // BEDIENING VAN HET VERZAMELBORD
-  // =========================================================
+  /* ---------------------------------------------------------
+     BEDIENING VAN HET VERZAMELBORD
+     --------------------------------------------------------- */
 
   function setupBoard() {
     slots.forEach(slot => {
@@ -571,16 +664,17 @@
       });
 
       selectedPiece = null;
+
       setStatus("Het verzamelbord is leeggemaakt.");
     });
   }
 
-  // =========================================================
-  // INITIALISATIE
-  // =========================================================
+  /* ---------------------------------------------------------
+     INITIALISATIE
+     --------------------------------------------------------- */
 
   async function init() {
-    // Het antwoordformulier werkt onafhankelijk van de beeldpuzzel.
+    // Het antwoordformulier werkt onafhankelijk van het verzamelbord.
     setupAnswerForm();
 
     if (
@@ -589,7 +683,10 @@
       !clearButton ||
       slots.length !== 9
     ) {
-      console.error("Puzzel 3: een of meer HTML-elementen ontbreken.");
+      console.error(
+        "Puzzel 3: een of meer HTML-elementen ontbreken."
+      );
+
       return;
     }
 
