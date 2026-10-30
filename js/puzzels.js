@@ -1,4 +1,3 @@
-
 /* =========================================================
    SPOORZOEKEN — CENTRALE PUZZELGEGEVENS
    Alle puzzels, antwoorden en paginaverwijzingen
@@ -27,8 +26,17 @@ const puzzels = {
     nummer: 3,
     titel: "Het volgende spoor",
     pagina: "puzzel-3.html",
-    antwoord: "",
+    antwoord: "chanel",
     vorigePuzzel: 2,
+    volgendePuzzel: 4
+  },
+
+  4: {
+    nummer: 4,
+    titel: "Tijdelijke puzzelpagina",
+    pagina: "puzzel-4.html",
+    antwoord: "",
+    vorigePuzzel: 3,
     volgendePuzzel: null
   }
 };
@@ -41,8 +49,15 @@ function haalPuzzelOp(nummer) {
 }
 
 /**
- * Controleert een antwoord.
+ * Normaliseert een antwoord.
  * Hoofdletters en spaties aan begin en einde tellen niet mee.
+ */
+function normaliseerAntwoord(antwoord) {
+  return String(antwoord ?? "").trim().toLowerCase();
+}
+
+/**
+ * Controleert een antwoord.
  */
 function controleerAntwoord(nummer, gegevenAntwoord) {
   const puzzel = haalPuzzelOp(nummer);

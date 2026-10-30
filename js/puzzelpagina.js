@@ -13,6 +13,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const puzzel1Afbeelding = document.getElementById("puzzle1-image");
   const puzzel2Afbeelding = document.getElementById("puzzle2-image");
   const puzzel3Afbeelding = document.getElementById("puzzle3-image");
+  const puzzel4Afbeelding = document.getElementById("puzzle4-image");
   const succesmelding = document.getElementById("success-message");
 
   let puzzelNummer = null;
@@ -23,6 +24,8 @@ document.addEventListener("DOMContentLoaded", function () {
     puzzelNummer = 2;
   } else if (puzzel3Afbeelding) {
     puzzelNummer = 3;
+  } else if (puzzel4Afbeelding) {
+    puzzelNummer = 4;
   }
 
   /* ---------------------------------------------------------

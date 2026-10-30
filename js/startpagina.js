@@ -1,10 +1,9 @@
-
 /* =========================================================
    SPOORZOEKEN — STARTPAGINA
    Keuze van het startpunt en navigatie naar puzzels
 
-   Puzzel 1 = begin van het verhaal.
-   Een latere puzzelkeuze = laatst opgeloste puzzel.
+   De keuzelijst wordt automatisch opgebouwd vanuit puzzels.js.
+   Een latere puzzelkeuze betekent: laatst opgeloste puzzel.
    Het juiste antwoord brengt je naar de volgende puzzel.
    ========================================================= */
 
@@ -23,6 +22,39 @@ document.addEventListener("DOMContentLoaded", function () {
     !melding
   ) {
     return;
+  }
+
+  /**
+   * Bouwt de keuzelijst op uit de centrale puzzelgegevens.
+   * Puzzel 1 is het beginpunt; latere keuzes zijn laatst opgeloste puzzels.
+   */
+  function bouwStartkeuzeOp() {
+    const huidigNummer = Number(startKeuze.value) || 1;
+    startKeuze.replaceChildren();
+
+    Object.values(puzzels)
+      .filter(function (puzzel) {
+        // Alleen puzzels tonen waarvan een volgende pagina bestaat.
+        return puzzel.volgendePuzzel !== null;
+      })
+      .sort(function (a, b) {
+        return a.nummer - b.nummer;
+      })
+      .forEach(function (puzzel) {
+        const optie = document.createElement("option");
+        optie.value = String(puzzel.nummer);
+        optie.textContent =
+          "Puzzel " + puzzel.nummer + " – " + puzzel.titel;
+        startKeuze.appendChild(optie);
+      });
+
+    if ([...startKeuze.options].some(function (optie) {
+      return Number(optie.value) === huidigNummer;
+    })) {
+      startKeuze.value = String(huidigNummer);
+    } else {
+      startKeuze.value = "1";
+    }
   }
 
   function werkStartformulierBij() {
@@ -71,7 +103,7 @@ document.addEventListener("DOMContentLoaded", function () {
       return;
     }
 
-    // Controleer het antwoord van de gekozen puzzel.
+    // Controleer het antwoord van de laatst opgeloste puzzel.
     if (!controleerAntwoord(gekozenNummer, vorigAntwoordVeld.value)) {
       melding.textContent =
         "Dat antwoord klopt niet. Controleer je antwoord op puzzel " +
@@ -90,6 +122,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     window.location.href = volgendePuzzel.pagina;
   }
+
+  bouwStartkeuzeOp();
 
   startKeuze.addEventListener("change", werkStartformulierBij);
   startKnop.addEventListener("click", beginReis);
