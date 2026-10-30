@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="nl">
 <head>
@@ -398,7 +399,7 @@
       color: var(--gold-light);
     }
 
-    /* Antwoordveld dat permanent onderaan de pagina staat. */
+    /* De vraag staat permanent onderaan de pagina. */
     #puzzel3-answer {
       margin-top: 24px;
       padding: clamp(20px, 4vw, 30px);
@@ -407,8 +408,19 @@
       background: rgba(36, 33, 27, 0.94);
     }
 
-    #puzzel3-answer h2 {
-      margin-top: 0;
+    /* Kleine tussenkop, zoals bij de andere puzzels. */
+    #puzzel3-answer .question-heading {
+      margin: 0 0 8px;
+      color: var(--gold-light);
+      font-size: 1.25rem;
+      line-height: 1.3;
+    }
+
+    /* De vraag zelf krijgt de gewone tekstgrootte. */
+    #puzzel3-answer .question-text {
+      margin: 0 0 18px;
+      font-size: 1rem;
+      line-height: 1.6;
     }
 
     #puzzel3-answer label {
@@ -633,10 +645,16 @@
       </section>
     </section>
 
-    <section id="puzzel3-answer" aria-labelledby="puzzel3-question">
-      <h2 id="puzzel3-question">Welk merk exporteert de handelaar naar Spanje?</h2>
+    <section id="puzzel3-answer" aria-labelledby="puzzel3-heading">
+      <h2 id="puzzel3-heading" class="question-heading">De vraag</h2>
+
+      <p id="puzzel3-question" class="question-text">
+        Welk merk exporteert de handelaar naar Spanje?
+      </p>
+
       <form id="puzzel3-answer-form">
         <label for="puzzel3-answer-input">Jouw antwoord</label>
+
         <input
           id="puzzel3-answer-input"
           name="answer"
@@ -645,7 +663,9 @@
           required
           placeholder="Vul het merk in"
         >
+
         <button type="submit">Antwoord controleren</button>
+
         <p id="puzzel3-answer-feedback" aria-live="polite"></p>
       </form>
     </section>
