@@ -1,11 +1,11 @@
-
 (() => {
   "use strict";
 
   // =========================================================
   // PUZZEL 3 — HET VERZAMELBORD
   // Het bord wordt vergrendeld zodra alle negen fragmenten
-  // op de juiste plek liggen.
+  // op de juiste plek liggen. Het antwoordveld is altijd
+  // zichtbaar en staat los van de voortgang op het bord.
   // =========================================================
 
   const IMAGE_FOLDER = "puzzel3";
@@ -43,6 +43,10 @@
   const slots = Array.from(document.querySelectorAll(".slot"));
   const status = document.getElementById("status");
   const clearButton = document.getElementById("clear");
+  const answerForm = document.getElementById("puzzel3-answer-form");
+  const answerInput = document.getElementById("puzzel3-answer-input");
+  const answerButton = answerForm?.querySelector('button[type="submit"]');
+  const answerFeedback = document.getElementById("puzzel3-answer-feedback");
 
   const pieces = new Map();
 
@@ -50,10 +54,6 @@
   let loadedCount = 0;
   let failedCount = 0;
   let boardLocked = false;
-  let answerPanel = null;
-  let answerFeedback = null;
-  let answerInput = null;
-  let answerButton = null;
 
   function setStatus(message) {
     if (status) {
@@ -421,90 +421,29 @@
     setStatus(
       "Uitstekend! Alle negen fragmenten liggen op de juiste plek. Het bord is vergrendeld."
     );
-
-    showAnswerPanel();
   }
 
-  function showAnswerPanel() {
-    if (answerPanel) {
-      answerPanel.hidden = false;
-      answerInput.focus();
+  function setupAnswerForm() {
+    if (!answerForm || !answerInput || !answerFeedback || !answerButton) {
+      console.error("Puzzel 3: het antwoordformulier ontbreekt in de HTML.");
       return;
     }
 
-    answerPanel = document.createElement("section");
-    answerPanel.id = "puzzel3-answer";
-    answerPanel.setAttribute("aria-labelledby", "puzzel3-question");
-
-    answerPanel.style.marginTop = "24px";
-    answerPanel.style.padding = "20px";
-    answerPanel.style.border = "1px solid currentColor";
-    answerPanel.style.borderRadius = "8px";
-
-    const question = document.createElement("h2");
-    question.id = "puzzel3-question";
-    question.textContent =
-      "Welk merk exporteert de handelaar naar Spanje?";
-
-    const form = document.createElement("form");
-    form.id = "puzzel3-answer-form";
-
-    answerInput = document.createElement("input");
-    answerInput.id = "puzzel3-answer-input";
-    answerInput.name = "answer";
-    answerInput.type = "text";
-    answerInput.autocomplete = "off";
-    answerInput.required = true;
-    answerInput.setAttribute("aria-label", "Jouw antwoord");
-    answerInput.placeholder = "Vul het merk in";
-    answerInput.style.marginRight = "8px";
-    answerInput.style.marginBottom = "8px";
-    answerInput.style.maxWidth = "100%";
-
-    answerButton = document.createElement("button");
-    answerButton.type = "submit";
-    answerButton.textContent = "Antwoord controleren";
-
-    answerFeedback = document.createElement("p");
-    answerFeedback.id = "puzzel3-answer-feedback";
-    answerFeedback.setAttribute("aria-live", "polite");
-
-    form.appendChild(answerInput);
-    form.appendChild(answerButton);
-    form.appendChild(answerFeedback);
-
-    form.addEventListener("submit", event => {
+    answerForm.addEventListener("submit", event => {
       event.preventDefault();
 
       if (answerInput.value.trim().toLocaleLowerCase("nl-NL") === correctAnswer) {
         answerFeedback.textContent = "Goed antwoord!";
-        answerFeedback.style.color = "green";
+        answerFeedback.className = "success-feedback";
         answerInput.disabled = true;
         answerButton.disabled = true;
-
-        // Er wordt geen volgende pagina geopend zonder dat die
-        // expliciet in deze puzzel is ingesteld.
       } else {
         answerFeedback.textContent = "Dat is niet het goede antwoord. Probeer het opnieuw.";
-        answerFeedback.style.color = "red";
+        answerFeedback.className = "error-feedback";
         answerInput.select();
         answerInput.focus();
       }
     });
-
-    answerPanel.appendChild(question);
-    answerPanel.appendChild(form);
-
-    // Plaats de vraag direct na het verzamelbord.
-    const board = document.getElementById("board");
-
-    if (board && board.parentNode) {
-      board.parentNode.insertBefore(answerPanel, board.nextSibling);
-    } else {
-      document.body.appendChild(answerPanel);
-    }
-
-    answerInput.focus();
   }
 
   function setupBoard() {
@@ -584,6 +523,7 @@
       return;
     }
 
+    setupAnswerForm();
     setupBoard();
 
     await Promise.all(
