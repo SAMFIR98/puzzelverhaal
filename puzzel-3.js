@@ -1,26 +1,26 @@
+
 (() => {
   "use strict";
 
   // =========================================================
   // PUZZEL 3 — HET VERZAMELBORD
-  // Het bord wordt vergrendeld zodra alle negen fragmenten
-  // op de juiste plek liggen.
-  // Het antwoordveld staat permanent in puzzel-3.html.
+  // De negen basisafbeeldingen worden willekeurig gerangschikt.
+  // De oorspronkelijke nummers blijven intern behouden.
   // =========================================================
 
   const IMAGE_FOLDER = "puzzel3";
   const EXTENSION = ".png";
 
   const sources = [
-    { title: "1 – Ontbijten", file: "ontbijten" },
-    { title: "2 – Lezen", file: "lezen" },
-    { title: "3 – Skateboarden", file: "skateboarden" },
-    { title: "4 – Dansen", file: "dansen" },
-    { title: "5 – Vliegen", file: "vliegen" },
-    { title: "6 – Bloeien", file: "bloeien" },
-    { title: "7 – Feliciteren", file: "feliciteren" },
-    { title: "8 – Fotograferen", file: "fotograferen" },
-    { title: "9 – Besturen", file: "besturen" }
+    { number: 1, title: "Ontbijten", file: "ontbijten" },
+    { number: 2, title: "Lezen", file: "lezen" },
+    { number: 3, title: "Skateboarden", file: "skateboarden" },
+    { number: 4, title: "Dansen", file: "dansen" },
+    { number: 5, title: "Vliegen", file: "vliegen" },
+    { number: 6, title: "Bloeien", file: "bloeien" },
+    { number: 7, title: "Feliciteren", file: "feliciteren" },
+    { number: 8, title: "Fotograferen", file: "fotograferen" },
+    { number: 9, title: "Besturen", file: "besturen" }
   ];
 
   // De juiste combinatie van fragment en vak.
@@ -44,7 +44,7 @@
   const status = document.getElementById("status");
   const clearButton = document.getElementById("clear");
 
-  // Dit formulier staat al in puzzel-3.html en is altijd zichtbaar.
+  // Het antwoordformulier staat permanent in puzzel-3.html.
   const answerForm = document.getElementById("puzzel3-answer-form");
   const answerInput = document.getElementById("puzzel3-answer-input");
   const answerFeedback = document.getElementById("puzzel3-answer-feedback");
@@ -56,15 +56,39 @@
   let failedCount = 0;
   let boardLocked = false;
 
+  // =========================================================
+  // WILLEKEURIGE VOLGORDE VAN DE BASISAFBEELDINGEN
+  // =========================================================
+
+  function shuffleSources(array) {
+    const shuffled = [...array];
+
+    // Fisher-Yates: iedere afbeelding krijgt een willekeurige plek.
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const randomIndex = Math.floor(Math.random() * (i + 1));
+
+      [shuffled[i], shuffled[randomIndex]] =
+        [shuffled[randomIndex], shuffled[i]];
+    }
+
+    return shuffled;
+  }
+
   function setStatus(message) {
     if (status) {
       status.textContent = message;
     }
   }
 
+  // =========================================================
+  // ANTWOORDFORMULIER
+  // =========================================================
+
   function setupAnswerForm() {
     if (!answerForm || !answerInput || !answerFeedback) {
-      console.error("Puzzel 3: het antwoordformulier of een onderdeel daarvan ontbreekt.");
+      console.error(
+        "Puzzel 3: het antwoordformulier of een onderdeel daarvan ontbreekt."
+      );
       return;
     }
 
@@ -83,11 +107,16 @@
 
       answerFeedback.textContent =
         "Dat is niet het goede antwoord. Probeer het opnieuw.";
+
       answerFeedback.className = "error-feedback";
       answerInput.select();
       answerInput.focus();
     });
   }
+
+  // =========================================================
+  // AFBEELDINGEN LADEN EN FRAGMENTEN MAKEN
+  // =========================================================
 
   function getImagePath(source) {
     return `${IMAGE_FOLDER}/${source.file}${EXTENSION}`;
@@ -112,9 +141,11 @@
 
     const sourceX = Math.round(image.naturalWidth * column / 3);
     const sourceY = Math.round(image.naturalHeight * row / 3);
+
     const sourceRight = Math.round(
       image.naturalWidth * (column + 1) / 3
     );
+
     const sourceBottom = Math.round(
       image.naturalHeight * (row + 1) / 3
     );
@@ -143,6 +174,10 @@
 
     return canvas.toDataURL("image/png");
   }
+
+  // =========================================================
+  // VERZAMELBORD
+  // =========================================================
 
   function renderSlot(slot, pieceId = null) {
     slot.innerHTML = "";
@@ -284,6 +319,10 @@
     });
   }
 
+  // =========================================================
+  // BASISAFBEELDINGEN OPBOUWEN
+  // =========================================================
+
   function showImageError(source, card, path, error) {
     failedCount++;
 
@@ -326,7 +365,7 @@
     }
   }
 
-  async function buildSourceCard(source, index) {
+  async function buildSourceCard(source) {
     const path = getImagePath(source);
 
     const card = document.createElement("article");
@@ -334,6 +373,8 @@
 
     const title = document.createElement("h3");
     title.className = "source-title";
+
+    // Alleen de naam wordt zichtbaar getoond; het nummer blijft intern.
     title.textContent = source.title;
 
     const imageArea = document.createElement("div");
@@ -356,7 +397,8 @@
       overlay.className = "tile-overlay";
 
       for (let tile = 1; tile <= 9; tile++) {
-        const pieceId = `image-${index + 1}-tile-${tile}`;
+        // Gebruik het oorspronkelijke nummer, niet de willekeurige positie.
+        const pieceId = `image-${source.number}-tile-${tile}`;
 
         let data;
 
@@ -373,7 +415,7 @@
         pieces.set(pieceId, {
           id: pieceId,
           sourceTitle: source.title,
-          sourceNumber: index + 1,
+          sourceNumber: source.number,
           tile,
           data,
           slot: null
@@ -384,10 +426,12 @@
         button.className = "tile";
         button.draggable = true;
         button.dataset.pieceId = pieceId;
+
         button.setAttribute(
           "aria-label",
           `${source.title}, fragment ${tile}`
         );
+
         button.title = `${source.title}, fragment ${tile}`;
 
         const number = document.createElement("span");
@@ -400,6 +444,7 @@
       }
 
       imageArea.appendChild(overlay);
+
       loadedCount++;
       updateSummary();
 
@@ -408,7 +453,10 @@
     }
   }
 
-  // Controleert of elk vak het juiste fragment bevat.
+  // =========================================================
+  // OPLOSSING CONTROLEREN EN BORD VERGRENDELEN
+  // =========================================================
+
   function checkBoard() {
     if (slots.length !== correctPieces.length) return false;
 
@@ -451,6 +499,10 @@
     );
   }
 
+  // =========================================================
+  // BEDIENING VAN HET VERZAMELBORD
+  // =========================================================
+
   function setupBoard() {
     slots.forEach(slot => {
       slot.addEventListener("dragover", event => {
@@ -487,6 +539,7 @@
         if (pieceId) {
           returnPiece(pieceId);
           renderSlot(slot);
+
           setStatus(
             "Fragment teruggehaald. Je kunt een ander fragment kiezen."
           );
@@ -522,8 +575,12 @@
     });
   }
 
+  // =========================================================
+  // INITIALISATIE
+  // =========================================================
+
   async function init() {
-    // Koppel het antwoordformulier onafhankelijk van het verzamelbord.
+    // Het antwoordformulier werkt onafhankelijk van de beeldpuzzel.
     setupAnswerForm();
 
     if (
@@ -538,8 +595,11 @@
 
     setupBoard();
 
+    // Maak bij iedere nieuwe paginaopening een willekeurige volgorde.
+    const shuffledSources = shuffleSources(sources);
+
     await Promise.all(
-      sources.map((source, index) => buildSourceCard(source, index))
+      shuffledSources.map(source => buildSourceCard(source))
     );
 
     updateSummary();
