@@ -33,6 +33,7 @@
         </p>
 
         <img
+          id="puzzle4-image"
           class="story-image"
           src="Puzzel%204.png"
           alt="Sfeerbeeld bij de Frans-Spaanse grens"
@@ -64,10 +65,13 @@
 
           <form id="answer-form">
             <input
-              type="number"
+              type="text"
               id="answer"
               placeholder="Vul je antwoord in"
               autocomplete="off"
+              inputmode="numeric"
+              pattern="[0-9]*"
+              maxlength="3"
               required
             >
 
