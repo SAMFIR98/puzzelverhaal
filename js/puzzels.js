@@ -1,3 +1,4 @@
+
 /* =========================================================
    SPOORZOEKEN — CENTRALE PUZZELGEGEVENS
    Alle puzzels, antwoorden en paginaverwijzingen
@@ -33,9 +34,9 @@ const puzzels = {
 
   4: {
     nummer: 4,
-    titel: "Tijdelijke puzzelpagina",
+    titel: "De grens",
     pagina: "puzzel-4.html",
-    antwoord: "",
+    antwoord: "239",
     vorigePuzzel: 3,
     volgendePuzzel: null
   }
