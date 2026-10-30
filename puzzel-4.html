@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="nl">
 <head>
@@ -27,17 +26,13 @@
 
         <p>
           De Frans-Spaanse grens. Nog vijf minuten en station Irun is bereikt.
-          Met je koffer stap je uit op Spaanse grond. De spoorwegbeambten nemen
-          je koffer van je over voor controle door de douane, om hem daarna
-          naar je Spaanse trein te brengen.
         </p>
 
-        <img
-          id="puzzle4-image"
-          class="story-image"
-          src="Puzzel%204.png"
-          alt="Sfeerbeeld bij de Frans-Spaanse grens"
-        >
+        <p>
+          Met je koffer stap je uit op Spaanse grond. De spoorwegbeambten
+          nemen je koffer van je over voor controle door de douane, om hem
+          daarna naar je Spaanse trein te brengen.
+        </p>
 
         <p>
           Je stapt je nieuwe coupé in en begroet de andere passagier,
@@ -52,39 +47,38 @@
         <p>
           "Tja, de Vrede van Atrecht voelde wel wat benauwd vergeleken met
           't Schrickelik Tempeest", antwoordt de historicus.
-          "Maar hoe je het ook bekijkt, zowel de Fransen als de Spanjaarden
-          zijn dwarsliggers. Dat besef geeft ruimte."
+          "Ga je richting Portugal, dan is het juist weer minder dan thuis."
         </p>
 
         <div class="question">
-          <h3>De volgende aanwijzing</h3>
-
-          <p>
-            Hoeveel meer ruimte in millimeters?
-          </p>
+          <h3>De vraag</h3>
+          <p>Hoeveel minder in mm?</p>
 
           <form id="answer-form">
+            <label for="answer">Jouw antwoord</label>
             <input
-              type="text"
               id="answer"
-              placeholder="Vul je antwoord in"
-              autocomplete="off"
+              name="answer"
+              type="text"
               inputmode="numeric"
-              pattern="[0-9]*"
-              maxlength="3"
+              autocomplete="off"
               required
+              placeholder="Vul het aantal millimeters in"
             >
 
             <button type="submit">
               Antwoord controleren
             </button>
           </form>
-
-          <div
-            id="success-message"
-            class="success-message hidden"
-          ></div>
         </div>
+
+        <p
+          id="success-message"
+          class="success-message hidden"
+          aria-live="polite"
+        >
+          Goed gevonden! Je hebt puzzel 4 opgelost.
+        </p>
 
         <button
           type="button"
@@ -101,16 +95,28 @@
     Spoorzoeken · Een mysterie op het spoor door Europa · 1925
   </footer>
 
-  <!-- Foutmelding -->
+  <!-- FOUTMELDING -->
   <div
     id="error-overlay"
     class="error-overlay"
+    role="alertdialog"
+    aria-modal="true"
+    aria-labelledby="error-title"
     aria-hidden="true"
   >
     <div class="error-box">
-      <img src="Stop.png" alt="Stop">
-      <h2 id="error-title">Dat is niet het goede antwoord.</h2>
-      <button type="button" id="error-close">Verder zoeken</button>
+      <img src="Stop.png" alt="Het spoor loopt dood">
+
+      <h2 id="error-title">Het spoor loopt dood</h2>
+
+      <p>
+        Dat is niet het goede antwoord. Het sein staat op rood.
+        Vind het goede antwoord om door te kunnen stomen.
+      </p>
+
+      <button type="button" id="error-close">
+        Verder zoeken
+      </button>
     </div>
   </div>
 
