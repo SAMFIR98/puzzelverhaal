@@ -16,9 +16,21 @@ document.addEventListener("DOMContentLoaded", function () {
   const puzzel4Afbeelding = document.getElementById("puzzle4-image");
   const succesmelding = document.getElementById("success-message");
 
+  /* ---------------------------------------------------------
+     PUZZELNUMMER BEPALEN VIA DE PAGINANAAM
+
+     Hierdoor is de herkenning niet meer afhankelijk van
+     de aanwezigheid of positie van een afbeelding.
+     --------------------------------------------------------- */
+
   let puzzelNummer = null;
 
-  if (puzzel1Afbeelding) {
+  const huidigePagina = window.location.pathname;
+  const paginaMatch = huidigePagina.match(/puzzel-(\d+)\.html$/i);
+
+  if (paginaMatch) {
+    puzzelNummer = Number(paginaMatch[1]);
+  } else if (puzzel1Afbeelding) {
     puzzelNummer = 1;
   } else if (puzzel2Afbeelding) {
     puzzelNummer = 2;
@@ -187,8 +199,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
   /* ---------------------------------------------------------
      DE JUISTE OPLOSSING
-
-     Elke rij bevat de kolomnummers van de zwarte vakjes.
      --------------------------------------------------------- */
 
   const juisteOplossing = [
@@ -211,9 +221,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
   /* ---------------------------------------------------------
      OPLOSSING CONTROLEREN
-
-     Alle 225 vakjes moeten exact overeenkomen met de
-     bedoelde oplossing.
      --------------------------------------------------------- */
 
   function controleerNonogram() {
@@ -244,9 +251,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
   /* ---------------------------------------------------------
      OPLOSSING VASTZETTEN
-
-     Zwarte vakjes worden blauwgrijs (#4B5576).
-     Witte vakjes blijven wit.
      --------------------------------------------------------- */
 
   function fixeerNonogram() {
@@ -299,11 +303,7 @@ document.addEventListener("DOMContentLoaded", function () {
      AANWIJZINGSKNOPPEN MAKEN
      --------------------------------------------------------- */
 
-  function maakAanwijzingsknop(
-    cijfer,
-    richting,
-    nummer
-  ) {
+  function maakAanwijzingsknop(cijfer, richting, nummer) {
     const knop = document.createElement("button");
 
     knop.type = "button";
