@@ -4,8 +4,8 @@
   // =========================================================
   // PUZZEL 3 — HET VERZAMELBORD
   // Het bord wordt vergrendeld zodra alle negen fragmenten
-  // op de juiste plek liggen. Het antwoordveld is altijd
-  // zichtbaar en staat los van de voortgang op het bord.
+  // op de juiste plek liggen.
+  // Het antwoordveld staat permanent in puzzel-3.html.
   // =========================================================
 
   const IMAGE_FOLDER = "puzzel3";
@@ -43,9 +43,10 @@
   const slots = Array.from(document.querySelectorAll(".slot"));
   const status = document.getElementById("status");
   const clearButton = document.getElementById("clear");
+
+  // Dit formulier staat al in puzzel-3.html en is altijd zichtbaar.
   const answerForm = document.getElementById("puzzel3-answer-form");
   const answerInput = document.getElementById("puzzel3-answer-input");
-  const answerButton = answerForm?.querySelector('button[type="submit"]');
   const answerFeedback = document.getElementById("puzzel3-answer-feedback");
 
   const pieces = new Map();
@@ -59,6 +60,33 @@
     if (status) {
       status.textContent = message;
     }
+  }
+
+  function setupAnswerForm() {
+    if (!answerForm || !answerInput || !answerFeedback) {
+      console.error("Puzzel 3: het antwoordformulier of een onderdeel daarvan ontbreekt.");
+      return;
+    }
+
+    answerForm.addEventListener("submit", event => {
+      event.preventDefault();
+
+      const submittedAnswer = answerInput.value
+        .trim()
+        .toLocaleLowerCase("nl-NL");
+
+      if (submittedAnswer === correctAnswer) {
+        // Het juiste antwoord brengt de speler direct naar puzzel 4.
+        window.location.assign("puzzel-4.html");
+        return;
+      }
+
+      answerFeedback.textContent =
+        "Dat is niet het goede antwoord. Probeer het opnieuw.";
+      answerFeedback.className = "error-feedback";
+      answerInput.select();
+      answerInput.focus();
+    });
   }
 
   function getImagePath(source) {
@@ -423,29 +451,6 @@
     );
   }
 
-  function setupAnswerForm() {
-    if (!answerForm || !answerInput || !answerFeedback || !answerButton) {
-      console.error("Puzzel 3: het antwoordformulier ontbreekt in de HTML.");
-      return;
-    }
-
-    answerForm.addEventListener("submit", event => {
-      event.preventDefault();
-
-      if (answerInput.value.trim().toLocaleLowerCase("nl-NL") === correctAnswer) {
-        answerFeedback.textContent = "Goed antwoord!";
-        answerFeedback.className = "success-feedback";
-        answerInput.disabled = true;
-        answerButton.disabled = true;
-      } else {
-        answerFeedback.textContent = "Dat is niet het goede antwoord. Probeer het opnieuw.";
-        answerFeedback.className = "error-feedback";
-        answerInput.select();
-        answerInput.focus();
-      }
-    });
-  }
-
   function setupBoard() {
     slots.forEach(slot => {
       slot.addEventListener("dragover", event => {
@@ -518,12 +523,19 @@
   }
 
   async function init() {
-    if (!gallery || !status || !clearButton || slots.length !== 9) {
+    // Koppel het antwoordformulier onafhankelijk van het verzamelbord.
+    setupAnswerForm();
+
+    if (
+      !gallery ||
+      !status ||
+      !clearButton ||
+      slots.length !== 9
+    ) {
       console.error("Puzzel 3: een of meer HTML-elementen ontbreken.");
       return;
     }
 
-    setupAnswerForm();
     setupBoard();
 
     await Promise.all(
