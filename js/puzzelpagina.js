@@ -1,7 +1,9 @@
 
 /* =========================================================
    SPOORZOEKEN — GEDEELDE PUZZELPAGINA-FUNCTIES
-   Puzzel 1, puzzel 2 en volgende puzzels
+   Puzzel 1, puzzel 2 en volgende puzzels.
+
+   Antwoorden worden gecontroleerd door Cloudflare.
    ========================================================= */
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -18,9 +20,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
   /* ---------------------------------------------------------
      PUZZELNUMMER BEPALEN VIA DE PAGINANAAM
-
-     Hierdoor is de herkenning niet meer afhankelijk van
-     de aanwezigheid of positie van een afbeelding.
      --------------------------------------------------------- */
 
   let puzzelNummer = null;
@@ -44,8 +43,18 @@ document.addEventListener("DOMContentLoaded", function () {
      FOUTMELDING
      --------------------------------------------------------- */
 
-  function toonFoutmelding() {
+  const standaardFoutmelding =
+    "Dat is niet het goede antwoord. Het sein staat op rood. " +
+    "Vind het goede antwoord om door te kunnen stomen.";
+
+  function toonFoutmelding(bericht = standaardFoutmelding) {
     if (!foutmelding) return;
+
+    const tekst = foutmelding.querySelector(".error-box p");
+
+    if (tekst) {
+      tekst.textContent = bericht;
+    }
 
     foutmelding.classList.add("open");
     foutmelding.setAttribute("aria-hidden", "false");
@@ -56,38 +65,107 @@ document.addEventListener("DOMContentLoaded", function () {
 
     foutmelding.classList.remove("open");
     foutmelding.setAttribute("aria-hidden", "true");
+
+    const tekst = foutmelding.querySelector(".error-box p");
+
+    if (tekst) {
+      tekst.textContent = standaardFoutmelding;
+    }
   }
 
   /* ---------------------------------------------------------
-     ANTWOORD CONTROLEREN EN DOORGAAN
+     ANTWOORD CONTROLEREN VIA CLOUDFLARE
      --------------------------------------------------------- */
 
-  function controleerInvoer(event) {
+  async function controleerInvoer(event) {
     event.preventDefault();
 
     if (puzzelNummer === null || !antwoordveld) {
       return;
     }
 
-    if (controleerAntwoord(puzzelNummer, antwoordveld.value)) {
-      antwoordveld.value = "";
+    const gegevenAntwoord = antwoordveld.value.trim();
 
-      const volgendePuzzel = haalVolgendePuzzelOp(puzzelNummer);
+    if (!gegevenAntwoord) {
+      antwoordveld.focus();
+      return;
+    }
 
-      if (volgendePuzzel) {
-        window.location.href = volgendePuzzel.pagina;
+    const verzendKnop = formulier.querySelector(
+      'button[type="submit"]'
+    );
+
+    if (verzendKnop) {
+      verzendKnop.disabled = true;
+    }
+
+    try {
+      const response = await fetch("/api/answer", {
+        method: "POST",
+        credentials: "same-origin",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          puzzleNumber: puzzelNummer,
+          answer: gegevenAntwoord
+        })
+      });
+
+      let resultaat;
+
+      try {
+        resultaat = await response.json();
+      } catch {
+        throw new Error("Ongeldig antwoord van de server.");
+      }
+
+      if (!response.ok || !resultaat.ok) {
+        if (resultaat.code === "wrong_answer") {
+          toonFoutmelding();
+        } else {
+          toonFoutmelding(
+            "De antwoordcontrole is momenteel niet beschikbaar. " +
+            "Controleer je verbinding en probeer het opnieuw."
+          );
+        }
+
         return;
       }
 
-      if (succesmelding) {
+      antwoordveld.value = "";
+
+      // Bij een volgende puzzel gaat de speler direct door.
+      if (resultaat.nextPage) {
+        window.location.href = resultaat.nextPage;
+        return;
+      }
+
+      // De laatste puzzel is opgelost.
+      if (resultaat.completed && succesmelding) {
+        succesmelding.textContent =
+          "Uitstekend! Je hebt de laatste puzzel opgelost. De reis is voltooid.";
+
         succesmelding.classList.remove("hidden");
+
         succesmelding.scrollIntoView({
           behavior: "smooth",
           block: "nearest"
         });
       }
-    } else {
-      toonFoutmelding();
+
+    } catch (error) {
+      console.error("Spoorzoeken:", error);
+
+      toonFoutmelding(
+        "De antwoordcontrole kon niet worden uitgevoerd. " +
+        "Controleer je verbinding en probeer het opnieuw."
+      );
+
+    } finally {
+      if (verzendKnop) {
+        verzendKnop.disabled = false;
+      }
     }
   }
 
@@ -129,8 +207,10 @@ document.addEventListener("DOMContentLoaded", function () {
   nonogramStatus.className = "nonogram-complete-message";
   nonogramStatus.setAttribute("role", "status");
   nonogramStatus.setAttribute("aria-live", "polite");
+
   nonogramStatus.textContent =
     "Precies, dit staat op het spandoek. Dus... voor wie juichen ze hier? 'Vive les ...'";
+
   nonogramStatus.hidden = true;
 
   function toonNonogram() {
@@ -399,6 +479,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const hoekvak = document.createElement("div");
     hoekvak.className = "nonogram-corner";
+
     bovensteRij.appendChild(hoekvak);
 
     const kolomContainer = document.createElement("div");
