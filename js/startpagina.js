@@ -1,10 +1,9 @@
+
 /* =========================================================
    SPOORZOEKEN — STARTPAGINA
-   Keuze van het startpunt en navigatie naar puzzels
+   Keuze van het startpunt en navigatie naar puzzels.
 
-   De keuzelijst wordt automatisch opgebouwd vanuit puzzels.js.
-   Een latere puzzelkeuze betekent: laatst opgeloste puzzel.
-   Het juiste antwoord brengt je naar de volgende puzzel.
+   Antwoorden worden gecontroleerd door Cloudflare.
    ========================================================= */
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -24,17 +23,17 @@ document.addEventListener("DOMContentLoaded", function () {
     return;
   }
 
-  /**
-   * Bouwt de keuzelijst op uit de centrale puzzelgegevens.
-   * Puzzel 1 is het beginpunt; latere keuzes zijn laatst opgeloste puzzels.
-   */
+  /* ---------------------------------------------------------
+     STARTKEUZE OPBOUWEN
+     --------------------------------------------------------- */
+
   function bouwStartkeuzeOp() {
     const huidigNummer = Number(startKeuze.value) || 1;
+
     startKeuze.replaceChildren();
 
     Object.values(puzzels)
       .filter(function (puzzel) {
-        // Alleen puzzels tonen waarvan een volgende pagina bestaat.
         return puzzel.volgendePuzzel !== null;
       })
       .sort(function (a, b) {
@@ -42,9 +41,11 @@ document.addEventListener("DOMContentLoaded", function () {
       })
       .forEach(function (puzzel) {
         const optie = document.createElement("option");
+
         optie.value = String(puzzel.nummer);
         optie.textContent =
           "Puzzel " + puzzel.nummer + " – " + puzzel.titel;
+
         startKeuze.appendChild(optie);
       });
 
@@ -57,6 +58,10 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
+  /* ---------------------------------------------------------
+     FORMULIER BIJWERKEN
+     --------------------------------------------------------- */
+
   function werkStartformulierBij() {
     const gekozenNummer = Number(startKeuze.value);
 
@@ -66,62 +71,137 @@ document.addEventListener("DOMContentLoaded", function () {
     if (gekozenNummer === 1) {
       vorigAntwoordWrap.classList.add("hidden");
       startKnop.textContent = "Reis beginnen";
-    } else {
-      vorigAntwoordWrap.classList.remove("hidden");
-      startKnop.textContent = "Antwoord controleren";
+      return;
     }
 
-    const gekozenPuzzel = haalPuzzelOp(gekozenNummer);
+    vorigAntwoordWrap.classList.remove("hidden");
+    startKnop.textContent = "Antwoord controleren";
 
-    if (gekozenNummer > 1 && gekozenPuzzel) {
-      const label = vorigAntwoordWrap.querySelector("label");
+    const label = vorigAntwoordWrap.querySelector("label");
 
-      if (label) {
-        label.textContent =
-          "Wat was het antwoord op puzzel " + gekozenNummer + "?";
-      }
-
-      vorigAntwoordVeld.placeholder =
-        "Antwoord van puzzel " + gekozenNummer;
+    if (label) {
+      label.textContent =
+        "Wat was het antwoord op puzzel " + gekozenNummer + "?";
     }
+
+    vorigAntwoordVeld.placeholder =
+      "Antwoord van puzzel " + gekozenNummer;
   }
 
-  function beginReis() {
+  /* ---------------------------------------------------------
+     ANTWOORD NAAR CLOUDFLARE STUREN
+     --------------------------------------------------------- */
+
+  async function controleerAntwoordOpServer(
+    puzzelNummer,
+    antwoord
+  ) {
+    const response = await fetch("/api/answer", {
+      method: "POST",
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        puzzleNumber: puzzelNummer,
+        answer: antwoord
+      })
+    });
+
+    let resultaat;
+
+    try {
+      resultaat = await response.json();
+    } catch {
+      throw new Error("De server gaf geen geldig antwoord terug.");
+    }
+
+    if (!response.ok || !resultaat.ok) {
+      if (resultaat.code === "wrong_answer") {
+        return {
+          ok: false,
+          wrongAnswer: true
+        };
+      }
+
+      throw new Error(
+        "De antwoordcontrole is momenteel niet beschikbaar."
+      );
+    }
+
+    return resultaat;
+  }
+
+  /* ---------------------------------------------------------
+     REIS BEGINNEN
+     --------------------------------------------------------- */
+
+  async function beginReis() {
     const gekozenNummer = Number(startKeuze.value);
     const gekozenPuzzel = haalPuzzelOp(gekozenNummer);
 
     melding.textContent = "";
 
     if (!gekozenPuzzel) {
-      melding.textContent = "Dit startpunt is nog niet beschikbaar.";
+      melding.textContent =
+        "Dit startpunt is nog niet beschikbaar.";
       return;
     }
 
-    // Puzzel 1 is het beginpunt: geen antwoord nodig.
+    // Puzzel 1 is het beginpunt.
     if (gekozenNummer === 1) {
       window.location.href = gekozenPuzzel.pagina;
       return;
     }
 
-    // Controleer het antwoord van de laatst opgeloste puzzel.
-    if (!controleerAntwoord(gekozenNummer, vorigAntwoordVeld.value)) {
-      melding.textContent =
-        "Dat antwoord klopt niet. Controleer je antwoord op puzzel " +
-        gekozenNummer + ".";
+    const antwoord = vorigAntwoordVeld.value.trim();
+
+    if (!antwoord) {
+      melding.textContent = "Vul eerst je antwoord in.";
+      vorigAntwoordVeld.focus();
       return;
     }
 
-    // Bij een correct antwoord ga je naar de volgende puzzel.
-    const volgendePuzzel = haalVolgendePuzzelOp(gekozenNummer);
+    startKnop.disabled = true;
 
-    if (!volgendePuzzel) {
+    try {
+      const resultaat = await controleerAntwoordOpServer(
+        gekozenNummer,
+        antwoord
+      );
+
+      if (!resultaat.ok) {
+        melding.textContent =
+          "Dat antwoord klopt niet. Controleer je antwoord op puzzel " +
+          gekozenNummer + ".";
+        vorigAntwoordVeld.select();
+        vorigAntwoordVeld.focus();
+        return;
+      }
+
+      if (!resultaat.nextPage) {
+        melding.textContent =
+          "Er is nog geen volgende puzzel beschikbaar.";
+        return;
+      }
+
+      window.location.href = resultaat.nextPage;
+
+    } catch (error) {
+      console.error("Spoorzoeken:", error);
+
       melding.textContent =
-        "Er is nog geen volgende puzzel beschikbaar.";
-      return;
-    }
+        "De antwoordcontrole is momenteel niet beschikbaar. " +
+        "Controleer je verbinding en probeer het opnieuw.";
 
-    window.location.href = volgendePuzzel.pagina;
+    } finally {
+      startKnop.disabled = false;
+    }
   }
+
+  /* ---------------------------------------------------------
+     EVENTLISTENERS
+     --------------------------------------------------------- */
 
   bouwStartkeuzeOp();
 
@@ -130,9 +210,24 @@ document.addEventListener("DOMContentLoaded", function () {
 
   vorigAntwoordVeld.addEventListener("keydown", function (event) {
     if (event.key === "Enter") {
+      event.preventDefault();
       beginReis();
     }
   });
 
   werkStartformulierBij();
+
+  // Melding na een poging om een beveiligde pagina rechtstreeks
+  // te openen zonder dat deze is vrijgespeeld.
+  const parameters = new URLSearchParams(window.location.search);
+  const geblokkeerdePuzzel = Number(parameters.get("locked"));
+
+  if (
+    Number.isInteger(geblokkeerdePuzzel) &&
+    geblokkeerdePuzzel > 1
+  ) {
+    melding.textContent =
+      "Puzzel " + geblokkeerdePuzzel +
+      " is nog niet vrijgespeeld. Los eerst de voorafgaande puzzel op.";
+  }
 });
