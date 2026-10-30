@@ -1,9 +1,15 @@
 
 {
   "name": "empty-brook-7f44",
+  "main": "./worker.js",
   "compatibility_date": "2026-10-20",
   "assets": {
-    "directory": "."
+    "directory": ".",
+    "binding": "ASSETS",
+    "run_worker_first": [
+      "/api/*",
+      "/puzzel-*"
+    ]
   },
   "preview_urls": true,
   "previews": {}
