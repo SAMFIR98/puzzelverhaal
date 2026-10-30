@@ -1,7 +1,8 @@
 
 /* =========================================================
    SPOORZOEKEN — CENTRALE PUZZELGEGEVENS
-   Alle puzzels, antwoorden en paginaverwijzingen
+   Titels en paginaverwijzingen.
+   Antwoorden worden uitsluitend op de server bewaard.
    ========================================================= */
 
 const puzzels = {
@@ -9,7 +10,6 @@ const puzzels = {
     nummer: 1,
     titel: "Het achtergelaten spoor",
     pagina: "puzzel-1.html",
-    antwoord: "bordeaux",
     vorigePuzzel: null,
     volgendePuzzel: 2
   },
@@ -18,7 +18,6 @@ const puzzels = {
     nummer: 2,
     titel: "Een onverwachte bestemming",
     pagina: "puzzel-2.html",
-    antwoord: "girondins",
     vorigePuzzel: 1,
     volgendePuzzel: 3
   },
@@ -27,7 +26,6 @@ const puzzels = {
     nummer: 3,
     titel: "Het volgende spoor",
     pagina: "puzzel-3.html",
-    antwoord: "chanel",
     vorigePuzzel: 2,
     volgendePuzzel: 4
   },
@@ -36,7 +34,6 @@ const puzzels = {
     nummer: 4,
     titel: "De grens",
     pagina: "puzzel-4.html",
-    antwoord: "239",
     vorigePuzzel: 3,
     volgendePuzzel: null
   }
@@ -47,30 +44,6 @@ const puzzels = {
  */
 function haalPuzzelOp(nummer) {
   return puzzels[Number(nummer)] ?? null;
-}
-
-/**
- * Normaliseert een antwoord.
- * Hoofdletters en spaties aan begin en einde tellen niet mee.
- */
-function normaliseerAntwoord(antwoord) {
-  return String(antwoord ?? "").trim().toLowerCase();
-}
-
-/**
- * Controleert een antwoord.
- */
-function controleerAntwoord(nummer, gegevenAntwoord) {
-  const puzzel = haalPuzzelOp(nummer);
-
-  if (!puzzel || !puzzel.antwoord) {
-    return false;
-  }
-
-  return (
-    normaliseerAntwoord(gegevenAntwoord) ===
-    normaliseerAntwoord(puzzel.antwoord)
-  );
 }
 
 /**
