@@ -26,20 +26,23 @@
 
         <p>
           De Frans-Spaanse grens. Nog vijf minuten en station Irun is bereikt.
-        </p>
-
-        <p>
-          Met je koffer stap je uit op Spaanse grond. De spoorwegbeambten
-          nemen je koffer van je over voor controle door de douane, om hem
-          daarna naar je Spaanse trein te brengen.
+          Op dit station eindigt het Franse spoor en stap je over op het Spaanse.
+          Door het verschil in spoorbreedte kunnen Franse en Spaanse treinen
+          niet in elkaars land verder rijden.
         </p>
 
         <img
           id="puzzle4-image"
           class="story-image"
           src="Puzzel%204.png"
-          alt="De aankomst bij de Frans-Spaanse grens en de overstap naar de Spaanse trein"
+          alt="Station Irun aan de Frans-Spaanse grens in 1925"
         >
+
+        <p>
+          Met je koffer stap je uit op Spaanse grond. De spoorwegbeambten nemen
+          je koffer van je over voor controle door de douane, om hem daarna
+          naar je Spaanse trein te brengen.
+        </p>
 
         <p>
           Je stapt je nieuwe coupé in en begroet de andere passagier,
@@ -47,46 +50,43 @@
         </p>
 
         <p>
-          "Ligt het aan mij, of zit ik hier ruimer dan in de vorige trein?",
-          vraag je je hardop af.
+          Dat bredere Spaanse spoor zorgt niet per se voor veel extra
+          beenruimte, verzucht je hardop.
         </p>
 
         <p>
-          "Tja, de Vrede van Atrecht voelde wel wat benauwd vergeleken met
-          't Schrickelik Tempeest", antwoordt de historicus. "Ga je richting
-          Portugal, dan wordt het weer wat smaller. Maar nog altijd breder
-          dan in Frankrijk."
+          "Tja, de Eerste Vrede van Atrecht van net voelde wel wat benauwd
+          vergeleken met 6 Castiliaanse voet nu", antwoordt de historicus.
+          "Ga je richting Portugal, dan wordt het weer wat smaller.
+          Maar nog altijd breder dan in Frankrijk."
         </p>
 
         <div class="question">
           <h3>De vraag</h3>
-          <p>Hoeveel breder, in mm?</p>
+
+          <p>
+            Hoeveel breder, in mm?
+          </p>
 
           <form id="answer-form">
-            <label for="answer">Jouw antwoord</label>
             <input
+              type="number"
               id="answer"
-              name="answer"
-              type="text"
-              inputmode="numeric"
+              placeholder="Vul je antwoord in"
               autocomplete="off"
               required
-              placeholder="Vul het aantal millimeters in"
             >
 
             <button type="submit">
               Antwoord controleren
             </button>
           </form>
-        </div>
 
-        <p
-          id="success-message"
-          class="success-message hidden"
-          aria-live="polite"
-        >
-          Goed gevonden! Je hebt puzzel 4 opgelost.
-        </p>
+          <div
+            id="success-message"
+            class="success-message hidden"
+          ></div>
+        </div>
 
         <button
           type="button"
@@ -103,28 +103,16 @@
     Spoorzoeken · Een mysterie op het spoor door Europa · 1925
   </footer>
 
-  <!-- FOUTMELDING -->
+  <!-- Foutmelding -->
   <div
     id="error-overlay"
     class="error-overlay"
-    role="alertdialog"
-    aria-modal="true"
-    aria-labelledby="error-title"
     aria-hidden="true"
   >
     <div class="error-box">
-      <img src="Stop.png" alt="Het spoor loopt dood">
-
-      <h2 id="error-title">Het spoor loopt dood</h2>
-
-      <p>
-        Dat is niet het goede antwoord. Het sein staat op rood.
-        Vind het goede antwoord om door te kunnen stomen.
-      </p>
-
-      <button type="button" id="error-close">
-        Verder zoeken
-      </button>
+      <img src="Stop.png" alt="Stop">
+      <h2 id="error-title">Dat is niet het goede antwoord.</h2>
+      <button type="button" id="error-close">Verder zoeken</button>
     </div>
   </div>
 
