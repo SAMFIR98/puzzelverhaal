@@ -4,6 +4,7 @@
    Puzzel 1 t/m 7.
 
    Antwoorden worden gecontroleerd door Cloudflare.
+   Foutmeldingen worden centraal gestandaardiseerd.
    ========================================================= */
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -11,8 +12,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const antwoordveld = document.getElementById("answer");
   const foutmelding = document.getElementById("error-overlay");
 
-  // Ondersteun beide gebruikte ID's voor de sluitknop.
-  const foutSluiten =
+  let foutSluiten =
     document.getElementById("error-close") ||
     document.getElementById("close-error");
 
@@ -34,8 +34,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const huidigePagina = window.location.pathname;
 
-  // Herkent zowel /puzzel-6 als /puzzel-6.html,
-  // eventueel met een afsluitende slash.
   const paginaMatch = huidigePagina.match(/puzzel-(\d+)(?:\.html)?\/?$/i);
 
   if (paginaMatch) {
@@ -55,12 +53,84 @@ document.addEventListener("DOMContentLoaded", function () {
   console.log("Spoorzoeken: puzzelnummer", puzzelNummer);
 
   /* ---------------------------------------------------------
-     FOUTMELDING
+     UNIFORME FOUTMELDING
      --------------------------------------------------------- */
 
   const standaardFoutmelding =
     "Dat is niet het goede antwoord. Het sein staat op rood. " +
     "Vind het goede antwoord om door te kunnen stomen.";
+
+  function maakFoutmeldingUniform() {
+    if (!foutmelding) return;
+
+    let foutBox =
+      foutmelding.querySelector(".error-box") ||
+      foutmelding.querySelector(".error-message");
+
+    if (!foutBox) {
+      foutBox = document.createElement("div");
+      foutmelding.appendChild(foutBox);
+    }
+
+    foutBox.classList.remove("error-message");
+    foutBox.classList.add("error-box");
+
+    let afbeelding = foutBox.querySelector("img");
+
+    if (!afbeelding) {
+      afbeelding = document.createElement("img");
+      foutBox.prepend(afbeelding);
+    }
+
+    afbeelding.src = "Stop.png";
+    afbeelding.alt = "Stop";
+
+    let titel = foutBox.querySelector("h2");
+
+    if (!titel) {
+      titel = document.createElement("h2");
+      foutBox.insertBefore(titel, foutBox.querySelector("p"));
+    }
+
+    titel.id = "error-title";
+    titel.textContent = "Het spoor loopt dood";
+
+    let tekst = foutBox.querySelector("p");
+
+    if (!tekst) {
+      tekst = document.createElement("p");
+      foutBox.appendChild(tekst);
+    }
+
+    tekst.textContent = standaardFoutmelding;
+
+    let knop =
+      foutBox.querySelector("#error-close") ||
+      foutBox.querySelector("#close-error") ||
+      foutBox.querySelector("button");
+
+    if (!knop) {
+      knop = document.createElement("button");
+      knop.type = "button";
+      foutBox.appendChild(knop);
+    }
+
+    knop.id = "error-close";
+    knop.type = "button";
+    knop.textContent = "Opnieuw proberen";
+
+    foutmelding.classList.add("hidden");
+    foutmelding.classList.remove("open");
+
+    foutmelding.setAttribute("aria-hidden", "true");
+    foutmelding.setAttribute("role", "alertdialog");
+    foutmelding.setAttribute("aria-modal", "true");
+    foutmelding.setAttribute("aria-labelledby", "error-title");
+
+    foutSluiten = knop;
+
+    console.log("Spoorzoeken: foutmelding gestandaardiseerd.");
+  }
 
   function toonFoutmelding(bericht = standaardFoutmelding) {
     if (!foutmelding) {
@@ -68,10 +138,7 @@ document.addEventListener("DOMContentLoaded", function () {
       return;
     }
 
-    // Ondersteun beide gebruikte HTML-klassen.
-    const tekst =
-      foutmelding.querySelector(".error-message p") ||
-      foutmelding.querySelector(".error-box p");
+    const tekst = foutmelding.querySelector(".error-box p");
 
     if (tekst) {
       tekst.textContent = bericht;
@@ -89,14 +156,14 @@ document.addEventListener("DOMContentLoaded", function () {
     foutmelding.classList.add("hidden");
     foutmelding.setAttribute("aria-hidden", "true");
 
-    const tekst =
-      foutmelding.querySelector(".error-message p") ||
-      foutmelding.querySelector(".error-box p");
+    const tekst = foutmelding.querySelector(".error-box p");
 
     if (tekst) {
       tekst.textContent = standaardFoutmelding;
     }
   }
+
+  maakFoutmeldingUniform();
 
   /* ---------------------------------------------------------
      ANTWOORD CONTROLEREN VIA CLOUDFLARE
@@ -197,13 +264,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
       antwoordveld.value = "";
 
-      // Bij een volgende puzzel gaat de speler direct door.
       if (resultaat.nextPage) {
         window.location.href = resultaat.nextPage;
         return;
       }
 
-      // De laatste puzzel is opgelost.
       if (resultaat.completed && succesmelding) {
         succesmelding.textContent =
           "Uitstekend! Je hebt de laatste puzzel opgelost. De reis is voltooid.";
