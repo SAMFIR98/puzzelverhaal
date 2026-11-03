@@ -2,51 +2,110 @@
 <!DOCTYPE html>
 <html lang="nl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Puzzel 6 – Hier komt puzzel 6 | Spoorzoeken</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spoorzoeken - Puzzel 6</title>
 
-  <link rel="stylesheet" href="css/stijl.css">
+    <link rel="stylesheet" href="css/stijl.css">
 
-  <script src="js/algemeen.js" defer></script>
-  <script src="js/puzzels.js" defer></script>
-  <script src="js/puzzelpagina.js" defer></script>
+    <script src="js/algemeen.js" defer></script>
+    <script src="js/puzzels.js" defer></script>
+    <script src="js/puzzelpagina.js" defer></script>
 </head>
 
 <body>
-  <header>
-    <h1>Spoorzoeken</h1>
-    <p>Een spoorwegmysterie uit 1925</p>
-  </header>
 
-  <main>
-    <section class="screen active">
-      <div class="panel">
-        <div class="eyebrow">Puzzel 6</div>
-        <h2>Hier komt puzzel 6</h2>
+    <header class="site-header">
+        <a href="index.html" class="logo">SPOORZOEKEN</a>
+    </header>
 
-        <p>
-          Je bent weer een stap verder gekomen op je reis.
-          Het volgende spoor wordt binnenkort onthuld.
-        </p>
+    <main class="screen active">
+        <section class="panel">
 
-        <p>
-          Kom later terug om je avontuur voort te zetten!
-        </p>
+            <p class="eyebrow">Puzzel 6</p>
 
-        <button
-          type="button"
-          class="secondary"
-          id="home-button"
-        >
-          Terug naar de start
-        </button>
-      </div>
-    </section>
-  </main>
+            <h1>Een avond in Madrid</h1>
 
-  <footer>
-    Spoorzoeken · Een mysterie op het spoor door Europa · 1925
-  </footer>
+            <div class="story-text" style="text-align: center;">
+
+                Madrid. Je loopt door het bruisende wijk Goya. Net als veel<br>
+                andere bezoekers bekijk je de poster met daarop de toreo,<br>
+                rode lap in de hand. En dan gebeurt het. Voor de studentenclub<br>
+                kom je een student tegen. Hij spreekt je aan: mag ik u<br>
+                iets vragen? Ik zou u graag trakteren op<br>
+                een avondje uit. Ik ga naar de arena. Wilt u me<br>
+                soms vergezellen vanavond?
+
+            </div>
+
+            <div class="image-container">
+                <img
+                    id="puzzle6-image"
+                    class="story-image"
+                    src="Puzzel%206.png"
+                    alt="Een poster met een stierenvechter en een stier"
+                >
+            </div>
+
+            <div class="story-text">
+
+                <p>
+                    Hij heeft zichzelf niet eens voorgesteld, bedenk je je als je even later met hem in de arena zit. Hij heeft trouwens wel wat weg van die stier, bedenk je in jezelf.
+                </p>
+
+                <p>
+                    "Hoe heet je?" vraag je uiteindelijk toch maar.
+                </p>
+
+                <p>
+                    "Geen je: U!" antwoordt hij. "Trouwens, ik heb mezelf bij onze ontmoeting vooraf en achteraf al uiterst duidelijk geïntroduceerd."
+                </p>
+
+            </div>
+
+            <div class="question">
+
+                <p class="question-text">
+                    Naast wie zit je in de arena?
+                </p>
+
+                <form id="answer-form">
+
+                    <input
+                        type="text"
+                        id="answer"
+                        name="answer"
+                        placeholder="Jouw antwoord..."
+                        autocomplete="off"
+                        required
+                    >
+
+                    <button type="submit">
+                        Antwoord controleren
+                    </button>
+
+                </form>
+
+                <p id="success-message" class="success-message hidden"></p>
+
+            </div>
+
+            <button id="home-button" type="button">
+                Terug naar het begin
+            </button>
+
+        </section>
+    </main>
+
+    <div id="error-overlay" class="error-overlay hidden">
+        <div class="error-message">
+            <p>
+                Dat is niet het goede antwoord. Het sein staat op rood.
+                Vind het goede antwoord om door te kunnen stomen.
+            </p>
+            <button id="close-error" type="button">Opnieuw proberen</button>
+        </div>
+    </div>
+
 </body>
 </html>
