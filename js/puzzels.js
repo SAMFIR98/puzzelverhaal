@@ -1,76 +1,68 @@
 
-/* =========================================================
-   SPOORZOEKEN — CENTRALE PUZZELGEGEVENS
-   Titels en paginaverwijzingen.
-   Antwoorden worden uitsluitend op de server bewaard.
-   ========================================================= */
-
 const puzzels = {
-  1: {
-    nummer: 1,
-    titel: "Het achtergelaten spoor",
-    pagina: "puzzel-1.html",
-    vorigePuzzel: null,
-    volgendePuzzel: 2
-  },
+    1: {
+        nummer: 1,
+        titel: "Het achtergelaten spoor",
+        pagina: "puzzel-1.html",
+        vorigePuzzel: null,
+        volgendePuzzel: 2
+    },
 
-  2: {
-    nummer: 2,
-    titel: "Een onverwachte bestemming",
-    pagina: "puzzel-2.html",
-    vorigePuzzel: 1,
-    volgendePuzzel: 3
-  },
+    2: {
+        nummer: 2,
+        titel: "Een onverwachte bestemming",
+        pagina: "puzzel-2.html",
+        vorigePuzzel: 1,
+        volgendePuzzel: 3
+    },
 
-  3: {
-    nummer: 3,
-    titel: "Het volgende spoor",
-    pagina: "puzzel-3.html",
-    vorigePuzzel: 2,
-    volgendePuzzel: 4
-  },
+    3: {
+        nummer: 3,
+        titel: "Het volgende spoor",
+        pagina: "puzzel-3.html",
+        vorigePuzzel: 2,
+        volgendePuzzel: 4
+    },
 
-  4: {
-    nummer: 4,
-    titel: "De grens",
-    pagina: "puzzel-4.html",
-    vorigePuzzel: 3,
-    volgendePuzzel: 5
-  },
+    4: {
+        nummer: 4,
+        titel: "De grens",
+        pagina: "puzzel-4.html",
+        vorigePuzzel: 3,
+        volgendePuzzel: 5
+    },
 
-  5: {
-    nummer: 5,
-    titel: "De angst in de haven",
-    pagina: "puzzel-5.html",
-    vorigePuzzel: 4,
-    volgendePuzzel: 6
-  },
+    5: {
+        nummer: 5,
+        titel: "De angst in de haven",
+        pagina: "puzzel-5.html",
+        vorigePuzzel: 4,
+        volgendePuzzel: 6
+    },
 
-  6: {
-    nummer: 6,
-    titel: "Hier komt puzzel 6",
-    pagina: "puzzel-6.html",
-    vorigePuzzel: 5,
-    volgendePuzzel: null
-  }
+    6: {
+        nummer: 6,
+        titel: "Een avond in Madrid",
+        pagina: "puzzel-6.html",
+        vorigePuzzel: 5,
+        volgendePuzzel: null
+    }
 };
 
-/**
- * Haalt de gegevens van een puzzel op.
- */
+
+// Haal een puzzel op aan de hand van het nummer
 function haalPuzzelOp(nummer) {
-  return puzzels[Number(nummer)] ?? null;
+    return puzzels[nummer] || null;
 }
 
-/**
- * Haalt de volgende puzzel op, indien die bestaat.
- */
+
+// Haal de volgende puzzel op
 function haalVolgendePuzzelOp(nummer) {
-  const puzzel = haalPuzzelOp(nummer);
+    const puzzel = haalPuzzelOp(nummer);
 
-  if (!puzzel || puzzel.volgendePuzzel === null) {
-    return null;
-  }
+    if (!puzzel || puzzel.volgendePuzzel === null) {
+        return null;
+    }
 
-  return haalPuzzelOp(puzzel.volgendePuzzel);
+    return haalPuzzelOp(puzzel.volgendePuzzel);
 }
