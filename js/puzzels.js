@@ -1,4 +1,3 @@
-
 /* =========================================================
    SPOORZOEKEN — CENTRALE PUZZELGEGEVENS
    Titels en paginaverwijzingen.
@@ -35,6 +34,14 @@ const puzzels = {
     titel: "De grens",
     pagina: "puzzel-4.html",
     vorigePuzzel: 3,
+    volgendePuzzel: 5
+  },
+
+  5: {
+    nummer: 5,
+    titel: "De angst in de haven",
+    pagina: "puzzel-5.html",
+    vorigePuzzel: 4,
     volgendePuzzel: null
   }
 };
