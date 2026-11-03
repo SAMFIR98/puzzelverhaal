@@ -33,7 +33,10 @@ document.addEventListener("DOMContentLoaded", function () {
   let puzzelNummer = null;
 
   const huidigePagina = window.location.pathname;
-  const paginaMatch = huidigePagina.match(/puzzel-(\d+)\.html$/i);
+
+  // Herkent zowel /puzzel-6 als /puzzel-6.html,
+  // eventueel met een afsluitende slash.
+  const paginaMatch = huidigePagina.match(/puzzel-(\d+)(?:\.html)?\/?$/i);
 
   if (paginaMatch) {
     puzzelNummer = Number(paginaMatch[1]);
@@ -74,7 +77,6 @@ document.addEventListener("DOMContentLoaded", function () {
       tekst.textContent = bericht;
     }
 
-    // Belangrijk: verwijder ook de klasse hidden.
     foutmelding.classList.remove("hidden");
     foutmelding.classList.add("open");
     foutmelding.setAttribute("aria-hidden", "false");
