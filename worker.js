@@ -1,4 +1,3 @@
-
 /* =========================================================
    SPOORZOEKEN — CLOUDFLARE WORKER
    Server-side toegangscontrole voor alle puzzelpagina's.
@@ -11,7 +10,7 @@
 
 const COOKIE_NAME = "__Host-spoorzoeken";
 const SESSION_TTL_SECONDS = 60 * 60 * 24 * 90;
-const MAX_PUZZLE_NUMBER = 4;
+const MAX_PUZZLE_NUMBER = 5;
 
 const encoder = new TextEncoder();
 const decoder = new TextDecoder();
@@ -252,6 +251,37 @@ function jsonResponse(data, status = 200, token = null) {
 }
 
 /* ---------------------------------------------------------
+   JUISTE ANTWOORDEN OPHALEN
+
+   Ondersteunt:
+   - Eén antwoord als tekst.
+   - Meerdere juiste antwoorden als array.
+   --------------------------------------------------------- */
+
+function haalJuisteAntwoordenOp(answers, puzzleNumber) {
+  const configuredAnswer = answers[String(puzzleNumber)];
+
+  if (typeof configuredAnswer === "string") {
+    return configuredAnswer.trim()
+      ? [normalizeAnswer(configuredAnswer)]
+      : null;
+  }
+
+  if (Array.isArray(configuredAnswer)) {
+    const normalizedAnswers = configuredAnswer
+      .filter(answer => typeof answer === "string")
+      .map(answer => normalizeAnswer(answer))
+      .filter(answer => answer.length > 0);
+
+    return normalizedAnswers.length > 0
+      ? normalizedAnswers
+      : null;
+  }
+
+  return null;
+}
+
+/* ---------------------------------------------------------
    ANTWOORDENCONTROLEREN
 
    De antwoorden worden uitsluitend gelezen uit de
@@ -383,9 +413,12 @@ async function handleAnswer(request, env, url) {
     );
   }
 
-  const correctAnswer = answers[String(puzzleNumber)];
+  const correctAnswers = haalJuisteAntwoordenOp(
+    answers,
+    puzzleNumber
+  );
 
-  if (typeof correctAnswer !== "string") {
+  if (!correctAnswers) {
     return jsonResponse(
       {
         ok: false,
@@ -399,9 +432,7 @@ async function handleAnswer(request, env, url) {
   const currentProgress = session?.progress ?? 1;
 
   // Verkeerd antwoord: geen nieuwe puzzel vrijgeven.
-  if (
-    givenAnswer !== normalizeAnswer(correctAnswer)
-  ) {
+  if (!correctAnswers.includes(givenAnswer)) {
     const token = await createSessionToken(
       currentProgress,
       env
