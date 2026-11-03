@@ -6,7 +6,7 @@
   // PUZZEL 3 — HET VERZAMELBORD
   // De negen basisafbeeldingen worden willekeurig gerangschikt.
   // De oorspronkelijke nummers blijven intern behouden.
-  // De antwoordcontrole verloopt via Cloudflare.
+  // Antwoordcontrole verloopt via puzzelpagina.js en Cloudflare.
   // =========================================================
 
   const IMAGE_FOLDER = "puzzel3";
@@ -27,26 +27,21 @@
   // De juiste combinatie van fragment en vak.
   // slot is het vaknummer: A = 0, B = 1, enzovoort.
   const correctPieces = [
-    { source: 9, tile: 1, slot: 0 }, // Besturen -> A
-    { source: 8, tile: 2, slot: 1 }, // Fotograferen -> B
-    { source: 7, tile: 3, slot: 2 }, // Feliciteren -> C
-    { source: 5, tile: 4, slot: 3 }, // Vliegen -> D
-    { source: 6, tile: 5, slot: 4 }, // Bloeien -> E
-    { source: 4, tile: 6, slot: 5 }, // Dansen -> F
-    { source: 3, tile: 7, slot: 6 }, // Skateboarden -> G
-    { source: 2, tile: 8, slot: 7 }, // Lezen -> H
-    { source: 1, tile: 9, slot: 8 }  // Ontbijten -> I
+    { source: 9, tile: 1, slot: 0 },
+    { source: 8, tile: 2, slot: 1 },
+    { source: 7, tile: 3, slot: 2 },
+    { source: 5, tile: 4, slot: 3 },
+    { source: 6, tile: 5, slot: 4 },
+    { source: 4, tile: 6, slot: 5 },
+    { source: 3, tile: 7, slot: 6 },
+    { source: 2, tile: 8, slot: 7 },
+    { source: 1, tile: 9, slot: 8 }
   ];
 
   const gallery = document.getElementById("gallery");
   const slots = Array.from(document.querySelectorAll(".slot"));
   const status = document.getElementById("status");
   const clearButton = document.getElementById("clear");
-
-  // Het antwoordformulier staat permanent in puzzel-3.html.
-  const answerForm = document.getElementById("puzzel3-answer-form");
-  const answerInput = document.getElementById("puzzel3-answer-input");
-  const answerFeedback = document.getElementById("puzzel3-answer-feedback");
 
   const pieces = new Map();
 
@@ -81,112 +76,6 @@
   }
 
   /* ---------------------------------------------------------
-     ANTWOORD CONTROLEREN VIA CLOUDFLARE
-     --------------------------------------------------------- */
-
-  function setupAnswerForm() {
-    if (!answerForm || !answerInput || !answerFeedback) {
-      console.error(
-        "Puzzel 3: het antwoordformulier of een onderdeel daarvan ontbreekt."
-      );
-      return;
-    }
-
-    const answerButton = answerForm.querySelector(
-      'button[type="submit"]'
-    );
-
-    answerForm.addEventListener("submit", async event => {
-      event.preventDefault();
-
-      const submittedAnswer = answerInput.value.trim();
-
-      if (!submittedAnswer) {
-        answerInput.focus();
-        return;
-      }
-
-      if (answerButton) {
-        answerButton.disabled = true;
-      }
-
-      answerFeedback.textContent = "";
-      answerFeedback.className = "";
-
-      try {
-        const response = await fetch("/api/answer", {
-          method: "POST",
-          credentials: "same-origin",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            puzzleNumber: 3,
-            answer: submittedAnswer
-          })
-        });
-
-        let resultaat;
-
-        try {
-          resultaat = await response.json();
-        } catch {
-          throw new Error("Ongeldig antwoord van de server.");
-        }
-
-        if (!response.ok || !resultaat.ok) {
-          if (resultaat.code === "wrong_answer") {
-            answerFeedback.textContent =
-              "Dat is niet het goede antwoord. Probeer het opnieuw.";
-
-            answerFeedback.className = "error-feedback";
-
-            answerInput.select();
-            answerInput.focus();
-
-          } else {
-            answerFeedback.textContent =
-              "De antwoordcontrole is momenteel niet beschikbaar. " +
-              "Controleer je verbinding en probeer het opnieuw.";
-
-            answerFeedback.className = "error-feedback";
-          }
-
-          return;
-        }
-
-        answerInput.value = "";
-
-        if (resultaat.nextPage) {
-          window.location.assign(resultaat.nextPage);
-          return;
-        }
-
-        if (resultaat.completed) {
-          answerFeedback.textContent =
-            "Uitstekend! Je hebt de reis voltooid.";
-
-          answerFeedback.className = "success-feedback";
-        }
-
-      } catch (error) {
-        console.error("Spoorzoeken:", error);
-
-        answerFeedback.textContent =
-          "De antwoordcontrole kon niet worden uitgevoerd. " +
-          "Controleer je verbinding en probeer het opnieuw.";
-
-        answerFeedback.className = "error-feedback";
-
-      } finally {
-        if (answerButton) {
-          answerButton.disabled = false;
-        }
-      }
-    });
-  }
-
-  /* ---------------------------------------------------------
      AFBEELDINGEN LADEN EN FRAGMENTEN MAKEN
      --------------------------------------------------------- */
 
@@ -208,7 +97,6 @@
     });
   }
 
-  // Snijdt één van de negen delen uit de originele afbeelding.
   function cropImage(image, tileNumber) {
     const column = (tileNumber - 1) % 3;
     const row = Math.floor((tileNumber - 1) / 3);
@@ -326,7 +214,6 @@
 
     const piece = pieces.get(pieceId);
 
-    // Haal het fragment eerst uit zijn huidige vak.
     if (piece.slot !== null) {
       const previousSlot = slots[piece.slot];
 
@@ -335,7 +222,6 @@
       }
     }
 
-    // Maak een eventueel bezet doelvak vrij.
     const existingPieceId = targetSlot.dataset.pieceId;
 
     if (existingPieceId && existingPieceId !== pieceId) {
@@ -359,7 +245,6 @@
 
     selectedPiece = null;
 
-    // Controleer direct of het volledige bord goed ligt.
     if (checkBoard()) {
       lockBoard();
       return;
@@ -443,7 +328,7 @@
       );
     } else {
       setStatus(
-        `${loadedCount} van de ${sources.length} afbeeldingen geladen; ` +
+        `${loadedCount} van de sources.length} afbeeldingen geladen; ` +
         `${failedCount} afbeelding(en) ontbreken. De overige afbeeldingen werken wel.`
       );
     }
@@ -457,9 +342,6 @@
 
     const title = document.createElement("h3");
     title.className = "source-title";
-
-    // Alleen de naam wordt zichtbaar getoond.
-    // Het oorspronkelijke nummer blijft intern behouden.
     title.textContent = source.title;
 
     const imageArea = document.createElement("div");
@@ -483,7 +365,6 @@
       overlay.className = "tile-overlay";
 
       for (let tile = 1; tile <= 9; tile++) {
-        // Gebruik het oorspronkelijke nummer, niet de willekeurige positie.
         const pieceId =
           `image-${source.number}-tile-${tile}`;
 
@@ -574,7 +455,6 @@
       button.classList.remove("selected");
     });
 
-    // Vergrendel alle fragmenten, vakken en de leegmaakknop.
     document.querySelectorAll(".tile").forEach(button => {
       button.disabled = true;
       button.draggable = false;
@@ -626,7 +506,6 @@
           return;
         }
 
-        // Klik op een bezet vak om het fragment terug te halen.
         const pieceId = slot.dataset.pieceId;
 
         if (pieceId) {
@@ -674,9 +553,6 @@
      --------------------------------------------------------- */
 
   async function init() {
-    // Het antwoordformulier werkt onafhankelijk van het verzamelbord.
-    setupAnswerForm();
-
     if (
       !gallery ||
       !status ||
@@ -692,7 +568,6 @@
 
     setupBoard();
 
-    // Maak bij iedere nieuwe paginaopening een willekeurige volgorde.
     const shuffledSources = shuffleSources(sources);
 
     await Promise.all(
