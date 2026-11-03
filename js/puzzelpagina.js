@@ -1,7 +1,6 @@
-
 /* =========================================================
    SPOORZOEKEN — GEDEELDE PUZZELPAGINA-FUNCTIES
-   Puzzel 1, puzzel 2 en volgende puzzels.
+   Puzzel 1 t/m 5.
 
    Antwoorden worden gecontroleerd door Cloudflare.
    ========================================================= */
@@ -12,10 +11,13 @@ document.addEventListener("DOMContentLoaded", function () {
   const foutmelding = document.getElementById("error-overlay");
   const foutSluiten = document.getElementById("error-close");
   const startKnop = document.getElementById("home-button");
+
   const puzzel1Afbeelding = document.getElementById("puzzle1-image");
   const puzzel2Afbeelding = document.getElementById("puzzle2-image");
   const puzzel3Afbeelding = document.getElementById("puzzle3-image");
   const puzzel4Afbeelding = document.getElementById("puzzle4-image");
+  const puzzel5Afbeelding = document.getElementById("puzzle5-image");
+
   const succesmelding = document.getElementById("success-message");
 
   /* ---------------------------------------------------------
@@ -37,6 +39,8 @@ document.addEventListener("DOMContentLoaded", function () {
     puzzelNummer = 3;
   } else if (puzzel4Afbeelding) {
     puzzelNummer = 4;
+  } else if (puzzel5Afbeelding) {
+    puzzelNummer = 5;
   }
 
   /* ---------------------------------------------------------
@@ -175,6 +179,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function openLabel() {
     openLightbox("Puzzel%201b.png", "Het label aan de koffer");
+  }
+
+  /* ---------------------------------------------------------
+     PUZZEL 5: AFBEELDING VERGROTEN
+     --------------------------------------------------------- */
+
+  function openPuzzel5Afbeelding() {
+    openLightbox(
+      "Puzzel%205.png",
+      "De haven van San Sebastián"
+    );
   }
 
   /* ---------------------------------------------------------
@@ -613,6 +628,18 @@ document.addEventListener("DOMContentLoaded", function () {
   if (puzzel2Afbeelding) {
     puzzel2Afbeelding.addEventListener("click", toonNonogram);
     voegToetsbedieningToe(puzzel2Afbeelding, toonNonogram);
+  }
+
+  if (puzzel5Afbeelding) {
+    puzzel5Afbeelding.addEventListener(
+      "click",
+      openPuzzel5Afbeelding
+    );
+
+    voegToetsbedieningToe(
+      puzzel5Afbeelding,
+      openPuzzel5Afbeelding
+    );
   }
 
   if (terugNaarAfbeeldingKnop) {
