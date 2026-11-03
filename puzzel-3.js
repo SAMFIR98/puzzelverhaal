@@ -24,18 +24,16 @@
     { number: 9, title: "Besturen", file: "besturen" }
   ];
 
-  // De juiste combinatie van fragment en vak.
-  // slot is het vaknummer: A = 0, B = 1, enzovoort.
   const correctPieces = [
-    { source: 9, tile: 1, slot: 0 }, // Besturen -> A
-    { source: 8, tile: 2, slot: 1 }, // Fotograferen -> B
-    { source: 7, tile: 3, slot: 2 }, // Feliciteren -> C
-    { source: 5, tile: 4, slot: 3 }, // Vliegen -> D
-    { source: 6, tile: 5, slot: 4 }, // Bloeien -> E
-    { source: 4, tile: 6, slot: 5 }, // Dansen -> F
-    { source: 3, tile: 7, slot: 6 }, // Skateboarden -> G
-    { source: 2, tile: 8, slot: 7 }, // Lezen -> H
-    { source: 1, tile: 9, slot: 8 }  // Ontbijten -> I
+    { source: 9, tile: 1, slot: 0 },
+    { source: 8, tile: 2, slot: 1 },
+    { source: 7, tile: 3, slot: 2 },
+    { source: 5, tile: 4, slot: 3 },
+    { source: 6, tile: 5, slot: 4 },
+    { source: 4, tile: 6, slot: 5 },
+    { source: 3, tile: 7, slot: 6 },
+    { source: 2, tile: 8, slot: 7 },
+    { source: 1, tile: 9, slot: 8 }
   ];
 
   const gallery = document.getElementById("gallery");
@@ -47,7 +45,6 @@
 
   let selectedPiece = null;
   let loadedCount = 0;
-  let failedCount = 0;
   let boardLocked = false;
 
   /* ---------------------------------------------------------
@@ -97,7 +94,6 @@
     });
   }
 
-  // Snijdt één van de negen delen uit de originele afbeelding.
   function cropImage(image, tileNumber) {
     const column = (tileNumber - 1) % 3;
     const row = Math.floor((tileNumber - 1) / 3);
@@ -215,7 +211,6 @@
 
     const piece = pieces.get(pieceId);
 
-    // Haal het fragment eerst uit zijn huidige vak.
     if (piece.slot !== null) {
       const previousSlot = slots[piece.slot];
 
@@ -224,7 +219,6 @@
       }
     }
 
-    // Maak een eventueel bezet doelvak vrij.
     const existingPieceId = targetSlot.dataset.pieceId;
 
     if (existingPieceId && existingPieceId !== pieceId) {
@@ -248,7 +242,6 @@
 
     selectedPiece = null;
 
-    // Controleer direct of het volledige bord goed ligt.
     if (checkBoard()) {
       lockBoard();
       return;
@@ -294,50 +287,6 @@
      BASISAFBEELDINGEN OPBOUWEN
      --------------------------------------------------------- */
 
-  function showImageError(source, card, path, error) {
-    failedCount++;
-
-    const imageArea = card.querySelector(".image-grid");
-    imageArea.innerHTML = "";
-
-    const message = document.createElement("div");
-    message.className = "image-error";
-
-    message.textContent =
-      `Deze afbeelding kan niet worden geladen: ${path}. ` +
-      "Controleer de bestandsnaam, extensie en map.";
-
-    imageArea.appendChild(message);
-
-    console.error(
-      `Puzzel 3: ${path} kon niet worden geladen.`,
-      error
-    );
-
-    updateSummary();
-  }
-
-  function updateSummary() {
-    if (loadedCount + failedCount < sources.length) {
-      setStatus(
-        `Afbeeldingen laden… ${loadedCount} geladen, ${failedCount} niet beschikbaar.`
-      );
-
-      return;
-    }
-
-    if (failedCount === 0) {
-      setStatus(
-        "Alle negen afbeeldingen zijn geladen. Sleep fragmenten naar vak A–I."
-      );
-    } else {
-      setStatus(
-        `${loadedCount} van de ${sources.length} afbeeldingen geladen; ` +
-        `${failedCount} afbeelding(en) ontbreken. De overige afbeeldingen werken wel.`
-      );
-    }
-  }
-
   async function buildSourceCard(source) {
     const path = getImagePath(source);
 
@@ -346,9 +295,6 @@
 
     const title = document.createElement("h3");
     title.className = "source-title";
-
-    // Alleen de naam wordt zichtbaar getoond.
-    // Het oorspronkelijke nummer blijft intern behouden.
     title.textContent = source.title;
 
     const imageArea = document.createElement("div");
@@ -372,7 +318,6 @@
       overlay.className = "tile-overlay";
 
       for (let tile = 1; tile <= 9; tile++) {
-        // Gebruik het oorspronkelijke nummer, niet de willekeurige positie.
         const pieceId =
           `image-${source.number}-tile-${tile}`;
 
@@ -425,10 +370,14 @@
       imageArea.appendChild(overlay);
 
       loadedCount++;
-      updateSummary();
 
     } catch (error) {
-      showImageError(source, card, path, error);
+      // Geen zichtbare foutmelding onder het verzamelbord.
+      // Technische fouten blijven beschikbaar in de browserconsole.
+      console.error(
+        `Puzzel 3: ${path} kon niet worden geladen.`,
+        error
+      );
     }
   }
 
@@ -463,7 +412,6 @@
       button.classList.remove("selected");
     });
 
-    // Vergrendel alle fragmenten, vakken en de leegmaakknop.
     document.querySelectorAll(".tile").forEach(button => {
       button.disabled = true;
       button.draggable = false;
@@ -515,7 +463,6 @@
           return;
         }
 
-        // Klik op een bezet vak om het fragment terug te halen.
         const pieceId = slot.dataset.pieceId;
 
         if (pieceId) {
@@ -578,14 +525,17 @@
 
     setupBoard();
 
-    // Maak bij iedere nieuwe paginaopening een willekeurige volgorde.
     const shuffledSources = shuffleSources(sources);
 
     await Promise.all(
       shuffledSources.map(source => buildSourceCard(source))
     );
 
-    updateSummary();
+    // Geen zichtbare laad- of ontbrekende-afbeeldingenmelding.
+    // De statusregel wordt alleen gebruikt tijdens het puzzelen.
+    if (loadedCount === sources.length) {
+      status.textContent = "";
+    }
   }
 
   init();
