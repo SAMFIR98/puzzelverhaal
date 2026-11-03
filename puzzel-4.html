@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="nl">
 <head>
@@ -103,16 +104,27 @@
     Spoorzoeken · Een mysterie op het spoor door Europa · 1925
   </footer>
 
-  <!-- Foutmelding -->
   <div
     id="error-overlay"
-    class="error-overlay"
+    class="error-overlay hidden"
     aria-hidden="true"
+    role="alertdialog"
+    aria-modal="true"
+    aria-labelledby="error-title"
   >
     <div class="error-box">
       <img src="Stop.png" alt="Stop">
-      <h2 id="error-title">Dat is niet het goede antwoord.</h2>
-      <button type="button" id="error-close">Verder zoeken</button>
+
+      <h2 id="error-title">Het spoor loopt dood</h2>
+
+      <p>
+        Dat is niet het goede antwoord. Het sein staat op rood.
+        Vind het goede antwoord om door te kunnen stomen.
+      </p>
+
+      <button type="button" id="error-close">
+        Opnieuw proberen
+      </button>
     </div>
   </div>
 
