@@ -1,6 +1,7 @@
+
 /* =========================================================
    SPOORZOEKEN — GEDEELDE PUZZELPAGINA-FUNCTIES
-   Puzzel 1 t/m 5.
+   Puzzel 1 t/m 7.
 
    Antwoorden worden gecontroleerd door Cloudflare.
    ========================================================= */
@@ -9,7 +10,12 @@ document.addEventListener("DOMContentLoaded", function () {
   const formulier = document.getElementById("answer-form");
   const antwoordveld = document.getElementById("answer");
   const foutmelding = document.getElementById("error-overlay");
-  const foutSluiten = document.getElementById("error-close");
+
+  // Ondersteun beide gebruikte ID's voor de sluitknop.
+  const foutSluiten =
+    document.getElementById("error-close") ||
+    document.getElementById("close-error");
+
   const startKnop = document.getElementById("home-button");
 
   const puzzel1Afbeelding = document.getElementById("puzzle1-image");
@@ -43,6 +49,8 @@ document.addEventListener("DOMContentLoaded", function () {
     puzzelNummer = 5;
   }
 
+  console.log("Spoorzoeken: puzzelnummer", puzzelNummer);
+
   /* ---------------------------------------------------------
      FOUTMELDING
      --------------------------------------------------------- */
@@ -52,14 +60,22 @@ document.addEventListener("DOMContentLoaded", function () {
     "Vind het goede antwoord om door te kunnen stomen.";
 
   function toonFoutmelding(bericht = standaardFoutmelding) {
-    if (!foutmelding) return;
+    if (!foutmelding) {
+      console.error("Spoorzoeken: fout-overlay niet gevonden.");
+      return;
+    }
 
-    const tekst = foutmelding.querySelector(".error-box p");
+    // Ondersteun beide gebruikte HTML-klassen.
+    const tekst =
+      foutmelding.querySelector(".error-message p") ||
+      foutmelding.querySelector(".error-box p");
 
     if (tekst) {
       tekst.textContent = bericht;
     }
 
+    // Belangrijk: verwijder ook de klasse hidden.
+    foutmelding.classList.remove("hidden");
     foutmelding.classList.add("open");
     foutmelding.setAttribute("aria-hidden", "false");
   }
@@ -68,9 +84,12 @@ document.addEventListener("DOMContentLoaded", function () {
     if (!foutmelding) return;
 
     foutmelding.classList.remove("open");
+    foutmelding.classList.add("hidden");
     foutmelding.setAttribute("aria-hidden", "true");
 
-    const tekst = foutmelding.querySelector(".error-box p");
+    const tekst =
+      foutmelding.querySelector(".error-message p") ||
+      foutmelding.querySelector(".error-box p");
 
     if (tekst) {
       tekst.textContent = standaardFoutmelding;
@@ -84,7 +103,21 @@ document.addEventListener("DOMContentLoaded", function () {
   async function controleerInvoer(event) {
     event.preventDefault();
 
-    if (puzzelNummer === null || !antwoordveld) {
+    console.log(
+      "Spoorzoeken: antwoordcontrole gestart voor puzzel",
+      puzzelNummer
+    );
+
+    if (puzzelNummer === null || !antwoordveld || !formulier) {
+      console.error(
+        "Spoorzoeken: formulier, antwoordveld of puzzelnummer ontbreekt."
+      );
+
+      toonFoutmelding(
+        "De antwoordcontrole kan niet worden gestart. " +
+        "Ververs de pagina en probeer het opnieuw."
+      );
+
       return;
     }
 
@@ -116,21 +149,44 @@ document.addEventListener("DOMContentLoaded", function () {
         })
       });
 
+      console.log(
+        "Spoorzoeken: serverstatus",
+        response.status
+      );
+
       let resultaat;
 
       try {
         resultaat = await response.json();
       } catch {
-        throw new Error("Ongeldig antwoord van de server.");
+        throw new Error(
+          "De server heeft geen geldig JSON-antwoord teruggegeven."
+        );
       }
+
+      console.log(
+        "Spoorzoeken: resultaat antwoordcontrole",
+        resultaat
+      );
 
       if (!response.ok || !resultaat.ok) {
         if (resultaat.code === "wrong_answer") {
           toonFoutmelding();
+        } else if (resultaat.code === "puzzle_not_configured") {
+          toonFoutmelding(
+            "Deze puzzel is nog niet goed ingesteld op de server."
+          );
+        } else if (resultaat.code === "configuration_error") {
+          toonFoutmelding(
+            "Er is een probleem met de serverinstellingen. " +
+            "Probeer het later opnieuw."
+          );
         } else {
           toonFoutmelding(
             "De antwoordcontrole is momenteel niet beschikbaar. " +
-            "Controleer je verbinding en probeer het opnieuw."
+            "Servermelding: " +
+            (resultaat.code || "onbekende fout") +
+            ". Probeer het opnieuw."
           );
         }
 
