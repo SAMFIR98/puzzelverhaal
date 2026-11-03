@@ -97,13 +97,22 @@
         </section>
     </main>
 
-    <div id="error-overlay" class="error-overlay hidden">
+    <div
+        id="error-overlay"
+        class="error-overlay hidden"
+        aria-hidden="true"
+        role="alertdialog"
+        aria-modal="true"
+        aria-labelledby="error-title"
+    >
         <div class="error-box">
 
             <img
-                src="station_home.png"
-                alt="Spoorzoeken"
+                src="Stop.png"
+                alt="Stop"
             >
+
+            <h2 id="error-title">Het spoor loopt dood</h2>
 
             <p>
                 Dat is niet het goede antwoord. Het sein staat op rood.
