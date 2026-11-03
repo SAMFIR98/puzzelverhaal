@@ -1,4 +1,3 @@
-
 const puzzels = {
     1: {
         nummer: 1,
@@ -45,6 +44,14 @@ const puzzels = {
         titel: "Een avond in Madrid",
         pagina: "puzzel-6.html",
         vorigePuzzel: 5,
+        volgendePuzzel: 7
+    },
+
+    7: {
+        nummer: 7,
+        titel: "Hier komt puzzel 7",
+        pagina: "puzzel-7.html",
+        vorigePuzzel: 6,
         volgendePuzzel: null
     }
 };
