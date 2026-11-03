@@ -6,7 +6,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Spoorzoeken – Puzzel 3: Lading op weg naar Spanje</title>
 
-  <!-- De algemene stylesheet is nodig voor de gedeelde fout-pop-up. -->
   <link rel="stylesheet" href="css/stijl.css">
 
   <style>
@@ -529,7 +528,7 @@
 
       <div class="cafe-intro">
         <img
-          id="cafe-image"
+          id="puzzle3-image"
           class="story-image intro-image clickable-image"
           src="Puzzel3_cafe.jpg"
           alt="Het restaurant in Bordeaux, met negen lege schilderijlijsten aan de muur"
@@ -567,34 +566,42 @@
             <span class="slot-label">A</span>
             <span class="empty">Sleep hier</span>
           </button>
+
           <button class="slot" type="button" data-index="1" data-label="B" aria-label="Vak B">
             <span class="slot-label">B</span>
             <span class="empty">Sleep hier</span>
           </button>
+
           <button class="slot" type="button" data-index="2" data-label="C" aria-label="Vak C">
             <span class="slot-label">C</span>
             <span class="empty">Sleep hier</span>
           </button>
+
           <button class="slot" type="button" data-index="3" data-label="D" aria-label="Vak D">
             <span class="slot-label">D</span>
             <span class="empty">Sleep hier</span>
           </button>
+
           <button class="slot" type="button" data-index="4" data-label="E" aria-label="Vak E">
             <span class="slot-label">E</span>
             <span class="empty">Sleep hier</span>
           </button>
+
           <button class="slot" type="button" data-index="5" data-label="F" aria-label="Vak F">
             <span class="slot-label">F</span>
             <span class="empty">Sleep hier</span>
           </button>
+
           <button class="slot" type="button" data-index="6" data-label="G" aria-label="Vak G">
             <span class="slot-label">G</span>
             <span class="empty">Sleep hier</span>
           </button>
+
           <button class="slot" type="button" data-index="7" data-label="H" aria-label="Vak H">
             <span class="slot-label">H</span>
             <span class="empty">Sleep hier</span>
           </button>
+
           <button class="slot" type="button" data-index="8" data-label="I" aria-label="Vak I">
             <span class="slot-label">I</span>
             <span class="empty">Sleep hier</span>
@@ -621,11 +628,10 @@
     <section id="puzzel3-answer" aria-labelledby="puzzel3-heading">
       <h2 id="puzzel3-heading" class="question-heading">De vraag</h2>
 
-      <p id="puzzel3-question" class="question-text">
+      <p class="question-text">
         Welk merk exporteert de handelaar naar Spanje?
       </p>
 
-      <!-- De ID's zijn nu gelijk aan die van de andere puzzelpagina's. -->
       <form id="answer-form">
         <label for="answer">Jouw antwoord</label>
         <input
@@ -646,12 +652,9 @@
     Spoorzoeken · Een spoorwegmysterie
   </footer>
 
-  <!-- Dezelfde fout-pop-up als op de andere puzzelpagina's. -->
   <div
     id="error-overlay"
     class="error-overlay hidden"
-    role="alertdialog"
-    aria-modal="true"
     aria-hidden="true"
   >
     <div class="error-box">
@@ -665,7 +668,7 @@
 
   <script>
     (() => {
-      const cafeImage = document.getElementById("cafe-image");
+      const cafeImage = document.getElementById("puzzle3-image");
       const introduction = document.getElementById("introduction");
       const interactivePuzzle = document.getElementById("interactive-puzzle");
 
