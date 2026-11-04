@@ -1,50 +1,108 @@
-
 <!DOCTYPE html>
 <html lang="nl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Spoorzoeken - Puzzel 7</title>
-
-    <link rel="stylesheet" href="css/stijl.css">
-
-    <script src="js/algemeen.js" defer></script>
-    <script src="js/puzzels.js" defer></script>
-    <script src="js/puzzelpagina.js" defer></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spoorzoeken – Puzzel 7: Verfdief</title>
+  <link rel="stylesheet" href="css/stijl.css">
+  <style>
+    .p7-intro { max-width: 950px; line-height: 1.7; }
+    .p7-palette { margin: 24px 0; }
+    .p7-palette-list { display: flex; flex-direction: column; gap: 7px; }
+    .p7-paint-row {
+      display: grid;
+      grid-template-columns: minmax(0,1fr) 38px minmax(135px,190px);
+      align-items: center; gap: 10px; padding: 7px 10px;
+      background: rgba(255,255,255,.035); border: 1px solid rgba(200,166,91,.18);
+      border-radius: 6px;
+    }
+    .p7-clue { font-size: .91rem; line-height: 1.4; }
+    .p7-pot { width: 32px; height: 36px; position: relative; justify-self: center; }
+    .p7-pot::before { content:""; position:absolute; left:3px; right:3px; top:10px; bottom:1px;
+      background:#77736c; border:2px solid #c9bdab; border-radius:4px 4px 7px 7px; }
+    .p7-pot::after { content:""; position:absolute; left:10px; right:10px; top:4px; height:7px;
+      border:2px solid #c9bdab; border-bottom:0; border-radius:3px 3px 0 0; }
+    .p7-paint-row.is-solved .p7-pot::before { background:var(--pot-colour); }
+    .p7-code-field input { width:100%; min-width:0; box-sizing:border-box; background:#171613;
+      border:1px solid #625746; border-radius:4px; color:#eee8dc; padding:8px 9px;
+      font:14px/1.2 ui-monospace,monospace; letter-spacing:.04em; }
+    .p7-code-field input:focus { outline:2px solid #c8a66a; outline-offset:1px; }
+    .p7-code-field input:disabled { opacity:.68; }
+    .p7-code-error { min-height:0; margin:3px 0 0; color:#e28b7e; font:11px Arial,sans-serif; }
+    .p7-mosaic-panel { margin-top:16px; padding:12px; background:rgba(0,0,0,.12); }
+    .p7-mosaic-top { display:flex; justify-content:space-between; gap:12px; align-items:center;
+      padding:4px 4px 12px; color:var(--muted,#b9ae9c); font:12px Arial,sans-serif; }
+    #puzzle7-image { display:block; width:100%; height:auto; background:#77736c; border:1px solid #4b4439; }
+    .p7-question { margin-top:24px; }
+    .p7-progress { color:var(--muted,#b9ae9c); font:12px Arial,sans-serif; }
+    @media(max-width:640px) {
+      .p7-paint-row { grid-template-columns:minmax(0,1fr) 32px minmax(112px,140px); gap:7px; padding:7px; }
+      .p7-clue { font-size:.82rem; }
+    }
+    @media(max-width:420px) {
+      .p7-paint-row { grid-template-columns:minmax(0,1fr) 28px minmax(100px,120px); }
+      .p7-code-field input { font-size:12px; padding:7px 5px; }
+    }
+  </style>
+  <script src="js/algemeen.js" defer></script>
+  <script src="js/puzzels.js" defer></script>
+  <script src="js/puzzelpagina.js" defer></script>
+  <script src="js/puzzel7-mozaiek.js" defer></script>
 </head>
-
 <body>
+  <header class="site-header">
+    <div class="header-inner">
+      <h1>Spoorzoeken</h1>
+      <p>Een spoorwegmysterie uit 1925</p>
+    </div>
+  </header>
 
-    <header class="site-header">
-        <a href="index.html" class="logo">SPOORZOEKEN</a>
-    </header>
+  <main class="page-content">
+    <section class="panel">
+      <p class="eyebrow">Puzzel 7 · Barcelona</p>
+      <h2>Verfdief</h2>
+      <div class="p7-intro">
+        <p>In Barcelona ontmoet je Antoni Gaudí. Hij is zichtbaar ontstemd. Aan een kunstwerk dat hij onder handen heeft, ontbreekt nog iets wezenlijks. Iemand heeft zijn verf meegenomen. Zonder de juiste kleuren blijft het mozaïek een raadsel.</p>
+        <p>De kunstenaar kijkt je onderzoekend aan. “Misschien kun jij me helpen de kleuren terug te vinden.”</p>
+      </div>
 
-    <main class="screen active">
-        <section class="panel">
+      <section class="p7-palette" aria-label="Aanwijzingen en verfpotjes">
+        <div class="p7-mosaic-top">
+          <span>De aanwijzingen van Gaudí</span>
+          <span class="p7-progress" id="p7-progress" aria-live="polite">0 van 9 kleuren vrijgespeeld</span>
+        </div>
+        <div class="p7-palette-list" id="p7-paint-list"></div>
+      </section>
 
-            <p class="eyebrow">Puzzel 7</p>
+      <section class="p7-mosaic-panel" aria-label="Het mozaïek">
+        <div class="p7-mosaic-top">
+          <span>Het onvoltooide mozaïek</span>
+          <span id="p7-tile-count"></span>
+        </div>
+        <canvas id="puzzle7-image" aria-label="Een mozaïek dat geleidelijk kleur krijgt"></canvas>
+      </section>
 
-            <h1>Hier komt puzzel 7</h1>
+      <section class="question p7-question">
+        <h3>De vraag</h3>
+        <p>Met welk werk is Gaudí bezig?</p>
+        <form id="answer-form">
+          <label for="answer">Jouw antwoord</label>
+          <input id="answer" name="answer" type="text" autocomplete="off" placeholder="Vul je antwoord in">
+          <button type="submit">Antwoord controleren</button>
+        </form>
+      </section>
 
-            <div class="story-text" style="text-align: center;">
+      <button type="button" class="secondary" id="home-button">Terug naar de start</button>
+    </section>
+  </main>
 
-                <p>
-                    Je bent weer een stap verder gekomen op je reis.
-                    Het volgende spoor wordt binnenkort onthuld.
-                </p>
-
-                <p>
-                    Kom later terug om je avontuur voort te zetten!
-                </p>
-
-            </div>
-
-            <button id="home-button" type="button">
-                Terug naar het begin
-            </button>
-
-        </section>
-    </main>
-
+  <div id="error-overlay" class="error-overlay" aria-hidden="true">
+    <div class="error-box" role="dialog" aria-modal="true" aria-labelledby="error-title">
+      <button type="button" id="error-close" class="error-close" aria-label="Sluiten">×</button>
+      <h2 id="error-title">Het sein staat op rood</h2>
+      <p>Dat is niet het goede antwoord. Het sein staat op rood. Vind het goede antwoord om door te kunnen stomen.</p>
+      <img src="Stop.png" alt="Stopsein">
+    </div>
+  </div>
 </body>
 </html>
