@@ -49,7 +49,7 @@ const puzzels = {
 
     7: {
         nummer: 7,
-        titel: "Hier komt puzzel 7",
+        titel: "Verfdief",
         pagina: "puzzel-7.html",
         vorigePuzzel: 6,
         volgendePuzzel: null
