@@ -2,14 +2,7 @@
 /* =========================================================
    SPOORZOEKEN — PUZZEL 7: VERFDIEF
 
-   Gebruikt het oorspronkelijke mozaïek uit prototype 2.
-
-   De DATA wordt rechtstreeks uit het HTML-prototype gelezen.
-   Geen kopiëren van de grote polygonendataset nodig.
-
-   1536 x 1024 pixels
-   9 oorspronkelijke kleuren
-   Oorspronkelijke mozaïekpolygonen
+   Gebruikt de oorspronkelijke polygonen uit prototype 2.
    ========================================================= */
 
 document.addEventListener("DOMContentLoaded", async () => {
@@ -18,61 +11,77 @@ document.addEventListener("DOMContentLoaded", async () => {
   const progress = document.getElementById("p7-progress");
   const count = document.getElementById("p7-tile-count");
 
-  if (!canvas || !list) return;
-
-  const ctx = canvas.getContext("2d");
-
-  if (!ctx) {
-    console.error("Het canvas kan niet worden geopend.");
+  if (!canvas || !list) {
+    console.error("Puzzel 7: canvas of verflijst niet gevonden.");
     return;
   }
 
+  const ctx = canvas.getContext("2d");
   const neutral = "#77736c";
+  const solved = new Set();
 
   const prototypeUrl =
     "/assets/spoorzoeken_barcelona_mozaiek_prototype_v2.html";
 
-  let DATA;
-  const solved = new Set();
+  let DATA = null;
 
   // -------------------------------------------------------
-  // OORSPRONKELIJKE MOZAÏEKGEGEVENS OPHALEN
+  // OORSPRONKELIJKE GEGEVENS OPHALEN
   // -------------------------------------------------------
 
   async function loadOriginalData() {
-    const response = await fetch(prototypeUrl, {
-      cache: "no-store"
-    });
+    console.log("Puzzel 7: prototype ophalen:", prototypeUrl);
+
+    const response = await fetch(prototypeUrl);
 
     if (!response.ok) {
       throw new Error(
-        "Het oorspronkelijke prototype kon niet worden geladen."
+        "Prototype niet bereikbaar. HTTP-status: " + response.status
       );
     }
 
     const html = await response.text();
 
-    /*
-      Haal uitsluitend het DATA-object uit het prototype.
-
-      Het object begint bij:
-      const DATA = {
-
-      En eindigt direct vóór:
-      const ctx = canvas.getContext(...)
-    */
-
-    const match = html.match(
-      /const\s+DATA\s*=\s*(\{[\s\S]*?\})\s*;\s*const\s+ctx\s*=/
+    console.log(
+      "Puzzel 7: prototype ontvangen,",
+      html.length,
+      "tekens."
     );
 
-    if (!match || !match[1]) {
-      throw new Error(
-        "De oorspronkelijke mozaïekgegevens zijn niet gevonden."
-      );
+    const marker = html.indexOf("const DATA");
+
+    if (marker === -1) {
+      throw new Error("De regel 'const DATA' is niet gevonden.");
     }
 
-    const data = JSON.parse(match[1]);
+    const jsonStart = html.indexOf("{", marker);
+
+    if (jsonStart === -1) {
+      throw new Error("Het begin van het DATA-object ontbreekt.");
+    }
+
+    // Het DATA-object eindigt met };.
+    // Binnen de JSON-gegevens komt deze combinatie
+    // niet voor als afsluiting van een ander object.
+
+    const jsonEnd = html.indexOf("};", jsonStart);
+
+    if (jsonEnd === -1) {
+      throw new Error("Het einde van het DATA-object is niet gevonden.");
+    }
+
+    const jsonText = html.slice(jsonStart, jsonEnd + 1);
+
+    let data;
+
+    try {
+      data = JSON.parse(jsonText);
+    } catch (error) {
+      throw new Error(
+        "De mozaïekgegevens zijn geen geldige JSON: " +
+        error.message
+      );
+    }
 
     if (
       !data.w ||
@@ -80,10 +89,14 @@ document.addEventListener("DOMContentLoaded", async () => {
       !Array.isArray(data.palette) ||
       !Array.isArray(data.tiles)
     ) {
-      throw new Error(
-        "De gegevens van het oorspronkelijke mozaïek zijn onvolledig."
-      );
+      throw new Error("De structuur van het DATA-object klopt niet.");
     }
+
+    console.log(
+      "Puzzel 7: originele gegevens geladen:",
+      data.tiles.length,
+      "steentjes."
+    );
 
     return data;
   }
@@ -198,7 +211,6 @@ document.addEventListener("DOMContentLoaded", async () => {
           solved.add(index);
 
           row.classList.add("is-solved");
-
           input.disabled = true;
           input.value = hex;
 
@@ -207,8 +219,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           draw();
           updateProgress();
         } else {
-          error.textContent =
-            "Deze kleur klopt nog niet.";
+          error.textContent = "Deze kleur klopt nog niet.";
         }
       }
 
@@ -235,15 +246,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (!DATA) return;
 
     const rect = canvas.getBoundingClientRect();
-
     const cssWidth = Math.max(280, rect.width);
-    const dpr = Math.min(
-      window.devicePixelRatio || 1,
-      2
-    );
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
 
     canvas.width = Math.round(cssWidth * dpr);
-
     canvas.height = Math.round(
       cssWidth * (DATA.h / DATA.w) * dpr
     );
@@ -276,14 +282,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     resize();
 
-    console.log(
-      "Origineel mozaïek geladen:",
-      DATA.tiles.length,
-      "steentjes"
-    );
-
   } catch (error) {
-    console.error("Puzzel 7:", error);
+    console.error("FOUT BIJ PUZZEL 7:", error);
 
     list.innerHTML = "";
 
