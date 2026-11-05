@@ -31,11 +31,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   // -------------------------------------------------------
 
   const clues = [
-    "Een Andere Expressie <aantal torens van de Sagrada Família> Duitse Architect",
+    "Een Andere Expressie <aantal evangelisten-torens van de Sagrada Família> Duitse Architect",
 
-    "Eusebi <aantal koepels van Palau Guell> Doet <aantal kinderen van Gaudí> Barcelona Bezwijken",
+    "Eusebi <aantal koepels van Palau Güell> Doet <aantal kinderen van Gaudí> Barcelona Bezwijken",
 
-    "Door <aantal door Unesco als werelderfgoed erkende bouwwerken van Gaudí> Antoní <jaar waarin Gaudí zijn architectuurdiploma behaalde, 18..>",
+    "Door <aantal door Unesco als werelderfgoed erkende bouwwerken van Gaudí> Antoní's Daden <jaar waarin Gaudí zijn architectuurdiploma behaalde, 18 ..>",
 
     "Abstract <hoeveel huizen bouwde Gaudi in Park Guell> Bijna Bombastische Cultuur <aantal beuken in de Sagrada Familia>",
 
@@ -238,7 +238,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         if (input.disabled) return;
 
-        // Vergelijk de code zonder eventueel voorstaande #
+        // Een eventueel ingevoerde # verwijderen
         const value = input.value.trim().replace(/^#/, "").toUpperCase();
         const correctCode = hex.replace(/^#/, "").toUpperCase();
 
