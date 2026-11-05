@@ -1,4 +1,3 @@
-
 /* =========================================================
    SPOORZOEKEN — PUZZEL 7: VERFDIEF
 
@@ -6,6 +5,7 @@
    ========================================================= */
 
 document.addEventListener("DOMContentLoaded", async () => {
+
   const canvas = document.getElementById("puzzle7-image");
   const list = document.getElementById("p7-paint-list");
   const progress = document.getElementById("p7-progress");
@@ -26,10 +26,35 @@ document.addEventListener("DOMContentLoaded", async () => {
   let DATA = null;
 
   // -------------------------------------------------------
+  // TEKSTEN BIJ DE NEGEN VERFPOTJES
+  // -------------------------------------------------------
+
+  const clues = [
+    "Een Andere Expressie <aantal torens van de Sagrada Família> Duitse Architect",
+
+    "Eusebi <aantal koepels van Palau Guell> Doet <aantal kinderen van Gaudí> Barcelona Bezwijken",
+
+    "Door <aantal door Unesco als werelderfgoed erkende bouwwerken van Gaudí> Antoní <jaar waarin Gaudí zijn architectuurdiploma behaalde, 18..>",
+
+    "Abstract <hoeveel huizen bouwde Gaudi in Park Guell> Bijna Bombastische Cultuur <aantal beuken in de Sagrada Familia>",
+
+    "",
+
+    "",
+
+    "",
+
+    "",
+
+    ""
+  ];
+
+  // -------------------------------------------------------
   // OORSPRONKELIJKE GEGEVENS OPHALEN
   // -------------------------------------------------------
 
   async function loadOriginalData() {
+
     console.log("Puzzel 7: prototype ophalen:", prototypeUrl);
 
     const response = await fetch(prototypeUrl);
@@ -59,10 +84,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (jsonStart === -1) {
       throw new Error("Het begin van het DATA-object ontbreekt.");
     }
-
-    // Het DATA-object eindigt met };.
-    // Binnen de JSON-gegevens komt deze combinatie
-    // niet voor als afsluiting van een ander object.
 
     const jsonEnd = html.indexOf("};", jsonStart);
 
@@ -106,6 +127,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // -------------------------------------------------------
 
   function draw() {
+
     if (!DATA) return;
 
     const scaleX = canvas.width / DATA.w;
@@ -117,9 +139,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     for (const tile of DATA.tiles) {
+
       ctx.beginPath();
 
       tile.p.forEach((point, index) => {
+
         const x = point[0] * scaleX;
         const y = point[1] * scaleY;
 
@@ -128,6 +152,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         } else {
           ctx.lineTo(x, y);
         }
+
       });
 
       ctx.closePath();
@@ -139,6 +164,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       ctx.fill();
 
       ctx.strokeStyle = "#514d47";
+
       ctx.lineWidth = Math.max(
         0.35,
         0.55 * Math.min(scaleX, scaleY)
@@ -153,6 +179,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // -------------------------------------------------------
 
   function updateProgress() {
+
     if (!progress) return;
 
     progress.textContent =
@@ -164,22 +191,26 @@ document.addEventListener("DOMContentLoaded", async () => {
   // -------------------------------------------------------
 
   function buildPalette() {
+
     list.innerHTML = "";
 
     DATA.palette.forEach((hex, index) => {
+
       const row = document.createElement("div");
       row.className = "p7-paint-row";
       row.style.setProperty("--pot-colour", hex);
 
+      // Cryptische tekst
       const clue = document.createElement("div");
       clue.className = "p7-clue";
-      clue.textContent =
-        "Hier komt de puzzeltekst voor deze hex-code";
+      clue.textContent = clues[index] || "";
 
+      // Verfpotje
       const pot = document.createElement("div");
       pot.className = "p7-pot";
       pot.setAttribute("aria-hidden", "true");
 
+      // Invoerveld voor de hex-code
       const field = document.createElement("div");
       field.className = "p7-code-field";
 
@@ -189,14 +220,24 @@ document.addEventListener("DOMContentLoaded", async () => {
       input.autocomplete = "off";
       input.spellcheck = false;
       input.maxLength = 7;
-      input.placeholder = "•••••••";
-      input.setAttribute("aria-label", `Kleur ${index + 1}`);
 
+      // Voorlopig de volledige hex-code zichtbaar
+      // zodat deze tijdens het testen gekopieerd kan worden.
+      input.value = hex;
+
+      input.setAttribute(
+        "aria-label",
+        `Kleur ${index + 1}`
+      );
+
+      // Foutmelding onder het invoerveld
       const error = document.createElement("p");
       error.className = "p7-code-error";
       error.setAttribute("aria-live", "polite");
 
+      // Controleren van de ingevoerde code
       function checkCode() {
+
         if (input.disabled) return;
 
         const value = input.value.trim().toUpperCase();
@@ -208,6 +249,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
 
         if (value === hex) {
+
           solved.add(index);
 
           row.classList.add("is-solved");
@@ -218,16 +260,21 @@ document.addEventListener("DOMContentLoaded", async () => {
 
           draw();
           updateProgress();
+
         } else {
+
           error.textContent = "Deze kleur klopt nog niet.";
+
         }
       }
 
       input.addEventListener("keydown", event => {
+
         if (event.key === "Enter") {
           event.preventDefault();
           checkCode();
         }
+
       });
 
       input.addEventListener("change", checkCode);
@@ -235,6 +282,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       field.append(input, error);
       row.append(clue, pot, field);
       list.append(row);
+
     });
   }
 
@@ -243,6 +291,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // -------------------------------------------------------
 
   function resize() {
+
     if (!DATA) return;
 
     const rect = canvas.getBoundingClientRect();
@@ -250,6 +299,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
 
     canvas.width = Math.round(cssWidth * dpr);
+
     canvas.height = Math.round(
       cssWidth * (DATA.h / DATA.w) * dpr
     );
@@ -262,6 +312,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // -------------------------------------------------------
 
   try {
+
     DATA = await loadOriginalData();
 
     if (count) {
@@ -274,21 +325,27 @@ document.addEventListener("DOMContentLoaded", async () => {
     updateProgress();
 
     if ("ResizeObserver" in window) {
+
       const observer = new ResizeObserver(resize);
       observer.observe(canvas);
+
     } else {
+
       window.addEventListener("resize", resize);
+
     }
 
     resize();
 
   } catch (error) {
+
     console.error("FOUT BIJ PUZZEL 7:", error);
 
     list.innerHTML = "";
 
     const message = document.createElement("p");
     message.className = "p7-code-error";
+
     message.textContent =
       "Het oorspronkelijke mozaïek kan niet worden geladen. Vernieuw de pagina of probeer het later opnieuw.";
 
@@ -301,5 +358,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (count) {
       count.textContent = "";
     }
+
   }
+
 });
