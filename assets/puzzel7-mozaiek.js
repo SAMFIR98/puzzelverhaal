@@ -238,15 +238,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         if (input.disabled) return;
 
-        const value = input.value.trim().toUpperCase();
+        // Vergelijk de code zonder eventueel voorstaande #
+        const value = input.value.trim().replace(/^#/, "").toUpperCase();
+        const correctCode = hex.replace(/^#/, "").toUpperCase();
 
-        if (!/^#[0-9A-F]{6}$/.test(value)) {
-          error.textContent =
-            "Gebruik een kleurcode van zes tekens.";
-          return;
-        }
-
-        if (value === hex.toUpperCase()) {
+        if (value === correctCode) {
 
           solved.add(index);
 
@@ -261,7 +257,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         } else {
 
-          error.textContent = "Deze kleur klopt nog niet.";
+          error.textContent = "Helaas, fout!";
 
         }
       }
