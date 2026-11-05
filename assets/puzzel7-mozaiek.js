@@ -1,3 +1,4 @@
+
 /* =========================================================
    SPOORZOEKEN — PUZZEL 7: VERFDIEF
 
@@ -200,17 +201,17 @@ document.addEventListener("DOMContentLoaded", async () => {
       row.className = "p7-paint-row";
       row.style.setProperty("--pot-colour", hex);
 
-      // Cryptische tekst
+      // Aanwijzing en hex-code links van het verfpotje
       const clue = document.createElement("div");
       clue.className = "p7-clue";
-      clue.textContent = clues[index] || "";
+      clue.textContent = `${clues[index] || ""} ${hex}`.trim();
 
       // Verfpotje
       const pot = document.createElement("div");
       pot.className = "p7-pot";
       pot.setAttribute("aria-hidden", "true");
 
-      // Invoerveld voor de hex-code
+      // Leeg invulveld voor de hex-code
       const field = document.createElement("div");
       field.className = "p7-code-field";
 
@@ -220,10 +221,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       input.autocomplete = "off";
       input.spellcheck = false;
       input.maxLength = 7;
-
-      // Voorlopig de volledige hex-code zichtbaar
-      // zodat deze tijdens het testen gekopieerd kan worden.
-      input.value = hex;
+      input.value = "";
 
       input.setAttribute(
         "aria-label",
@@ -248,7 +246,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           return;
         }
 
-        if (value === hex) {
+        if (value === hex.toUpperCase()) {
 
           solved.add(index);
 
