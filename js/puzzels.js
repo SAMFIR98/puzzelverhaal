@@ -1,4 +1,9 @@
 ```javascript
+/* =========================================================
+   SPOORZOEKEN — PUZZELGEGEVENS
+   Centrale gegevens voor alle puzzelpagina's
+   ========================================================= */
+
 const puzzels = {
     1: {
         nummer: 1,
