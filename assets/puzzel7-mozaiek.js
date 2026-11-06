@@ -39,15 +39,15 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     "Abstract <hoeveel huizen bouwde Gaudi in Park Guell> Bijna Bombastische Cultuur <aantal beuken in de Sagrada Familia>",
 
-    "",
+    "<Het aantal dat de Bercelonese wijk Nou Barris in zich heeft> Artistiek <leeftijd van de vader van Antoní bij overlijden><leeftijd van Antoní bij overlijden>",
 
-    "",
+    "<aantal letters van de naam Barcelona> Eulàlia <fout vermelde sterfleeftijd op Antoní's graf> <aantal hoofdgevels van de Sagrada Família> Domènech",
 
-    "",
+    "<aantal bekende modernistische gebouwen in het Illa de la Discòrdia> Casa <trappenhuisuitgangen op het dak van Casa Milà> Batlló <huisnummer van Casa Antoni Salvadó>",
 
-    "",
+    "<het huisnummer van Casa Esteve Niubó – Pere IV> <het laagste huisnummer van Casa de Mercedes Aleu de Sala> Artigas",
 
-    ""
+    "<het aantal architectuurprijzen dat Gaudí won> Catllaràs <het aantal rivieren dat Barcelona omringt> Astorga <dagnummer van de maand juli waarop Antoní Gaudí werd geboren>"
   ];
 
   // -------------------------------------------------------
@@ -201,10 +201,10 @@ document.addEventListener("DOMContentLoaded", async () => {
       row.className = "p7-paint-row";
       row.style.setProperty("--pot-colour", hex);
 
-      // Aanwijzing en hex-code links van het verfpotje
+      // Aanwijzing links van het verfpotje, zonder hex-code
       const clue = document.createElement("div");
       clue.className = "p7-clue";
-      clue.textContent = `${clues[index] || ""} ${hex}`.trim();
+      clue.textContent = clues[index] || "";
 
       // Verfpotje
       const pot = document.createElement("div");
