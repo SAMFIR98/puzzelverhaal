@@ -1,4 +1,3 @@
-```javascript
 /* =========================================================
    SPOORZOEKEN — PUZZELGEGEVENS
    Centrale gegevens voor alle puzzelpagina's
@@ -87,4 +86,4 @@ function haalVolgendePuzzelOp(nummer) {
 
     return haalPuzzelOp(puzzel.volgendePuzzel);
 }
-```
+
