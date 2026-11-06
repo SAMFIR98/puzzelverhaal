@@ -1,3 +1,4 @@
+```javascript
 const puzzels = {
     1: {
         nummer: 1,
@@ -52,6 +53,14 @@ const puzzels = {
         titel: "Verfdief",
         pagina: "puzzel-7.html",
         vorigePuzzel: 6,
+        volgendePuzzel: 8
+    },
+
+    8: {
+        nummer: 8,
+        titel: "De verlichting",
+        pagina: "puzzel-8.html",
+        vorigePuzzel: 7,
         volgendePuzzel: null
     }
 };
@@ -59,7 +68,7 @@ const puzzels = {
 
 // Haal een puzzel op aan de hand van het nummer
 function haalPuzzelOp(nummer) {
-    return puzzels[nummer] || null;
+    return puzzels[Number(nummer)] || null;
 }
 
 
@@ -73,3 +82,4 @@ function haalVolgendePuzzelOp(nummer) {
 
     return haalPuzzelOp(puzzel.volgendePuzzel);
 }
+```
