@@ -37,13 +37,13 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     "Door <aantal door Unesco als werelderfgoed erkende bouwwerken van Gaudí> Antoní's Daden <jaar waarin Gaudí zijn architectuurdiploma behaalde, 18 ..>",
 
-    "Abstract <hoeveel huizen bouwde Gaudi in Park Guell> Bijna Bombastische Cultuur <aantal beuken in de Sagrada Familia>",
+    "Abstract <hoeveel huizen bouwde Gaudí in Park Güell> Bijna Bombastische Cultuur <aantal beuken in de Sagrada Familia>",
 
     "<Het aantal dat de Bercelonese wijk Nou Barris in zich heeft> Artistiek <leeftijd van de vader van Antoní bij overlijden><leeftijd van Antoní bij overlijden>",
 
     "<aantal letters van de naam Barcelona> Eulàlia <fout vermelde sterfleeftijd op Antoní's graf> <aantal hoofdgevels van de Sagrada Família> Domènech",
 
-    "<aantal bekende modernistische gebouwen in het Illa de la Discòrdia> Casa <trappenhuisuitgangen op het dak van Casa Milà> Batlló <huisnummer van Casa Antoni Salvadó>",
+    "<aantal bekende gerenoveerde modernistische gebouwen in het Illa de la Discòrdia> Casa <aantal trappenhuisuitgangen op het dak van Casa Milà> Batlló <huisnummer van Casa Antoni Salvadó>",
 
     "<het huisnummer van Casa Esteve Niubó – Pere IV> <het laagste huisnummer van Casa de Mercedes Aleu de Sala> Artigas",
 
