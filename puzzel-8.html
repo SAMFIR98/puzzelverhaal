@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spoorzoeken – Puzzel 8: De verlichting</title>
+  <link rel="stylesheet" href="css/stijl.css">
+  <style>
+    .p8-intro { max-width: 950px; line-height: 1.7; }
+    #puzzle8-image {
+      display: block;
+      width: 100%;
+      height: auto;
+      margin: 22px auto 8px;
+      border: 1px solid #4b4439;
+      cursor: zoom-in;
+    }
+    .p8-image-hint {
+      margin: 0 0 24px;
+      color: var(--muted, #b9ae9c);
+      text-align: center;
+      font-size: .85rem;
+    }
+    .p8-lightbox {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: rgba(0,0,0,.94);
+      cursor: zoom-out;
+    }
+    .p8-lightbox.open { display: flex; }
+    .p8-lightbox img {
+      display: block;
+      max-width: 96vw;
+      max-height: 90vh;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      border: 1px solid rgba(201,189,171,.35);
+    }
+    .p8-lightbox-caption {
+      position: absolute;
+      bottom: 12px;
+      color: #d6cbbb;
+      font: 12px Arial, sans-serif;
+    }
+    .p8-question { margin-top: 24px; }
+    #p8-success {
+      margin-top: 16px;
+      color: var(--muted, #b9ae9c);
+    }
+    @media(max-width:640px) {
+      .p8-lightbox { padding: 10px; }
+      .p8-lightbox img { max-width: 98vw; max-height: 88vh; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <h1>Spoorzoeken</h1>
+      <p>Een spoorwegmysterie uit 1925</p>
+    </div>
+  </header>
+
+  <main class="page-content">
+    <section class="panel">
+      <p class="eyebrow">Puzzel 8 · Onderweg naar Montpellier</p>
+      <h2>De verlichting</h2>
+
+      <div class="p8-intro">
+        <p>
+          Na je hulp aan Gaudí breng je nog enkele dagen door in Barcelona.
+          Je geniet van de combinatie van de stad en het strand.
+        </p>
+        <p>
+          Op de derde dag vind je een briefje dat onder de deur van je
+          hotelkamer door is geschoven.
+        </p>
+        <p><em>Morgen 6.56 uur, de trein naar Montpellier.</em></p>
+        <p>
+          Inmiddels heb je al de nodige uren gereisd. Je bent terug op
+          Frans grondgebied. Na een goede maaltijd besluit je een dutje
+          te doen in je coupé.
+        </p>
+        <p>
+          Je weet niet hoe lang je geslapen hebt wanneer je wakker wordt.
+          Even geniet je van de zon die door het raam op je gezicht valt,
+          maar dan is het plotseling donker. De trein rijdt de tunnel van
+          Malpas in. Buiten is het aardedonker, in je coupé brandt nog een
+          klein lampje.
+        </p>
+        <p>
+          Als de conducteur langskomt, vraag je hem: ‘Zou er misschien een
+          extra lamp aangestoken kunnen worden? Ik wil graag wat lezen.’
+        </p>
+        <p>
+          Hij antwoordt: ‘Dat is niet mijn specialiteit. Ik verwijs u graag
+          naar iemand die daar buitengewoon meer van weet.’
+        </p>
+      </div>
+
+      <img
+        id="puzzle8-image"
+        class="story-image clickable-image"
+        src="Puzzel%208.png"
+        alt="Een donkere coupé met een brandende lamp en een zwart treinraam"
+        tabindex="0"
+        role="button"
+        aria-label="Vergroot de afbeelding"
+      >
+      <p class="p8-image-hint">Klik op de afbeelding om deze te vergroten.</p>
+
+      <section class="question p8-question">
+        <h3>De vraag</h3>
+        <p>Wie bedoelt de conducteur?</p>
+        <form id="answer-form">
+          <label for="answer">Jouw antwoord</label>
+          <input id="answer" name="answer" type="text" autocomplete="off" placeholder="Vul de naam in">
+          <button id="answer-submit" type="submit">Antwoord controleren</button>
+        </form>
+        <p id="p8-success" hidden aria-live="polite">
+          Goed gevonden! Je hebt puzzel 8 opgelost. Voorlopig is dit het einde van het spoor.
+        </p>
+      </section>
+
+      <button type="button" class="secondary" id="home-button">Terug naar de start</button>
+    </section>
+  </main>
+
+  <div id="p8-lightbox" class="p8-lightbox" role="dialog" aria-modal="true" aria-label="Vergrote afbeelding">
+    <img src="Puzzel%208.png" alt="Vergrote afbeelding van de donkere coupé">
+    <div class="p8-lightbox-caption">Klik om terug te keren</div>
+  </div>
+
+  <div id="error-overlay" class="error-overlay" aria-hidden="true">
+    <div class="error-box" role="dialog" aria-modal="true" aria-labelledby="error-title">
+      <button type="button" id="error-close" class="error-close" aria-label="Sluiten">×</button>
+      <h2 id="error-title">Het sein staat op rood</h2>
+      <p>Dat is niet het goede antwoord. Het sein staat op rood. Vind het goede antwoord om door te kunnen stomen.</p>
+      <img src="Stop.png" alt="Stopsein">
+    </div>
+  </div>
+
+  <script>
+    (() => {
+      const image = document.getElementById('puzzle8-image');
+      const lightbox = document.getElementById('p8-lightbox');
+      const form = document.getElementById('answer-form');
+      const answerField = document.getElementById('answer');
+      const submitButton = document.getElementById('answer-submit');
+      const errorOverlay = document.getElementById('error-overlay');
+      const errorClose = document.getElementById('error-close');
+      const success = document.getElementById('p8-success');
+
+      function openImage() {
+        lightbox.classList.add('open');
+      }
+      function closeImage() {
+        lightbox.classList.remove('open');
+      }
+      function showError() {
+        errorOverlay.classList.add('open');
+        errorOverlay.setAttribute('aria-hidden', 'false');
+      }
+      function closeError() {
+        errorOverlay.classList.remove('open');
+        errorOverlay.setAttribute('aria-hidden', 'true');
+      }
+
+      image.addEventListener('click', openImage);
+      image.addEventListener('keydown', event => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          openImage();
+        }
+      });
+      lightbox.addEventListener('click', closeImage);
+      errorClose.addEventListener('click', closeError);
+      errorOverlay.addEventListener('click', event => {
+        if (event.target === errorOverlay) closeError();
+      });
+      document.addEventListener('keydown', event => {
+        if (event.key === 'Escape') {
+          closeImage();
+          closeError();
+        }
+      });
+      document.getElementById('home-button').addEventListener('click', () => {
+        window.location.href = 'index.html';
+      });
+
+      form.addEventListener('submit', async event => {
+        event.preventDefault();
+        const answer = answerField.value.trim();
+        if (!answer) {
+          answerField.focus();
+          return;
+        }
+        submitButton.disabled = true;
+        submitButton.textContent = 'Controleren…';
+        try {
+          const response = await fetch('/api/answer', {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ puzzleNumber: 8, answer })
+          });
+          const result = await response.json();
+          if (response.ok && result.ok) {
+            answerField.value = '';
+            form.hidden = true;
+            success.hidden = false;
+            success.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          } else if (result.code === 'wrong_answer') {
+            showError();
+          } else {
+            alert('De antwoordcontrole is momenteel niet beschikbaar. Probeer het later opnieuw.');
+          }
+        } catch (error) {
+          alert('Er kon geen verbinding worden gemaakt. Controleer je internetverbinding en probeer het opnieuw.');
+        } finally {
+          submitButton.disabled = false;
+          submitButton.textContent = 'Antwoord controleren';
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
