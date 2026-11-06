@@ -3,6 +3,7 @@
    SPOORZOEKEN — PUZZEL 7: VERFDIEF
 
    Gebruikt de oorspronkelijke polygonen uit prototype 2.
+   Verfpictogram: verfblik met metalen hengsel.
    ========================================================= */
 
 document.addEventListener("DOMContentLoaded", async () => {
@@ -37,18 +38,125 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     "Door <aantal door Unesco als werelderfgoed erkende bouwwerken van Gaudí> Antoní's Daden <jaar waarin Gaudí zijn architectuurdiploma behaalde, 18 ..>",
 
-    "Abstract <hoeveel huizen bouwde Gaudí in Park Güell> Bijna Bombastische Cultuur <aantal beuken in de Sagrada Familia>",
+    "Abstract <hoeveel huizen bouwde Gaudi in Park Guell> Bijna Bombastische Cultuur <aantal beuken in de Sagrada Familia>",
 
     "<Het aantal dat de Bercelonese wijk Nou Barris in zich heeft> Artistiek <leeftijd van de vader van Antoní bij overlijden><leeftijd van Antoní bij overlijden>",
 
     "<aantal letters van de naam Barcelona> Eulàlia <fout vermelde sterfleeftijd op Antoní's graf> <aantal hoofdgevels van de Sagrada Família> Domènech",
 
-    "<aantal bekende gerenoveerde modernistische gebouwen in het Illa de la Discòrdia> Casa <aantal trappenhuisuitgangen op het dak van Casa Milà> Batlló <huisnummer van Casa Antoni Salvadó>",
+    "<aantal bekende modernistische gebouwen in het Illa de la Discòrdia> Casa <trappenhuisuitgangen op het dak van Casa Milà> Batlló <huisnummer van Casa Antoni Salvadó>",
 
     "<het huisnummer van Casa Esteve Niubó – Pere IV> <het laagste huisnummer van Casa de Mercedes Aleu de Sala> Artigas",
 
     "<het aantal architectuurprijzen dat Gaudí won> Catllaràs <het aantal rivieren dat Barcelona omringt> Astorga <dagnummer van de maand juli waarop Antoní Gaudí werd geboren>"
   ];
+
+  // -------------------------------------------------------
+  // STIJL VOOR HET NIEUWE VERFBLIKPICTOGRAM
+  // -------------------------------------------------------
+
+  const iconStyle = document.createElement("style");
+
+  iconStyle.textContent = `
+    .p7-paint-can {
+      background: transparent !important;
+      border: none !important;
+      border-radius: 0 !important;
+      box-shadow: none !important;
+      overflow: visible !important;
+    }
+
+    .p7-paint-can::before,
+    .p7-paint-can::after {
+      display: none !important;
+      content: none !important;
+    }
+
+    .p7-paint-can svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+    }
+  `;
+
+  document.head.appendChild(iconStyle);
+
+  // -------------------------------------------------------
+  // VERFBLIKPICTOGRAM MAKEN
+  // -------------------------------------------------------
+
+  function createPaintCan() {
+
+    const pot = document.createElement("div");
+    pot.className = "p7-pot p7-paint-can";
+
+    const svgNS = "http://www.w3.org/2000/svg";
+
+    const svg = document.createElementNS(svgNS, "svg");
+    svg.setAttribute("viewBox", "0 0 64 64");
+    svg.setAttribute("role", "img");
+    svg.setAttribute("aria-label", "Verfblik");
+
+    // Metalen hengsel achter het blik
+    const handle = document.createElementNS(svgNS, "path");
+
+    handle.setAttribute(
+      "d",
+      "M19 27 V17 C19 4 45 4 45 17 V27"
+    );
+
+    handle.setAttribute("fill", "none");
+    handle.setAttribute("stroke", "#514d47");
+    handle.setAttribute("stroke-width", "3");
+    handle.setAttribute("stroke-linecap", "round");
+
+    // Hoofdvlak van het verfblik
+    const body = document.createElementNS(svgNS, "path");
+
+    body.setAttribute(
+      "d",
+      "M10 25 H54 L50 57 H14 Z"
+    );
+
+    body.setAttribute("fill", neutral);
+    body.setAttribute("stroke", "#514d47");
+    body.setAttribute("stroke-width", "2.5");
+    body.setAttribute("stroke-linejoin", "round");
+
+    // Bovenrand van het blik
+    const rim = document.createElementNS(svgNS, "path");
+
+    rim.setAttribute(
+      "d",
+      "M9 23 H55 V28 H9 Z"
+    );
+
+    rim.setAttribute("fill", "#b9b5ad");
+    rim.setAttribute("stroke", "#514d47");
+    rim.setAttribute("stroke-width", "2");
+
+    // Dunne lijn onder de bovenrand
+    const rimLine = document.createElementNS(svgNS, "path");
+
+    rimLine.setAttribute(
+      "d",
+      "M13 31 H51"
+    );
+
+    rimLine.setAttribute("fill", "none");
+    rimLine.setAttribute("stroke", "#514d47");
+    rimLine.setAttribute("stroke-width", "1.2");
+    rimLine.setAttribute("opacity", "0.55");
+
+    svg.append(handle, body, rim, rimLine);
+    pot.append(svg);
+
+    // Verwijzing naar het kleurvlak voor het ontgrendelen
+    pot.paintSurface = body;
+
+    return pot;
+  }
 
   // -------------------------------------------------------
   // OORSPRONKELIJKE GEGEVENS OPHALEN
@@ -188,7 +296,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   // -------------------------------------------------------
-  // VERFPOTJES EN KLEURCODES
+  // VERFBLIKKEN EN KLEURCODES
   // -------------------------------------------------------
 
   function buildPalette() {
@@ -201,15 +309,13 @@ document.addEventListener("DOMContentLoaded", async () => {
       row.className = "p7-paint-row";
       row.style.setProperty("--pot-colour", hex);
 
-      // Aanwijzing links van het verfpotje, zonder hex-code
+      // Aanwijzing links van het verfblik
       const clue = document.createElement("div");
       clue.className = "p7-clue";
       clue.textContent = clues[index] || "";
 
-      // Verfpotje
-      const pot = document.createElement("div");
-      pot.className = "p7-pot";
-      pot.setAttribute("aria-hidden", "true");
+      // Nieuw verfblikpictogram
+      const pot = createPaintCan();
 
       // Leeg invulveld voor de hex-code
       const field = document.createElement("div");
@@ -249,6 +355,9 @@ document.addEventListener("DOMContentLoaded", async () => {
           row.classList.add("is-solved");
           input.disabled = true;
           input.value = hex;
+
+          // Het binnenvlak van het verfblik krijgt de juiste kleur
+          pot.paintSurface.setAttribute("fill", hex);
 
           error.textContent = "";
 
