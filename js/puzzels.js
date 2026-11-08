@@ -11,7 +11,7 @@ const puzzels = {
         pagina: "puzzel-1.html",
         vorigePuzzel: null,
         volgendePuzzel: 2,
-        hint: "An Marga bij het inpakken van je koffer alles door elkaar gegooid."
+        hint: "An Marga heeft bij het inpakken van je koffer alles door elkaar gegooid."
     },
 
     2: {
