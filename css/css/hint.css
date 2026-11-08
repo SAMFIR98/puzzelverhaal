@@ -1,0 +1,382 @@
+
+/* =========================================================
+   SPOORZOEKEN — HINT-TREINKAARTJE
+   Vormgeving en responsive positionering
+   ========================================================= */
+
+/* Vraaggedeelte met hint naast de vraag op desktop */
+
+.hint-question-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 150px;
+  gap: 20px;
+  align-items: center;
+}
+
+.hint-question-content {
+  min-width: 0;
+}
+
+.hint-sidebar {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  min-width: 0;
+}
+
+/* Het kaartje */
+
+.hint-ticket {
+  display: block;
+  position: relative;
+  width: 150px;
+  height: 100px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  cursor: pointer;
+  perspective: 1000px;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.hint-ticket:hover {
+  background: transparent;
+}
+
+.hint-ticket:focus-visible {
+  outline: 2px solid var(--gold-light);
+  outline-offset: 5px;
+}
+
+/* Binnenwerk: dit draait als één geheel */
+
+.hint-ticket-inner {
+  display: block;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 700ms cubic-bezier(.2, .7, .3, 1);
+}
+
+.hint-ticket.is-flipped .hint-ticket-inner {
+  transform: rotateY(180deg);
+}
+
+/* Voor- en achterkant */
+
+.hint-ticket-face {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+
+  border: 1px solid #a48d5d;
+
+  background:
+    repeating-linear-gradient(
+      0deg,
+      rgba(110, 82, 37, 0.035) 0px,
+      rgba(110, 82, 37, 0.035) 1px,
+      transparent 1px,
+      transparent 4px
+    ),
+    linear-gradient(
+      135deg,
+      #eadbb7,
+      #d7c394
+    );
+
+  color: #49391f;
+
+  box-shadow:
+    0 4px 10px rgba(0, 0, 0, .3),
+    inset 0 0 12px rgba(91, 65, 28, .13);
+
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* Perforaties langs boven- en onderkant */
+
+.hint-ticket-face::before,
+.hint-ticket-face::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 5px;
+
+  background:
+    radial-gradient(
+      circle at 3px 2px,
+      #49391f 1.8px,
+      transparent 2.3px
+    ) repeat-x;
+
+  background-size: 9px 5px;
+  opacity: .75;
+  pointer-events: none;
+}
+
+.hint-ticket-face::before {
+  top: 0;
+}
+
+.hint-ticket-face::after {
+  bottom: 0;
+}
+
+/* Perforaties langs de zijkant */
+
+.hint-ticket-perforation {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 7px;
+
+  background:
+    radial-gradient(
+      circle at 3px 3px,
+      #49391f 1.8px,
+      transparent 2.2px
+    ) repeat-y;
+
+  background-size: 7px 9px;
+  opacity: .8;
+  pointer-events: none;
+}
+
+/* Voorkant: flap rechts */
+
+.hint-ticket-front .hint-ticket-perforation {
+  right: 0;
+}
+
+/* Achterkant: flap links */
+
+.hint-ticket-back .hint-ticket-perforation {
+  left: 0;
+}
+
+/* Tekst op de voorkant */
+
+.hint-ticket-word {
+  display: block;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.5rem;
+  font-weight: bold;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: #49391f;
+}
+
+/* Voorkant */
+
+.hint-ticket-front {
+  transform: rotateY(0deg);
+}
+
+/* Achterkant */
+
+.hint-ticket-back {
+  transform: rotateY(180deg);
+  padding: 12px 25px;
+  text-align: center;
+}
+
+/* Hinttekst */
+
+.hint-ticket-content {
+  display: block;
+  width: 100%;
+  max-height: 100%;
+  overflow-y: auto;
+
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 11px;
+  line-height: 1.4;
+  font-weight: normal;
+
+  overflow-wrap: anywhere;
+  color: #49391f;
+}
+
+/* Het locomotiefje in het flapje */
+
+.hint-ticket-flap {
+  position: absolute;
+  top: 50%;
+  z-index: 2;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 27px;
+  height: 34px;
+
+  background: #d9c79a;
+  border: 1px solid #a48d5d;
+
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+/* Locomotiefje rechts op de voorkant */
+
+.hint-ticket-front .hint-ticket-flap {
+  right: -1px;
+  border-right: 0;
+}
+
+/* Locomotiefje links op de achterkant */
+
+.hint-ticket-back .hint-ticket-flap {
+  left: -1px;
+  border-left: 0;
+}
+
+/* Locomotief */
+
+.hint-ticket-flap svg {
+  display: block;
+  width: 20px;
+  height: 20px;
+  fill: #49391f;
+}
+
+/* Op de achterkant is de locomotief gespiegeld */
+
+.hint-ticket-back .hint-ticket-flap svg {
+  transform: scaleX(-1);
+}
+
+/* Bevestigingsvenster */
+
+.hint-confirm {
+  position: fixed;
+  z-index: 1200;
+  inset: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;
+  background: rgba(0, 0, 0, .82);
+}
+
+.hint-confirm[hidden] {
+  display: none;
+}
+
+.hint-confirm-box {
+  width: min(360px, 100%);
+  padding: 26px;
+
+  border: 1px solid var(--gold);
+  border-radius: 4px;
+
+  background: var(--panel);
+  color: var(--text);
+
+  text-align: center;
+
+  box-shadow: 0 12px 35px rgba(0, 0, 0, .45);
+}
+
+.hint-confirm-box h2 {
+  margin: 0 0 12px;
+  font-size: 1.5rem;
+}
+
+.hint-confirm-box p {
+  margin-bottom: 18px;
+}
+
+.hint-confirm-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+.hint-confirm-buttons button {
+  min-width: 90px;
+}
+
+.hint-confirm-buttons button.secondary {
+  background: transparent;
+  color: var(--gold-light);
+}
+
+/* =========================================================
+   SMARTPHONE
+   ========================================================= */
+
+@media (max-width: 700px) {
+
+  /* Vraag en antwoord boven het kaartje */
+
+  .hint-question-layout {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+  }
+
+  /* Kaartje onder het antwoordveld */
+
+  .hint-sidebar {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .hint-ticket {
+    width: 88%;
+    max-width: 340px;
+    height: 125px;
+  }
+
+  /* Meer ruimte voor de hinttekst */
+
+  .hint-ticket-back {
+    padding: 14px 34px;
+  }
+
+  .hint-ticket-content {
+    font-size: 16px;
+    line-height: 1.4;
+  }
+
+  .hint-ticket-word {
+    font-size: 2rem;
+  }
+
+  .hint-ticket-flap {
+    width: 31px;
+    height: 38px;
+  }
+
+  .hint-ticket-flap svg {
+    width: 23px;
+    height: 23px;
+  }
+
+}
+
+/* Kleine telefoons */
+
+@media (max-width: 380px) {
+
+  .hint-ticket {
+    width: 92%;
+  }
+
+  .hint-ticket-content {
+    font-size: 15px;
+  }
+
+}
