@@ -48,7 +48,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     "<het huisnummer van Casa Esteve Niubó – Pere IV> <het laagste huisnummer van Casa de Mercedes Aleu de Sala> Artigas",
 
-    "<het aantal architectuurprijzen dat Gaudí won> Catllaràs <het aantal rivieren dat Barcelona omringt> Astorga <dagnummer van de maand juli waarop Antoní Gaudí werd geboren>"
+    "<het aantal architectuurprijzen dat Gaudí won> Catllaràs <het aantal rivieren dat Barcelona omringt> Astorga <dagnummer van de maand juni waarop Antoní Gaudí werd geboren>"
   ];
 
   // -------------------------------------------------------
