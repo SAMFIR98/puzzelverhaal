@@ -1,3 +1,4 @@
+
 /* =========================================================
    SPOORZOEKEN — PUZZELGEGEVENS
    Centrale gegevens voor alle puzzelpagina's
@@ -9,7 +10,8 @@ const puzzels = {
         titel: "Het achtergelaten spoor",
         pagina: "puzzel-1.html",
         vorigePuzzel: null,
-        volgendePuzzel: 2
+        volgendePuzzel: 2,
+        hint: "An Marga bij het inpakken van je koffer alles door elkaar gegooid."
     },
 
     2: {
@@ -17,7 +19,8 @@ const puzzels = {
         titel: "Een onverwachte bestemming",
         pagina: "puzzel-2.html",
         vorigePuzzel: 1,
-        volgendePuzzel: 3
+        volgendePuzzel: 3,
+        hint: ""
     },
 
     3: {
@@ -25,7 +28,8 @@ const puzzels = {
         titel: "Het volgende spoor",
         pagina: "puzzel-3.html",
         vorigePuzzel: 2,
-        volgendePuzzel: 4
+        volgendePuzzel: 4,
+        hint: ""
     },
 
     4: {
@@ -33,7 +37,8 @@ const puzzels = {
         titel: "De grens",
         pagina: "puzzel-4.html",
         vorigePuzzel: 3,
-        volgendePuzzel: 5
+        volgendePuzzel: 5,
+        hint: ""
     },
 
     5: {
@@ -41,7 +46,8 @@ const puzzels = {
         titel: "De angst in de haven",
         pagina: "puzzel-5.html",
         vorigePuzzel: 4,
-        volgendePuzzel: 6
+        volgendePuzzel: 6,
+        hint: ""
     },
 
     6: {
@@ -49,7 +55,8 @@ const puzzels = {
         titel: "Een avond in Madrid",
         pagina: "puzzel-6.html",
         vorigePuzzel: 5,
-        volgendePuzzel: 7
+        volgendePuzzel: 7,
+        hint: ""
     },
 
     7: {
@@ -57,7 +64,8 @@ const puzzels = {
         titel: "Verfdief",
         pagina: "puzzel-7.html",
         vorigePuzzel: 6,
-        volgendePuzzel: 8
+        volgendePuzzel: 8,
+        hint: ""
     },
 
     8: {
@@ -65,7 +73,8 @@ const puzzels = {
         titel: "De verlichting",
         pagina: "puzzel-8.html",
         vorigePuzzel: 7,
-        volgendePuzzel: null
+        volgendePuzzel: null,
+        hint: ""
     }
 };
 
@@ -86,4 +95,3 @@ function haalVolgendePuzzelOp(nummer) {
 
     return haalPuzzelOp(puzzel.volgendePuzzel);
 }
-
