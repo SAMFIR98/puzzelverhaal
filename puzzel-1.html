@@ -7,10 +7,12 @@
   <title>Puzzel 1 – Het achtergelaten spoor | Spoorzoeken</title>
 
   <link rel="stylesheet" href="css/stijl.css">
+  <link rel="stylesheet" href="css/hint.css">
 
   <script src="js/algemeen.js" defer></script>
   <script src="js/puzzels.js" defer></script>
   <script src="js/puzzelpagina.js" defer></script>
+  <script src="js/hint.js" defer></script>
 </head>
 
 <body>
@@ -51,23 +53,74 @@
           Klik op de afbeelding om het label te bekijken.
         </p>
 
-        <div class="question">
-          <h3>De vraag</h3>
-          <p>Naar welke stad was de eigenaar van deze koffer op weg?</p>
+        <!-- Vraag, antwoord en hintkaartje -->
+        <div class="hint-question-layout">
 
-          <form id="answer-form">
-            <label for="answer">Jouw antwoord</label>
+          <div class="hint-question-content">
+            <div class="question">
+              <h3>De vraag</h3>
+              <p>Naar welke stad was de eigenaar van deze koffer op weg?</p>
 
-            <input
-              id="answer"
-              type="text"
-              autocomplete="off"
-              placeholder="Vul de plaatsnaam in"
-              required
+              <form id="answer-form">
+                <label for="answer">Jouw antwoord</label>
+
+                <input
+                  id="answer"
+                  type="text"
+                  autocomplete="off"
+                  placeholder="Vul de plaatsnaam in"
+                  required
+                >
+
+                <button type="submit">Antwoord controleren</button>
+              </form>
+            </div>
+          </div>
+
+          <aside class="hint-sidebar">
+
+            <button
+              type="button"
+              id="hint-ticket"
+              class="hint-ticket"
+              data-puzzle-number="1"
+              aria-label="Hint bekijken"
             >
+              <span class="hint-ticket-inner">
 
-            <button type="submit">Antwoord controleren</button>
-          </form>
+                <!-- Voorkant -->
+                <span class="hint-ticket-face hint-ticket-front">
+                  <span class="hint-ticket-perforation"></span>
+
+                  <span class="hint-ticket-word">HINT</span>
+
+                  <span class="hint-ticket-flap">
+                    <svg viewBox="0 0 32 32" aria-hidden="true">
+                      <path d="M3 19h3v-7h13l6 5h4v8h-2a4 4 0 0 1-8 0h-8a4 4 0 0 1-8 0H1v-4h2zm8-5v5h12l-5-5zm-5 12a2 2 0 1 0 4 0 2 2 0 0 0-4 0zm14 0a2 2 0 1 0 4 0 2 2 0 0 0-4 0zM8 5h10v2H8zm-3 4h13v2H5z"/>
+                    </svg>
+                  </span>
+                </span>
+
+                <!-- Achterkant -->
+                <span class="hint-ticket-face hint-ticket-back">
+                  <span class="hint-ticket-perforation"></span>
+
+                  <span
+                    class="hint-ticket-content"
+                    id="hint-text"
+                  ></span>
+
+                  <span class="hint-ticket-flap">
+                    <svg viewBox="0 0 32 32" aria-hidden="true">
+                      <path d="M3 19h3v-7h13l6 5h4v8h-2a4 4 0 0 1-8 0h-8a4 4 0 0 1-8 0H1v-4h2zm8-5v5h12l-5-5zm-5 12a2 2 0 1 0 4 0 2 2 0 0 0-4 0zm14 0a2 2 0 1 0 4 0 2 2 0 0 0-4 0zM8 5h10v2H8zm-3 4h13v2H5z"/>
+                    </svg>
+                  </span>
+                </span>
+
+              </span>
+            </button>
+
+          </aside>
         </div>
 
         <button
@@ -122,5 +175,42 @@
       </button>
     </div>
   </div>
+
+  <!-- Bevestiging voordat de hint wordt getoond -->
+  <div
+    id="hint-confirm"
+    class="hint-confirm"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="hint-confirm-title"
+    aria-hidden="true"
+    hidden
+  >
+    <div class="hint-confirm-box">
+      <h2 id="hint-confirm-title">Weet je het zeker?</h2>
+
+      <p>
+        Wil je een aanwijzing bekijken die je verder kan helpen?
+      </p>
+
+      <div class="hint-confirm-buttons">
+        <button
+          type="button"
+          id="hint-no"
+          class="secondary"
+        >
+          Nee
+        </button>
+
+        <button
+          type="button"
+          id="hint-yes"
+        >
+          Ja
+        </button>
+      </div>
+    </div>
+  </div>
+
 </body>
 </html>
