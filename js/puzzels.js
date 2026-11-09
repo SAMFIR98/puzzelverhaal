@@ -70,7 +70,7 @@ const puzzels = {
 
     8: {
         nummer: 8,
-        titel: "De verlichting",
+        titel: "Leeslampje",
         pagina: "puzzel-8.html",
         vorigePuzzel: 7,
         volgendePuzzel: null,
