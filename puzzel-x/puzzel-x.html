@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="nl">
 <head>
@@ -5,10 +6,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#171613">
   <title>Spoorzoeken – Puzzel X: De radio</title>
-  <link rel="stylesheet" href="css/stijl.css">
+
+  <!-- Algemene Spoorzoeken-vormgeving -->
+  <link rel="stylesheet" href="../css/stijl.css">
+
+  <!-- Aanvullende vormgeving voor de radio -->
   <link rel="stylesheet" href="css/puzzel-x.css">
 </head>
-<body>
+
+<body class="radio-page">
+
   <header class="site-header">
     <div class="header-inner">
       <h1>Spoorzoeken</h1>
@@ -18,54 +25,120 @@
 
   <main class="page-content">
     <section class="panel radio-panel">
+
       <p class="eyebrow">Nederland, 1925 · Een onbekende uitzending</p>
       <h2>De radio</h2>
+
       <div class="radio-intro">
-        <p>In de kamer staat een houten radiotoestel. De wereld klinkt ineens een stuk groter wanneer je aan de afstemknop draait. Zoek op de schaal naar een uitzending.</p>
-        <p class="radio-instruction">Draai aan de linkerknop of sleep de aanwijzer over de schaal.</p>
+        <p>
+          In de kamer staat een houten radiotoestel. De wereld klinkt
+          ineens een stuk groter wanneer je aan de afstemknop draait.
+          Zoek op de schaal naar een uitzending.
+        </p>
+        <p class="radio-instruction">
+          Draai aan de linkerknop of sleep de aanwijzer over de schaal.
+        </p>
       </div>
 
       <div class="radio-stage" id="radio-stage">
-        <img class="radio-cabinet" src="radio.png" alt="Een brede houten radio uit 1925">
 
-        <!-- De oorspronkelijke schaal in de afbeelding wordt hier afgedekt en dynamisch opgebouwd. -->
-        <div class="dial-overlay" id="dial-overlay" aria-label="Dynamische golflengteschaal">
+        <img
+          class="radio-cabinet"
+          src="radio.png"
+          alt="Een brede houten radio uit 1925"
+        >
+
+        <!-- Dynamisch opgebouwde afstemschaal -->
+        <div
+          class="dial-overlay"
+          id="dial-overlay"
+          aria-label="Dynamische golflengteschaal"
+        >
           <div class="dial-numbers" id="dial-numbers"></div>
+
           <div class="dial-track" id="dial-track">
             <div class="dial-ticks" id="dial-ticks"></div>
-            <div class="dial-pointer" id="dial-pointer" role="slider" tabindex="0"
-                 aria-label="Afstemaanwijzer" aria-valuemin="200" aria-valuemax="1000" aria-valuenow="600"></div>
+
+            <div
+              class="dial-pointer"
+              id="dial-pointer"
+              role="slider"
+              tabindex="0"
+              aria-label="Afstemaanwijzer"
+              aria-valuemin="200"
+              aria-valuemax="1000"
+              aria-valuenow="600"
+            ></div>
           </div>
+
           <div class="dial-caption">GOLFLENGTE IN METERS</div>
         </div>
 
-        <!-- Marker roteert over de bestaande linker draaiknop. -->
-        <div class="knob-hit-area" id="tuning-knob" role="slider" tabindex="0"
-             aria-label="Afstemknop" aria-valuemin="200" aria-valuemax="1000" aria-valuenow="600">
+        <!-- Interactieve markering op de linker draaiknop -->
+        <div
+          class="knob-hit-area"
+          id="tuning-knob"
+          role="slider"
+          tabindex="0"
+          aria-label="Afstemknop"
+          aria-valuemin="200"
+          aria-valuemax="1000"
+          aria-valuenow="600"
+        >
           <span class="knob-marker"></span>
         </div>
+
       </div>
 
       <div class="radio-status" aria-live="polite">
-        <div class="frequency-readout"><span class="readout-label">Afgestemd op</span><strong id="frequency-value">600 meter</strong></div>
-        <div class="station-readout" id="station-status">Ruis op de ether…</div>
+        <div class="frequency-readout">
+          <span class="readout-label">Afgestemd op</span>
+          <strong id="frequency-value">600 meter</strong>
+        </div>
+
+        <div class="station-readout" id="station-status">
+          Ruis op de ether…
+        </div>
       </div>
 
       <div class="radio-controls">
-        <button type="button" class="secondary" id="tune-down">◀ Lager</button>
-        <button type="button" id="play-toggle" disabled>Geen uitzending geselecteerd</button>
-        <button type="button" class="secondary" id="tune-up">Hoger ▶</button>
+        <button type="button" class="secondary" id="tune-down">
+          ◀ Lager
+        </button>
+
+        <button type="button" id="play-toggle" disabled>
+          Geen uitzending geselecteerd
+        </button>
+
+        <button type="button" class="secondary" id="tune-up">
+          Hoger ▶
+        </button>
       </div>
-      <p class="radio-footnote">Dit is een technische proefopstelling. De uitzendingen en geluidsfragmenten worden later toegevoegd.</p>
-      <button type="button" class="secondary home-button" id="home-button">Terug naar de start</button>
+
+      <p class="radio-footnote">
+        Dit is een technische proefopstelling. De uitzendingen en
+        geluidsfragmenten worden later toegevoegd.
+      </p>
+
+      <button
+        type="button"
+        class="secondary home-button"
+        id="home-button"
+      >
+        Terug naar de start
+      </button>
+
     </section>
   </main>
 
   <footer>
     Spoorzoeken · Een mysterie op het spoor door Europa · 1925
   </footer>
+
   <audio id="radio-audio" preload="none"></audio>
+
   <script src="js/radio-config.js"></script>
   <script src="js/puzzel-x.js"></script>
+
 </body>
 </html>
