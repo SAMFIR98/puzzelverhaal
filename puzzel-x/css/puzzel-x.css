@@ -1,8 +1,45 @@
-/* Aanvullende vormgeving voor de radio-pagina. De algemene Spoorzoeken-stijl
-   blijft afkomstig uit css/stijl.css. */
-.radio-panel { max-width: 1120px; }
-.radio-intro { max-width: 900px; }
-.radio-instruction { color: var(--muted, #b9ae9c); font-style: italic; }
+
+/* ==========================================================
+   SPOORZOEKEN — RADIOPAGINA
+   Aanvullend op de algemene vormgeving in css/stijl.css
+   ========================================================== */
+
+/* Achtergrond van de Nederlandse woonkamer uit 1925 */
+
+body.radio-page {
+  min-height: 100vh;
+  background-color: #171613;
+  background-image:
+    linear-gradient(
+      rgba(15, 13, 10, 0.30),
+      rgba(15, 13, 10, 0.52)
+    ),
+    url("../Woonkamer.png");
+  background-position: center center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+/* Hoofdpaneel */
+
+.radio-panel {
+  max-width: 1120px;
+  background: rgba(36, 33, 27, 0.91);
+  backdrop-filter: blur(2px);
+}
+
+.radio-intro {
+  max-width: 900px;
+}
+
+.radio-instruction {
+  color: var(--muted, #b9ae9c);
+  font-style: italic;
+}
+
+/* Radio-afbeelding */
+
 .radio-stage {
   position: relative;
   width: 100%;
@@ -12,83 +49,321 @@
   user-select: none;
   touch-action: pan-y;
 }
-.radio-cabinet { display:block; width:100%; height:auto; }
 
-/* De overlay valt over het ingebakken cijfer-/schaalgebied, maar laat de houten
-   omlijsting intact. Coördinaten zijn relatief aan de radio-afbeelding. */
+.radio-cabinet {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* ==========================================================
+   DYNAMISCHE AFSTEMSCHAAL
+
+   Positie afgestemd op radio.png (1774 x 887 pixels).
+   De kleur #221a11 sluit aan op het lege vlak in de afbeelding.
+   ========================================================== */
+
 .dial-overlay {
-  position:absolute;
-  left:20.1%; top:55.0%; width:58.2%; height:18.0%;
-  overflow:hidden;
-  border-radius: 2.2% / 12%;
-  color:#e7c77d;
-  background:
-    linear-gradient(180deg, rgba(16,13,10,.98), rgba(35,27,18,.98) 48%, rgba(14,12,10,.99));
-  box-shadow: inset 0 2px 5px rgba(0,0,0,.95), inset 0 -2px 4px rgba(215,174,91,.22);
+  position: absolute;
+
+  left: 18.8%;
+  top: 53.0%;
+  width: 60.1%;
+  height: 20.5%;
+
+  overflow: hidden;
+  border-radius: 2.5% / 12%;
+
+  color: #e7c77d;
+  background: #221a11;
+
+  box-shadow: none;
 }
+
+/* Getallen boven de afstemlijn */
+
 .dial-numbers {
-  position:absolute; left:5.5%; right:5.5%; top:5%; height:28%;
-  display:flex; align-items:center; justify-content:space-between;
-  font-family:Georgia, 'Times New Roman', serif;
-  font-size:clamp(9px, 1.55vw, 18px); font-weight:bold;
-  text-shadow:0 1px 2px #000;
+  position: absolute;
+  left: 5.5%;
+  right: 5.5%;
+  top: 5%;
+  height: 28%;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(9px, 1.55vw, 18px);
+  font-weight: bold;
+
+  color: #e7c77d;
+  text-shadow: 0 1px 2px #000;
 }
+
+/* Horizontale afstemlijn */
+
 .dial-track {
-  position:absolute; left:5.5%; right:5.5%; top:39%; height:36%;
-  border:1px solid rgba(217,177,94,.75); border-radius:20px;
-  background:linear-gradient(180deg,#090807,#282016 48%,#090807);
-  cursor:ew-resize; touch-action:none;
+  position: absolute;
+  left: 5.5%;
+  right: 5.5%;
+  top: 39%;
+  height: 36%;
+
+  border: 1px solid rgba(217, 177, 94, 0.75);
+  border-radius: 20px;
+
+  background:
+    linear-gradient(
+      180deg,
+      #090807,
+      #282016 48%,
+      #090807
+    );
+
+  cursor: ew-resize;
+  touch-action: none;
 }
-.dial-ticks { position:absolute; inset:0; pointer-events:none; }
-.dial-tick { position:absolute; top:-12%; width:1px; height:34%; background:#d7b76f; opacity:.9; }
-.dial-tick.minor { top:0; height:18%; opacity:.55; }
-.dial-tick.lower { top:78%; height:27%; }
-.dial-tick.lower.minor { top:78%; height:16%; }
+
+/* Streepjes */
+
+.dial-ticks {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.dial-tick {
+  position: absolute;
+  top: -12%;
+  width: 1px;
+  height: 34%;
+  background: #d7b76f;
+  opacity: 0.9;
+}
+
+.dial-tick.minor {
+  top: 0;
+  height: 18%;
+  opacity: 0.55;
+}
+
+.dial-tick.lower {
+  top: 78%;
+  height: 27%;
+}
+
+.dial-tick.lower.minor {
+  top: 78%;
+  height: 16%;
+}
+
+/* De beweegbare aanwijzer */
+
 .dial-pointer {
-  position:absolute; z-index:2; top:-30%; left:50%; width:clamp(10px,1.8vw,18px); height:160%;
-  transform:translateX(-50%); border:1px solid #f0cf83; border-radius:2px;
-  background:linear-gradient(90deg,#70451b,#d9a34e 45%,#80501f);
-  box-shadow:0 0 5px rgba(0,0,0,.9), inset 1px 0 2px rgba(255,235,180,.65);
-  cursor:grab; touch-action:none;
+  position: absolute;
+  z-index: 2;
+
+  top: -30%;
+  left: 50%;
+
+  width: clamp(10px, 1.8vw, 18px);
+  height: 160%;
+
+  transform: translateX(-50%);
+
+  border: 1px solid #f0cf83;
+  border-radius: 2px;
+
+  background:
+    linear-gradient(
+      90deg,
+      #70451b,
+      #d9a34e 45%,
+      #80501f
+    );
+
+  box-shadow:
+    0 0 5px rgba(0, 0, 0, 0.9),
+    inset 1px 0 2px rgba(255, 235, 180, 0.65);
+
+  cursor: grab;
+  touch-action: none;
 }
-.dial-pointer:active { cursor:grabbing; }
+
+.dial-pointer:active {
+  cursor: grabbing;
+}
+
+/* Onderschrift */
+
 .dial-caption {
-  position:absolute; left:0; right:0; bottom:3%; text-align:center;
-  font: bold clamp(7px,1.2vw,13px)/1 Arial,sans-serif; letter-spacing:.16em;
-  color:#e2c47c; text-shadow:0 1px 2px #000;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 3%;
+
+  text-align: center;
+
+  font: bold clamp(7px, 1.2vw, 13px)/1 Arial, sans-serif;
+  letter-spacing: 0.16em;
+
+  color: #e2c47c;
+  text-shadow: 0 1px 2px #000;
 }
+
+/* ==========================================================
+   LINKER DRAAIKNOP
+   De markering wordt dynamisch door JavaScript verplaatst.
+   ========================================================== */
+
 .knob-hit-area {
-  position:absolute; left:5.3%; top:52.8%; width:11.5%; height:22.5%;
-  border-radius:50%; cursor:grab; touch-action:none;
+  position: absolute;
+
+  left: 5.2%;
+  top: 52.0%;
+  width: 12.2%;
+  height: 24.0%;
+
+  border-radius: 50%;
+  cursor: grab;
+  touch-action: none;
 }
-.knob-hit-area:active { cursor:grabbing; }
+
+.knob-hit-area:active {
+  cursor: grabbing;
+}
+
 .knob-marker {
-  position:absolute; left:50%; top:7%; width:clamp(8px,1.25vw,14px); height:clamp(8px,1.25vw,14px);
-  border-radius:50%; border:1px solid #f7e5bd;
-  background:radial-gradient(circle at 35% 30%,#fff8e8,#d9c5a0 65%,#8a7451);
-  box-shadow:0 1px 3px #000;
-  transform:translate(-50%,-50%);
+  position: absolute;
+
+  left: 50%;
+  top: 50%;
+
+  width: clamp(8px, 1.25vw, 14px);
+  height: clamp(8px, 1.25vw, 14px);
+
+  border-radius: 50%;
+  border: 1px solid #f7e5bd;
+
+  background:
+    radial-gradient(
+      circle at 35% 30%,
+      #fff8e8,
+      #d9c5a0 65%,
+      #8a7451
+    );
+
+  box-shadow: 0 1px 3px #000;
+
+  transform: translate(-50%, -50%);
 }
+
+/* Statusinformatie */
+
 .radio-status {
-  display:flex; justify-content:space-between; align-items:center; gap:18px;
-  max-width:850px; margin:18px auto 8px; padding:12px 16px;
-  border:1px solid rgba(200,166,91,.35); background:rgba(12,11,9,.45);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 18px;
+
+  max-width: 850px;
+  margin: 18px auto 8px;
+  padding: 12px 16px;
+
+  border: 1px solid rgba(200, 166, 91, 0.35);
+  background: rgba(12, 11, 9, 0.45);
 }
-.frequency-readout { display:flex; align-items:baseline; gap:12px; }
-.readout-label { color:var(--muted,#b9ae9c); font-size:.9rem; }
-.frequency-readout strong { color:var(--gold-light,#e0c780); font-size:1.25rem; }
-.station-readout { color:var(--muted,#b9ae9c); text-align:right; }
-.radio-controls { display:flex; justify-content:center; flex-wrap:wrap; gap:10px; }
-.radio-controls button { min-width:145px; }
-.radio-controls button:disabled { opacity:.55; cursor:not-allowed; }
-.radio-footnote { margin:16px 0 4px; color:var(--muted,#b9ae9c); font-size:.88rem; text-align:center; }
-.home-button { display:block; margin:18px auto 0; }
-@media(max-width:640px) {
-  .radio-panel { padding:16px; }
-  .radio-status { align-items:flex-start; flex-direction:column; gap:4px; }
-  .station-readout { text-align:left; }
-  .radio-controls { gap:6px; }
-  .radio-controls button { min-width:0; flex:1 1 28%; padding:10px 8px; font-size:.9rem; }
-  .dial-numbers { font-size:clamp(8px,2.1vw,13px); }
-  .dial-caption { letter-spacing:.08em; }
+
+.frequency-readout {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.readout-label {
+  color: var(--muted, #b9ae9c);
+  font-size: 0.9rem;
+}
+
+.frequency-readout strong {
+  color: var(--gold-light, #e0c780);
+  font-size: 1.25rem;
+}
+
+.station-readout {
+  color: var(--muted, #b9ae9c);
+  text-align: right;
+}
+
+/* Bedieningsknoppen */
+
+.radio-controls {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.radio-controls button {
+  min-width: 145px;
+}
+
+.radio-controls button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.radio-footnote {
+  margin: 16px 0 4px;
+  color: var(--muted, #b9ae9c);
+  font-size: 0.88rem;
+  text-align: center;
+}
+
+.home-button {
+  display: block;
+  margin: 18px auto 0;
+}
+
+/* Mobiele weergave */
+
+@media (max-width: 640px) {
+
+  body.radio-page {
+    background-attachment: scroll;
+  }
+
+  .radio-panel {
+    padding: 16px;
+  }
+
+  .radio-status {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .station-readout {
+    text-align: left;
+  }
+
+  .radio-controls {
+    gap: 6px;
+  }
+
+  .radio-controls button {
+    min-width: 0;
+    flex: 1 1 28%;
+    padding: 10px 8px;
+    font-size: 0.9rem;
+  }
+
+  .dial-numbers {
+    font-size: clamp(8px, 2.1vw, 13px);
+  }
+
+  .dial-caption {
+    letter-spacing: 0.08em;
+  }
 }
