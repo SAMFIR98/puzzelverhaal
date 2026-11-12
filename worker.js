@@ -1,3 +1,4 @@
+
 /* =========================================================
    SPOORZOEKEN — CLOUDFLARE WORKER
    Server-side toegangscontrole voor alle puzzelpagina's.
@@ -597,7 +598,20 @@ export default {
       });
     }
 
-    // Alle puzzel-HTML-pagina's lopen langs de toegangscontrole.
+    // -----------------------------------------------------
+    // TIJDELIJKE RADIO-TESTPAGINA
+    //
+    // Puzzel X is nog geen genummerde puzzel en valt daarom
+    // voorlopig buiten de voortgangs- en antwoordbeveiliging.
+    // Ook de CSS-, JS-, afbeelding- en audiobestanden in deze
+    // map worden rechtstreeks als statische bestanden geladen.
+    // -----------------------------------------------------
+    if (decodedPath.toLowerCase().startsWith("/puzzel-x/")) {
+      return env.ASSETS.fetch(request);
+    }
+
+    // Alle genummerde puzzel-HTML-pagina's lopen langs de
+    // bestaande toegangscontrole.
     if (
       decodedPath.toLowerCase().startsWith("/puzzel-") &&
       decodedPath.toLowerCase().includes(".html")
