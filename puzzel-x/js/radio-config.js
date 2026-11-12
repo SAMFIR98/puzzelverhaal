@@ -20,7 +20,7 @@ window.RADIO_CONFIG = {
     {
       wavelength: 600,
       title: "In Moeders Keuken",
-      audio: "In%20Moeders%20Keuken.mp4",
+      audio: "In%20Moeders%20Keuken.mp3",
       tolerance: 0
     }
 
