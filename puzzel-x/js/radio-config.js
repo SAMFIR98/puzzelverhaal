@@ -15,6 +15,10 @@ window.RADIO_CONFIG = {
 
   tuningStep: 5,
 
+  // Standaardgeluid wanneer er geen zender wordt ontvangen.
+  noiseAudio: "ruis.mp3",
+
+  // Gerichte uitzendingen.
   stations: [
 
     {
@@ -23,6 +27,15 @@ window.RADIO_CONFIG = {
       audio: "In%20Moeders%20Keuken.mp3",
       tolerance: 0
     }
+
+    // Nieuwe uitzendingen kun je hier toevoegen:
+    //
+    // {
+    //   wavelength: 425,
+    //   title: "Avondconcert",
+    //   audio: "audio/avondconcert.mp3",
+    //   tolerance: 0
+    // }
 
   ]
 
