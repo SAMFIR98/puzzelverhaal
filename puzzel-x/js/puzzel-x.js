@@ -34,8 +34,8 @@
   let knobStartAngle = 0;
   let knobStartValue = wavelength;
 
-  // Voorkomt dat een uitzending tijdens één afstemsessie
-  // automatisch opnieuw wordt gestart.
+  // Houdt bij welk geluid momenteel actief is.
+  let audioMode = null;
   let stationHasPlayed = false;
 
   function clamp(value, min, max) {
@@ -58,7 +58,8 @@
     return config.minWavelength + pct * range;
   }
 
-  function stopStationAudio() {
+  // Stop het huidige geluid en zet het terug naar het begin.
+  function stopAudio() {
     audio.pause();
 
     try {
@@ -67,66 +68,52 @@
       // Het bestand kan nog aan het laden zijn.
     }
 
-    stationHasPlayed = false;
+    audio.removeAttribute("src");
+    audio.load();
+
+    audioMode = null;
   }
 
-  function startStationAudio() {
-    if (!activeStation || !activeStation.audio) return;
-    if (stationHasPlayed) return;
+  // Start de radio-ruis. Deze blijft eindeloos herhalen.
+  function startNoise() {
+    if (!config.noiseAudio) return;
 
-    audio.src = activeStation.audio;
+    if (audioMode === "noise") return;
+
+    stopAudio();
+
+    audioMode = "noise";
+    audio.loop = true;
+    audio.src = config.noiseAudio;
+    audio.load();
+
+    audio.play().catch(() => {
+      // Browsers kunnen automatisch geluid blokkeren.
+      // Bij de volgende gebruikersinteractie proberen we opnieuw.
+      audioMode = null;
+    });
+  }
+
+  // Start een gerichte uitzending één keer.
+  function startStation(station) {
+    if (!station || !station.audio) return;
+
+    stopAudio();
+
+    audioMode = "station";
+    audio.loop = false;
+    stationHasPlayed = false;
+
+    playButton.disabled = false;
+    playButton.textContent = "▶ Uitzending beluisteren";
+
+    audio.src = station.audio;
     audio.load();
 
     audio.play().catch(() => {
       stationOutput.textContent =
-        "Uitzending gevonden. Druk op beluisteren om te starten.";
-
-      playButton.disabled = false;
-      playButton.textContent = "▶ Uitzending beluisteren";
+        `${station.title} · druk op beluisteren om te starten`;
     });
-  }
-
-  function selectStation() {
-    const previousStation = activeStation;
-
-    activeStation =
-      config.stations.find(station =>
-        Math.abs(station.wavelength - wavelength) <=
-        (station.tolerance ?? 0)
-      ) || null;
-
-    // De radio is van de zender afgestemd.
-    if (!activeStation) {
-      if (previousStation) {
-        stopStationAudio();
-      }
-
-      stationOutput.textContent = "Ruis op de ether…";
-
-      playButton.disabled = true;
-      playButton.textContent = "Geen uitzending geselecteerd";
-
-      return;
-    }
-
-    // Alleen bij het binnenkomen op een zender starten.
-    if (activeStation !== previousStation) {
-      stationHasPlayed = false;
-      startStationAudio();
-    }
-
-    stationOutput.textContent = activeStation.title;
-
-    if (stationHasPlayed && audio.ended) {
-      playButton.disabled = true;
-      playButton.textContent = "Uitzending afgelopen";
-    } else if (audio.paused) {
-      playButton.disabled = false;
-      playButton.textContent = "▶ Uitzending beluisteren";
-    } else {
-      playButton.disabled = false;
-      playButton.textContent = "Ⅱ Pauzeren";
-    }
   }
 
   function setWavelength(value) {
@@ -141,7 +128,7 @@
     pointer.setAttribute("aria-valuenow", wavelength);
     knob.setAttribute("aria-valuenow", wavelength);
 
-    // De markering draait over de linker draaiknop.
+    // De linker draaiknop maakt één volledige omwenteling.
     const radius = knob.clientWidth * 0.40;
 
     marker.style.left = "50%";
@@ -155,40 +142,48 @@
     selectStation();
   }
 
-  function drawScale() {
-    numbers.innerHTML = "";
-    ticks.innerHTML = "";
+  function selectStation() {
+    const previousStation = activeStation;
 
-    const count = config.numberOfMajorMarks;
+    activeStation =
+      config.stations.find(station =>
+        Math.abs(station.wavelength - wavelength) <=
+        (station.tolerance ?? 0)
+      ) || null;
 
-    for (let i = 0; i < count; i++) {
-      const val =
-        config.minWavelength +
-        (range * i / (count - 1));
+    // Geen gerichte uitzending gevonden: ruis aan.
+    if (!activeStation) {
+      if (previousStation) {
+        stationHasPlayed = false;
+      }
 
-      const label = document.createElement("span");
-      label.textContent = Math.round(val);
-      numbers.appendChild(label);
+      stationOutput.textContent = "Ruis op de ether…";
 
-      const major = document.createElement("i");
-      major.className = "dial-tick";
-      major.style.left = `${i / (count - 1) * 100}%`;
-      ticks.appendChild(major);
+      playButton.disabled = true;
+      playButton.textContent = "Geen uitzending geselecteerd";
 
-      if (i < count - 1) {
-        for (
-          let j = 1;
-          j <= config.fineTicksBetweenMajorMarks;
-          j++
-        ) {
-          const minor = document.createElement("i");
-          minor.className = "dial-tick minor";
+      startNoise();
+      return;
+    }
 
-          minor.style.left =
-            `${(i + j / (config.fineTicksBetweenMajorMarks + 1)) / (count - 1) * 100}%`;
+    // We zijn op een andere gerichte uitzending afgestemd.
+    if (activeStation !== previousStation) {
+      stationHasPlayed = false;
+      startStation(activeStation);
+    }
 
-          ticks.appendChild(minor);
-        }
+    stationOutput.textContent = activeStation.title;
+
+    if (stationHasPlayed && audio.ended) {
+      playButton.disabled = true;
+      playButton.textContent = "Uitzending afgelopen";
+    } else {
+      playButton.disabled = false;
+
+      if (audioMode === "station" && !audio.paused) {
+        playButton.textContent = "Ⅱ Pauzeren";
+      } else {
+        playButton.textContent = "▶ Uitzending beluisteren";
       }
     }
   }
@@ -210,7 +205,6 @@
     knobStartValue = wavelength;
 
     knob.setPointerCapture(event.pointerId);
-
     event.preventDefault();
   }
 
@@ -231,7 +225,6 @@
     dragMode = "scale";
 
     track.setPointerCapture(event.pointerId);
-
     setWavelength(valueFromPointer(event));
 
     event.preventDefault();
@@ -291,21 +284,21 @@
   pointer.addEventListener("keydown", handleArrowKeys);
   knob.addEventListener("keydown", handleArrowKeys);
 
-  // Handmatige bediening van de audio als automatisch
-  // afspelen door de browser wordt geblokkeerd.
+  // Handmatig starten of pauzeren van een gerichte uitzending.
   playButton.addEventListener("click", () => {
     if (!activeStation || !activeStation.audio) return;
+
+    if (audioMode !== "station") {
+      startStation(activeStation);
+      return;
+    }
 
     if (!audio.paused) {
       audio.pause();
       return;
     }
 
-    if (stationHasPlayed && audio.ended) return;
-
-    if (!audio.src) {
-      audio.src = activeStation.audio;
-    }
+    if (audio.ended) return;
 
     audio.play().catch(() => {
       stationOutput.textContent =
@@ -313,35 +306,33 @@
     });
   });
 
-  // Geluid daadwerkelijk gestart.
+  // Audio gestart.
   audio.addEventListener("play", () => {
-    stationHasPlayed = true;
-
-    playButton.disabled = false;
-    playButton.textContent = "Ⅱ Pauzeren";
+    if (audioMode === "station") {
+      stationHasPlayed = true;
+      playButton.disabled = false;
+      playButton.textContent = "Ⅱ Pauzeren";
+    }
   });
 
-  // Handmatig gepauzeerd.
-  audio.addEventListener("pause", () => {
-    if (!activeStation || audio.ended) return;
-
-    playButton.disabled = false;
-    playButton.textContent = "▶ Verder luisteren";
-  });
-
-  // Fragment is volledig afgespeeld.
+  // Gerichte uitzending afgelopen.
   audio.addEventListener("ended", () => {
+    if (audioMode !== "station") return;
+
     playButton.disabled = true;
     playButton.textContent = "Uitzending afgelopen";
 
     stationOutput.textContent =
-      activeStation
-        ? `${activeStation.title} · uitzending afgelopen`
-        : "Ruis op de ether…";
+      `${activeStation.title} · uitzending afgelopen`;
   });
 
-  // Fout bij het laden of afspelen.
+  // Fout bij laden of afspelen.
   audio.addEventListener("error", () => {
+    if (audioMode === "noise") {
+      audioMode = null;
+      return;
+    }
+
     if (!activeStation) return;
 
     stationOutput.textContent =
@@ -351,7 +342,7 @@
     playButton.textContent = "Opnieuw proberen";
   });
 
-  // Bedieningsknoppen voor afstemmen.
+  // Bedieningsknoppen.
   document
     .getElementById("tune-down")
     .addEventListener("click", () => {
@@ -372,7 +363,46 @@
     });
 
   // Opstarten.
+  audio.loop = true;
   drawScale();
   setWavelength(wavelength);
+
+  function drawScale() {
+    numbers.innerHTML = "";
+    ticks.innerHTML = "";
+
+    const count = config.numberOfMajorMarks;
+
+    for (let i = 0; i < count; i++) {
+      const val =
+        config.minWavelength +
+        (range * i / (count - 1));
+
+      const label = document.createElement("span");
+      label.textContent = Math.round(val);
+      numbers.appendChild(label);
+
+      const major = document.createElement("i");
+      major.className = "dial-tick";
+      major.style.left = `${i / (count - 1) * 100}%`;
+      ticks.appendChild(major);
+
+      if (i < count - 1) {
+        for (
+          let j = 1;
+          j <= config.fineTicksBetweenMajorMarks;
+          j++
+        ) {
+          const minor = document.createElement("i");
+          minor.className = "dial-tick minor";
+
+          minor.style.left =
+            `${(i + j / (config.fineTicksBetweenMajorMarks + 1)) / (count - 1) * 100}%`;
+
+          ticks.appendChild(minor);
+        }
+      }
+    }
+  }
 
 })();
