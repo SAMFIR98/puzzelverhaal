@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="nl">
 <head>
@@ -49,10 +50,6 @@
       font: 12px Arial, sans-serif;
     }
     .p8-question { margin-top: 24px; }
-    #p8-success {
-      margin-top: 16px;
-      color: var(--muted, #b9ae9c);
-    }
     @media(max-width:640px) {
       .p8-lightbox { padding: 10px; }
       .p8-lightbox img { max-width: 98vw; max-height: 88vh; }
@@ -124,9 +121,6 @@
           <input id="answer" name="answer" type="text" autocomplete="off" placeholder="Vul de naam in">
           <button id="answer-submit" type="submit">Antwoord controleren</button>
         </form>
-        <p id="p8-success" hidden aria-live="polite">
-          Goed gevonden! Je hebt puzzel 8 opgelost. Voorlopig is dit het einde van het spoor.
-        </p>
       </section>
 
       <button type="button" class="secondary" id="home-button">Terug naar de start</button>
@@ -151,26 +145,13 @@
     (() => {
       const image = document.getElementById('puzzle8-image');
       const lightbox = document.getElementById('p8-lightbox');
-      const form = document.getElementById('answer-form');
-      const answerField = document.getElementById('answer');
-      const submitButton = document.getElementById('answer-submit');
-      const errorOverlay = document.getElementById('error-overlay');
-      const errorClose = document.getElementById('error-close');
-      const success = document.getElementById('p8-success');
 
       function openImage() {
         lightbox.classList.add('open');
       }
+
       function closeImage() {
         lightbox.classList.remove('open');
-      }
-      function showError() {
-        errorOverlay.classList.add('open');
-        errorOverlay.setAttribute('aria-hidden', 'false');
-      }
-      function closeError() {
-        errorOverlay.classList.remove('open');
-        errorOverlay.setAttribute('aria-hidden', 'true');
       }
 
       image.addEventListener('click', openImage);
@@ -180,56 +161,17 @@
           openImage();
         }
       });
-      lightbox.addEventListener('click', closeImage);
-      errorClose.addEventListener('click', closeError);
-      errorOverlay.addEventListener('click', event => {
-        if (event.target === errorOverlay) closeError();
-      });
-      document.addEventListener('keydown', event => {
-        if (event.key === 'Escape') {
-          closeImage();
-          closeError();
-        }
-      });
-      document.getElementById('home-button').addEventListener('click', () => {
-        window.location.href = 'index.html';
-      });
 
-      form.addEventListener('submit', async event => {
-        event.preventDefault();
-        const answer = answerField.value.trim();
-        if (!answer) {
-          answerField.focus();
-          return;
-        }
-        submitButton.disabled = true;
-        submitButton.textContent = 'Controleren…';
-        try {
-          const response = await fetch('/api/answer', {
-            method: 'POST',
-            credentials: 'same-origin',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ puzzleNumber: 8, answer })
-          });
-          const result = await response.json();
-          if (response.ok && result.ok) {
-            answerField.value = '';
-            form.hidden = true;
-            success.hidden = false;
-            success.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-          } else if (result.code === 'wrong_answer') {
-            showError();
-          } else {
-            alert('De antwoordcontrole is momenteel niet beschikbaar. Probeer het later opnieuw.');
-          }
-        } catch (error) {
-          alert('Er kon geen verbinding worden gemaakt. Controleer je internetverbinding en probeer het opnieuw.');
-        } finally {
-          submitButton.disabled = false;
-          submitButton.textContent = 'Antwoord controleren';
-        }
+      lightbox.addEventListener('click', closeImage);
+
+      document.addEventListener('keydown', event => {
+        if (event.key === 'Escape') closeImage();
       });
     })();
   </script>
+
+  <script src="js/algemeen.js"></script>
+  <script src="js/puzzels.js"></script>
+  <script src="js/puzzelpagina.js"></script>
 </body>
 </html>
