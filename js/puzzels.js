@@ -73,6 +73,15 @@ const puzzels = {
         titel: "Leeslampje",
         pagina: "puzzel-8.html",
         vorigePuzzel: 7,
+        volgendePuzzel: 9,
+        hint: ""
+    },
+
+    9: {
+        nummer: 9,
+        titel: "Op het plein",
+        pagina: "puzzel-9.html",
+        vorigePuzzel: 8,
         volgendePuzzel: null,
         hint: ""
     }
