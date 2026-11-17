@@ -11,7 +11,7 @@
 
 const COOKIE_NAME = "__Host-spoorzoeken";
 const SESSION_TTL_SECONDS = 60 * 60 * 24 * 90;
-const MAX_PUZZLE_NUMBER = 8;
+const MAX_PUZZLE_NUMBER = 9;
 
 const encoder = new TextEncoder();
 const decoder = new TextDecoder();
