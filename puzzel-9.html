@@ -1,0 +1,113 @@
+
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Puzzel 9 – Op het plein | Spoorzoeken</title>
+
+  <link rel="stylesheet" href="css/stijl.css">
+
+  <script src="js/algemeen.js" defer></script>
+  <script src="js/puzzels.js" defer></script>
+  <script src="js/puzzelpagina.js" defer></script>
+</head>
+
+<body>
+  <header>
+    <h1>Spoorzoeken</h1>
+    <p>Een spoorwegmysterie uit 1925</p>
+  </header>
+
+  <main>
+    <section class="screen active">
+      <div class="panel">
+        <div class="eyebrow">Puzzel 9</div>
+        <h2>Op het plein</h2>
+
+        <img
+          class="story-image"
+          src="Puzzel%209.png"
+          alt="Een druk en levendig Place de la Comédie in Montpellier"
+        >
+
+        <p>
+          Een stop in Montpellier. Die gelegenheid grijp je graag aan om je
+          onder te dompelen in het bruisende stadsleven. Lekker uit eten en
+          een avondje naar de opera.
+        </p>
+
+        <p>
+          Terwijl je loopt over het grote ei-vormige stadsplein, valt je oog
+          op drie meisjes, dansend in een kringetje. Zussen zo te zien.
+          Je loopt ze tegemoet en knoopt een praatje met ze aan.
+        </p>
+
+        <p>
+          Ze stellen zich voor. "Zij is de knapste bij ons thuis en zij de
+          vrolijkste", wijst één van hen naar haar zussen. "En zij is de
+          rijkste", zeggen haar zussen lachend. "En weet je wat grappig is?
+          Ze heeft dezelfde naam als ons halfzusje. Die heeft ook een
+          geweldige eigenschap."
+        </p>
+
+        <div class="question">
+          <h3>De vraag</h3>
+          <p>Welke eigenschap?</p>
+
+          <form id="answer-form">
+            <label for="answer">Jouw antwoord</label>
+
+            <input
+              id="answer"
+              type="text"
+              autocomplete="off"
+              placeholder="Vul je antwoord in"
+              required
+            >
+
+            <button type="submit">Antwoord controleren</button>
+          </form>
+        </div>
+
+        <button
+          type="button"
+          class="secondary"
+          id="home-button"
+        >
+          Terug naar de start
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    Spoorzoeken · Een mysterie op het spoor door Europa · 1925
+  </footer>
+
+  <!-- Foutmelding -->
+  <div
+    id="error-overlay"
+    class="error-overlay"
+    role="alertdialog"
+    aria-modal="true"
+    aria-labelledby="error-title"
+    aria-hidden="true"
+  >
+    <div class="error-box">
+      <img src="Stop.png" alt="Het spoor loopt dood">
+
+      <h2 id="error-title">Het spoor loopt dood</h2>
+
+      <p>
+        Dat is niet het goede antwoord. Het sein staat op rood.
+        Vind het goede antwoord om door te kunnen stomen.
+      </p>
+
+      <button type="button" id="error-close">
+        Verder zoeken
+      </button>
+    </div>
+  </div>
+</body>
+</html>
