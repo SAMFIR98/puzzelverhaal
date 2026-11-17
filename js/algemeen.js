@@ -44,16 +44,27 @@ function sluitLightbox() {
 }
 
 /**
- * Sluit de lightbox wanneer buiten de afbeelding wordt geklikt.
+ * Algemene initialisatie na het laden van de pagina.
  */
 document.addEventListener("DOMContentLoaded", function () {
+
+  // Terug naar de startpagina
+  const homeButton = vindElement("home-button");
+
+  if (homeButton) {
+    homeButton.addEventListener("click", function () {
+      window.location.href = "/";
+    });
+  }
+
+  // Sluiten van de lightbox bij klikken buiten de afbeelding
   const lightbox = vindElement("lightbox");
 
-  if (!lightbox) return;
-
-  lightbox.addEventListener("click", function () {
-    sluitLightbox();
-  });
+  if (lightbox) {
+    lightbox.addEventListener("click", function () {
+      sluitLightbox();
+    });
+  }
 });
 
 /**
